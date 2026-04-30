@@ -20,6 +20,7 @@ import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.ViewContainer
 import com.pseddev.playstreak.PlayStreakApplication
 import com.pseddev.playstreak.R
+import com.pseddev.playstreak.data.entities.ActivityType
 import com.pseddev.playstreak.data.entities.CalendarColorLevel
 import com.pseddev.playstreak.databinding.FragmentCalendarBinding
 import com.pseddev.playstreak.utils.PreferencesManager
@@ -395,7 +396,10 @@ class CalendarFragment : Fragment() {
                 val timestamp = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
                 EditActivityStorage.setPrePopulatedDate(timestamp)
             }
-            findNavController().navigate(R.id.action_viewProgressFragment_to_addActivityFragment)
+            findNavController().navigate(
+                R.id.selectPieceFragment,
+                bundleOf("activityType" to ActivityType.PRACTICE)
+            )
         }
         
         binding.buttonPreviousMonth.setOnClickListener {

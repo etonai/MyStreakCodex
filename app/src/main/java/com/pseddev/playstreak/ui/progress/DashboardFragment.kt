@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.pseddev.playstreak.PlayStreakApplication
 import com.pseddev.playstreak.R
+import com.pseddev.playstreak.data.entities.ActivityType
 import com.pseddev.playstreak.data.entities.SuccessLevel
 import com.pseddev.playstreak.databinding.FragmentDashboardBinding
 import com.pseddev.playstreak.databinding.ItemDashboardActivityBinding
@@ -88,7 +89,10 @@ class DashboardFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.buttonAddActivity.setOnClickListener {
-            findNavController().navigate(R.id.action_viewProgressFragment_to_addActivityFragment)
+            findNavController().navigate(
+                R.id.selectPieceFragment,
+                bundleOf("activityType" to ActivityType.PRACTICE)
+            )
         }
     }
 

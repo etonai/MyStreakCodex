@@ -38,23 +38,12 @@ class AddActivityFragment : Fragment() {
         
         // Setup button click listeners
         binding.buttonPractice.setOnClickListener {
-            // Clear any previous edit mode when starting a new activity
             viewModel.clearEditMode()
             EditActivityStorage.clearEditActivity()
             val action = AddActivityFragmentDirections
                 .actionAddActivityFragmentToSelectPieceFragment(ActivityType.PRACTICE)
             findNavController().navigate(action)
         }
-        
-        binding.buttonPerformance.setOnClickListener {
-            // Clear any previous edit mode when starting a new activity
-            viewModel.clearEditMode()
-            EditActivityStorage.clearEditActivity()
-            val action = AddActivityFragmentDirections
-                .actionAddActivityFragmentToSelectPieceFragment(ActivityType.PERFORMANCE)
-            findNavController().navigate(action)
-        }
-        
     }
     
     override fun onDestroyView() {

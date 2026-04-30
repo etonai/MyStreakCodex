@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import com.pseddev.playstreak.analytics.AnalyticsManager
 import com.pseddev.playstreak.data.entities.ItemType
 import com.pseddev.playstreak.data.entities.PieceOrTechnique
+import com.pseddev.playstreak.data.entities.TaskPriority
 import com.pseddev.playstreak.data.repository.PianoRepository
 import com.pseddev.playstreak.utils.ProUserManager
 import com.pseddev.playstreak.utils.TextNormalizer
@@ -59,6 +60,26 @@ class AddPieceViewModel(
     }
     
     fun savePiece(name: String, type: ItemType, isFavorite: Boolean) {
+        saveTask(
+            name = name,
+            color = "#66B2FF",
+            priority = if (isFavorite) TaskPriority.HIGH else TaskPriority.LOW,
+            minimumSuccess = "Minimum",
+            mediumSuccess = "Medium",
+            highSuccess = "High",
+            isActive = true
+        )
+    }
+
+    fun saveTask(
+        name: String,
+        color: String,
+        priority: TaskPriority,
+        minimumSuccess: String,
+        mediumSuccess: String,
+        highSuccess: String,
+        isActive: Boolean
+    ) {
         viewModelScope.launch {
             try {
                 // Check for duplicate name first (case-insensitive)
@@ -87,18 +108,18 @@ class AddPieceViewModel(
                 
                 val piece = PieceOrTechnique(
                     name = normalizedName,
-                    type = type,
-                    isFavorite = isFavorite
+                    color = color,
+                    priority = priority,
+                    minimumSuccess = minimumSuccess,
+                    mediumSuccess = mediumSuccess,
+                    highSuccess = highSuccess,
+                    isActive = isActive
                 )
                 
                 repository.insertPieceOrTechnique(piece)
                 
                 // Check for first piece/technique achievements
-                val achievementType = if (type == ItemType.PIECE) {
-                    AchievementType.FIRST_PIECE
-                } else {
-                    AchievementType.FIRST_TECHNIQUE
-                }
+                val achievementType = AchievementType.FIRST_PIECE
                 
                 if (!achievementManager.isAchievementUnlocked(achievementType)) {
                     achievementManager.unlockAchievement(achievementType)
@@ -110,7 +131,7 @@ class AddPieceViewModel(
                 // Track analytics for piece addition
                 val newPieceCount = repository.getAllPiecesAndTechniques().first().size
                 analyticsManager.trackPieceAdded(
-                    pieceType = type,
+                    pieceType = ItemType.PIECE,
                     totalPieceCount = newPieceCount,
                     source = "pieces_tab"
                 )

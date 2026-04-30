@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import java.util.Calendar
 
 enum class SortType {
     ALPHABETICAL,
@@ -28,6 +29,7 @@ enum class SortDirection {
 data class PieceWithStats(
     val piece: PieceOrTechnique,
     val activityCount: Int,
+    val todayActivityCount: Int,
     val lastActivityDate: Long?
 )
 
@@ -48,6 +50,13 @@ class PiecesViewModel(
     private val selectedPieceId = MutableStateFlow<Long?>(null)
     private val sortType = MutableStateFlow(SortType.ALPHABETICAL)
     private val sortDirection = MutableStateFlow(SortDirection.ASCENDING)
+    private val todayStart: Long = Calendar.getInstance().apply {
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+    }.timeInMillis
+    private val todayEnd: Long = todayStart + 24L * 60L * 60L * 1000L
     
     val piecesWithStats: LiveData<List<PieceWithStats>> = 
         combine(
@@ -58,18 +67,16 @@ class PiecesViewModel(
         ) { pieces, activities, currentSortType, currentSortDirection ->
             val piecesWithStats = pieces
                 .map { piece ->
-                    // Use Phase 1 statistics for performance, but keep legacy calculation for comparison
                     val pieceActivities = activities.filter { it.pieceOrTechniqueId == piece.id }
-                    val totalStatisticsCount = piece.practiceCount + piece.performanceCount
-                    val lastStatisticsDate = maxOf(
-                        piece.lastPracticeDate ?: 0L,
-                        piece.lastPerformanceDate ?: 0L
-                    ).takeIf { it > 0L }
+                    val todayCount = pieceActivities.count {
+                        it.timestamp >= todayStart && it.timestamp < todayEnd
+                    }
                     
                     PieceWithStats(
                         piece = piece,
-                        activityCount = totalStatisticsCount, // Use Phase 1 statistics for better performance
-                        lastActivityDate = lastStatisticsDate // Use Phase 1 statistics for better performance
+                        activityCount = pieceActivities.size,
+                        todayActivityCount = todayCount,
+                        lastActivityDate = pieceActivities.maxOfOrNull { it.timestamp }
                     )
                 }
             
@@ -169,13 +176,28 @@ class PiecesViewModel(
         }
     }
     
-    fun updatePiece(pieceId: Long, newName: String, newType: ItemType) {
+    fun updateTask(
+        pieceId: Long,
+        newName: String,
+        color: String,
+        priority: TaskPriority,
+        minimumSuccess: String,
+        mediumSuccess: String,
+        highSuccess: String,
+        isActive: Boolean
+    ) {
         viewModelScope.launch {
             try {
                 val currentPiece = repository.getPieceOrTechniqueById(pieceId)
                 currentPiece?.let { piece ->
                     val updatedPiece = piece.copy(
                         name = newName,
+                        color = color,
+                        priority = priority,
+                        minimumSuccess = minimumSuccess,
+                        mediumSuccess = mediumSuccess,
+                        highSuccess = highSuccess,
+                        isActive = isActive,
                         lastUpdated = System.currentTimeMillis()
                     )
                     repository.updatePieceOrTechnique(updatedPiece)

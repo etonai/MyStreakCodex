@@ -25,6 +25,14 @@
     
     <!-- Star Colors -->
     <color name="star_yellow">#FFFFC107</color>
+
+    <!-- MyStreak Task Palette -->
+    <color name="task_palette_blue">#66B2FF</color>
+    <color name="task_palette_green">#46C07A</color>
+    <color name="task_palette_yellow">#F4C542</color>
+    <color name="task_palette_red">#E86B6B</color>
+    <color name="task_palette_purple">#9B7EDE</color>
+    <color name="task_palette_teal">#3FB8B8</color>
     
     <!-- Text Input Colors (light theme) -->
     <color name="edit_text_background">#FFFFFFFF</color>

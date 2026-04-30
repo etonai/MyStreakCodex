@@ -13,7 +13,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.pseddev.playstreak.PlayStreakApplication
-import com.pseddev.playstreak.data.entities.ActivityType
 import com.pseddev.playstreak.databinding.FragmentSummaryBinding
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -151,7 +150,7 @@ class SummaryFragment : Fragment() {
     
     private fun setupSummary() {
         binding.textPiece.text = "Task: ${args.pieceName}"
-        binding.textType.text = "Type: Activity"
+        binding.textType.visibility = View.GONE
         
         val levelText = when (args.level) {
             1 -> "Success: Minimum"
@@ -161,21 +160,19 @@ class SummaryFragment : Fragment() {
         }
         binding.textLevel.text = levelText
         
-        binding.textTime.text = if (args.minutes > 0) {
-            "Time: ${args.minutes} minutes"
-        } else {
-            "Time: Not recorded"
-        }
+        binding.textTime.visibility = View.GONE
         
         val dateFormat = SimpleDateFormat("MMM dd, yyyy h:mm a", Locale.US)
         val editActivity = viewModel.editActivity.value
         if (editActivity != null) {
+            binding.textTitle.text = "Edit Activity"
             // Edit mode - show edit buttons and current timestamp
             binding.textDate.text = "Date: ${dateFormat.format(Date(currentTimestamp))}"
             binding.buttonSave.text = "Update"
             binding.buttonEditDate.visibility = View.VISIBLE
             binding.buttonEditTime.visibility = View.VISIBLE
         } else {
+            binding.textTitle.text = "Add Activity"
             // Add mode - show current date, no edit buttons
             binding.textDate.text = "Date: ${dateFormat.format(Date(currentTimestamp))}"
             binding.buttonSave.text = "Save"
@@ -183,12 +180,7 @@ class SummaryFragment : Fragment() {
             binding.buttonEditTime.visibility = View.GONE
         }
         
-        if (args.notes.isNotEmpty()) {
-            binding.textNotes.text = "Notes: ${args.notes}"
-            binding.textNotes.visibility = View.VISIBLE
-        } else {
-            binding.textNotes.visibility = View.GONE
-        }
+        binding.textNotes.visibility = View.GONE
     }
     
     private fun setupDateTimeEditing() {

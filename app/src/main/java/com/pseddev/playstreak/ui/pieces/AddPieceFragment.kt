@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.pseddev.playstreak.PlayStreakApplication
-import com.pseddev.playstreak.data.entities.ItemType
+import com.pseddev.playstreak.data.entities.TaskPriority
 import com.pseddev.playstreak.databinding.FragmentAddPieceBinding
 
 class AddPieceFragment : Fragment() {
@@ -52,10 +52,15 @@ class AddPieceFragment : Fragment() {
             
             binding.pieceNameInputLayout.error = null
             
-            val type = ItemType.PIECE
-            val isFavorite = false
-            
-            viewModel.savePiece(name, type, isFavorite)
+            viewModel.saveTask(
+                name = name,
+                color = selectedTaskColor(),
+                priority = if (binding.radioHighPriority.isChecked) TaskPriority.HIGH else TaskPriority.LOW,
+                minimumSuccess = thresholdText(binding.minimumSuccessEditText.text?.toString(), "Minimum"),
+                mediumSuccess = thresholdText(binding.mediumSuccessEditText.text?.toString(), "Medium"),
+                highSuccess = thresholdText(binding.highSuccessEditText.text?.toString(), "High"),
+                isActive = binding.activeSwitch.isChecked
+            )
         }
         
         binding.cancelButton.setOnClickListener {
@@ -116,5 +121,20 @@ class AddPieceFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun thresholdText(value: String?, fallback: String): String {
+        return value?.trim().takeUnless { it.isNullOrBlank() } ?: fallback
+    }
+
+    private fun selectedTaskColor(): String {
+        return when (binding.colorRadioGroup.checkedRadioButtonId) {
+            binding.radioColorGreen.id -> "#46C07A"
+            binding.radioColorYellow.id -> "#F4C542"
+            binding.radioColorRed.id -> "#E86B6B"
+            binding.radioColorPurple.id -> "#9B7EDE"
+            binding.radioColorTeal.id -> "#3FB8B8"
+            else -> "#66B2FF"
+        }
     }
 }

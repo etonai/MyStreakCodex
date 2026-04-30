@@ -75,63 +75,26 @@ class QuickAddActivityDialogFragment : DialogFragment() {
     }
     
     private fun setupViews() {
-        // Setup activity type spinner
-        val activityTypes = listOf("Practice", "Performance")
-        val activityAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, activityTypes)
-        activityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.activityTypeSpinner.adapter = activityAdapter
-        
-        // Setup performance type spinner
-        val performanceTypes = listOf("Online Performance", "Live Performance")
-        val performanceAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, performanceTypes)
-        performanceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.performanceTypeSpinner.adapter = performanceAdapter
-        
-        // Set piece name (read-only)
         binding.pieceNameText.text = pieceName
-        
-        // Setup activity type change listener to update level options
-        binding.activityTypeSpinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
-                setupLevelOptions(position == 1) // true if Performance selected
+
+        viewModel.getTask(pieceId).observe(this) { task ->
+            val levels = if (task != null) {
+                listOf(
+                    "Minimum - ${task.minimumSuccess}",
+                    "Medium - ${task.mediumSuccess}",
+                    "High - ${task.highSuccess}"
+                )
+            } else {
+                listOf("Minimum", "Medium", "High")
             }
-            
-            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
-        }
-        
-        // Initialize with Practice levels (default)
-        setupLevelOptions(false)
-    }
-    
-    private fun setupLevelOptions(isPerformance: Boolean) {
-        val levels = if (isPerformance) {
-            // Performance levels (only 3 levels)
-            listOf(
-                "Level 1 - Failed",
-                "Level 2 - Unsatisfactory", 
-                "Level 3 - Satisfactory"
+
+            val levelAdapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                levels
             )
-        } else {
-            // Practice levels (4 levels)
-            listOf(
-                "Level 1 - Essentials",
-                "Level 2 - Incomplete",
-                "Level 3 - Complete with Issues",
-                "Level 4 - Complete and Satisfactory"
-            )
-        }
-        
-        val levelAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, levels)
-        levelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.levelSpinner.adapter = levelAdapter
-        
-        // Show/hide performance type selection
-        if (isPerformance) {
-            binding.performanceTypeLabel.visibility = android.view.View.VISIBLE
-            binding.performanceTypeSpinner.visibility = android.view.View.VISIBLE
-        } else {
-            binding.performanceTypeLabel.visibility = android.view.View.GONE
-            binding.performanceTypeSpinner.visibility = android.view.View.GONE
+            levelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.levelSpinner.adapter = levelAdapter
         }
     }
     
@@ -150,34 +113,17 @@ class QuickAddActivityDialogFragment : DialogFragment() {
     }
     
     private fun addActivity() {
-        val activityType = when (binding.activityTypeSpinner.selectedItemPosition) {
-            0 -> ActivityType.PRACTICE
-            1 -> ActivityType.PERFORMANCE
-            else -> ActivityType.PRACTICE
-        }
-        
         val level = binding.levelSpinner.selectedItemPosition + 1
-        
-        val performanceType = if (activityType == ActivityType.PERFORMANCE) {
-            // Map spinner selection to proper values that match regular flow
-            when (binding.performanceTypeSpinner.selectedItemPosition) {
-                0 -> "online"  // "Online Performance" -> "online"
-                1 -> "live"    // "Live Performance" -> "live"
-                else -> "online"
-            }
-        } else {
-            "practice" // Default for practice activities
-        }
         
         val activity = Activity(
             id = 0, // Will be auto-generated
             pieceOrTechniqueId = pieceId,
-            activityType = activityType,
+            activityType = ActivityType.PRACTICE,
             timestamp = System.currentTimeMillis(),
             level = level,
-            minutes = if (activityType == ActivityType.PRACTICE) -1 else 0, // No default duration for practice
+            minutes = -1,
             notes = "",
-            performanceType = performanceType
+            performanceType = "activity"
         )
         
         viewModel.addActivity(activity, source)

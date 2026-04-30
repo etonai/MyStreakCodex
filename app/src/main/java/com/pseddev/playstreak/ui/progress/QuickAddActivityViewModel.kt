@@ -6,15 +6,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.pseddev.playstreak.analytics.AnalyticsManager
 import com.pseddev.playstreak.data.entities.Activity
+import com.pseddev.playstreak.data.entities.PieceOrTechnique
 import com.pseddev.playstreak.data.repository.PianoRepository
 import com.pseddev.playstreak.utils.ProUserManager
 import com.pseddev.playstreak.utils.AchievementManager
 import com.pseddev.playstreak.data.entities.AchievementType
 import com.pseddev.playstreak.data.entities.ActivityType
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class QuickAddActivityViewModel(
@@ -28,9 +30,15 @@ class QuickAddActivityViewModel(
     
     private val _addResult = MutableLiveData<Result<Unit>>()
     val addResult: LiveData<Result<Unit>> = _addResult
+
+    fun getTask(taskId: Long): LiveData<PieceOrTechnique?> {
+        return repository.getAllPiecesAndTechniques()
+            .map { tasks -> tasks.find { it.id == taskId } }
+            .asLiveData()
+    }
     
     fun addActivity(activity: Activity, source: String = "dashboard_quick") {
-        GlobalScope.launch {
+        viewModelScope.launch {
             try {
                 // Check activity limit before adding
                 val currentActivityCount = repository.getActivityCount()

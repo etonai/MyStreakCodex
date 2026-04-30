@@ -52,15 +52,17 @@ class AddActivityViewModel(
     val showCelebration: LiveData<AchievementType?> = _showCelebration
     
     fun getPiecesAndTechniques(activityType: ActivityType): LiveData<List<PieceOrTechnique>> {
-        return if (activityType == ActivityType.PERFORMANCE) {
-            repository.getPieces().asLiveData()
-        } else {
-            repository.getAllPiecesAndTechniques().asLiveData()
-        }
+        return repository.getActiveTasks().asLiveData()
     }
     
     fun getFavorites(): LiveData<List<PieceOrTechnique>> {
-        return repository.getFavorites().asLiveData()
+        return repository.getActiveHighPriorityTasks().asLiveData()
+    }
+
+    fun getTask(taskId: Long): LiveData<PieceOrTechnique?> {
+        return repository.getAllPiecesAndTechniques()
+            .map { tasks -> tasks.find { it.id == taskId } }
+            .asLiveData()
     }
     
     fun insertPieceOrTechnique(name: String, type: ItemType, onComplete: (Long) -> Unit) {
@@ -69,7 +71,7 @@ class AddActivityViewModel(
                 // Check for duplicate name first (case-insensitive)
                 val normalizedName = TextNormalizer.normalizePieceName(name)
                 if (repository.doesPieceNameExist(normalizedName)) {
-                    _errorMessage.value = "This piece already exists"
+                    _errorMessage.value = "This task already exists"
                     return@launch
                 }
                 
@@ -77,7 +79,7 @@ class AddActivityViewModel(
                 val currentPieceCount = repository.getAllPiecesAndTechniques().first().size
                 if (!proUserManager.canAddMorePieces(currentPieceCount)) {
                     val limit = proUserManager.getPieceLimit()
-                    _errorMessage.value = "You have reached the piece limit of $limit pieces and techniques. Cannot add more pieces."
+                    _errorMessage.value = "You have reached the task limit of $limit tasks. Cannot add more tasks."
                     return@launch
                 }
                 
@@ -113,7 +115,7 @@ class AddActivityViewModel(
                 
                 onComplete(id)
             } catch (e: Exception) {
-                _errorMessage.value = "Failed to add piece: ${e.message}"
+                _errorMessage.value = "Failed to add task: ${e.message}"
             }
         }
     }
@@ -233,6 +235,8 @@ class AddActivityViewModel(
     
     fun doneNavigating() {
         _navigateToMain.value = false
+        clearEditMode()
+        EditActivityStorage.clearEditActivity()
     }
     
     fun clearEditMode() {

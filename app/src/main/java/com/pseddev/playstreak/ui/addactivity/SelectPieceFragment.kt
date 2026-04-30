@@ -78,15 +78,17 @@ class SelectPieceFragment : Fragment() {
         viewModel.getFavorites().observe(viewLifecycleOwner) { favorites ->
             viewModel.getPiecesAndTechniques(args.activityType).observe(viewLifecycleOwner) { all ->
                 val groupedItems = mutableListOf<PieceAdapterItem>()
+                val highPriorityIds = favorites.map { it.id }.toSet()
+                val remainingTasks = all.filter { it.id !in highPriorityIds }
                 
                 if (favorites.isNotEmpty()) {
                     groupedItems.add(PieceAdapterItem.Header("High Priority:"))
                     groupedItems.addAll(favorites.map { PieceAdapterItem.Item(it) })
                 }
                 
-                if (all.isNotEmpty()) {
+                if (remainingTasks.isNotEmpty()) {
                     groupedItems.add(PieceAdapterItem.Header("All Tasks:"))
-                    groupedItems.addAll(all.map { PieceAdapterItem.Item(it) })
+                    groupedItems.addAll(remainingTasks.map { PieceAdapterItem.Item(it) })
                 }
                 
                 adapter.submitList(groupedItems)

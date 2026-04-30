@@ -1,11 +1,14 @@
 package com.pseddev.playstreak.ui.progress
 
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.pseddev.playstreak.data.entities.TaskPriority
 import com.pseddev.playstreak.databinding.ItemPieceStatsBinding
 import com.pseddev.playstreak.utils.ProUserManager
 import java.text.SimpleDateFormat
@@ -44,7 +47,15 @@ class PiecesAdapter(
 
         fun bind(item: PieceWithStats) {
             binding.pieceNameText.text = item.piece.name
-            binding.activityCountText.text = "${item.activityCount} activities"
+            binding.root.alpha = if (item.piece.isActive) 1.0f else 0.55f
+            binding.activityCountText.text = "${item.activityCount} total activit${if (item.activityCount == 1) "y" else "ies"}"
+            binding.todayCountText.text = "${item.todayActivityCount} today"
+            binding.priorityText.text = if (item.piece.priority == TaskPriority.HIGH) "High priority" else "Low priority"
+            binding.statusText.text = if (item.piece.isActive) "Active" else "Inactive"
+
+            val swatch = binding.taskColorSwatch.background.mutate() as? GradientDrawable
+            swatch?.setColor(parseColor(item.piece.color))
+            binding.taskColorSwatch.background = swatch
 
             if (item.lastActivityDate != null) {
                 binding.lastActivityText.text = "Last: ${dateFormat.format(Date(item.lastActivityDate))}"
@@ -53,7 +64,7 @@ class PiecesAdapter(
             }
 
             binding.favoriteIcon.visibility = View.GONE
-            binding.addActivityIcon.visibility = View.GONE
+            binding.addActivityIcon.visibility = if (item.piece.isActive) View.VISIBLE else View.GONE
 
             binding.root.setOnClickListener {
                 onPieceClick(item)
@@ -69,6 +80,14 @@ class PiecesAdapter(
 
             binding.deleteIcon.setOnClickListener {
                 onDeleteClick(item)
+            }
+        }
+
+        private fun parseColor(color: String): Int {
+            return try {
+                Color.parseColor(color)
+            } catch (_: IllegalArgumentException) {
+                Color.parseColor("#66B2FF")
             }
         }
     }

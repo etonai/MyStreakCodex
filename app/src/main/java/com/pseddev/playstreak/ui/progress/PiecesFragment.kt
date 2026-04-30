@@ -72,7 +72,13 @@ class PiecesFragment : Fragment() {
                 val dialog = EditPieceDialogFragment.newInstance(
                     pieceWithStats.piece.id,
                     pieceWithStats.piece.name,
-                    pieceWithStats.piece.type
+                    pieceWithStats.piece.type,
+                    pieceWithStats.piece.color,
+                    pieceWithStats.piece.priority,
+                    pieceWithStats.piece.minimumSuccess,
+                    pieceWithStats.piece.mediumSuccess,
+                    pieceWithStats.piece.highSuccess,
+                    pieceWithStats.piece.isActive
                 )
                 dialog.show(parentFragmentManager, "EditPieceDialog")
             },
@@ -118,22 +124,21 @@ class PiecesFragment : Fragment() {
         
         // Basic Information Section
         binding.pieceTypeText.text = "Status: Active"
-        binding.isFavoriteText.text = "Priority: ${if (piece.isFavorite) "High" else "Low"}"
+        binding.pieceTypeText.text = "Status: ${if (piece.isActive) "Active" else "Inactive"}"
+        binding.isFavoriteText.text = "Priority: ${piece.priority.name.lowercase().replaceFirstChar { it.uppercase() }}"
         binding.dateCreatedText.text = "Created: ${DateFormatter.formatDateOnly(piece.dateCreated)}"
         
-        // Activity statistics use legacy fields until the Task schema lands in Phase 2.
-        binding.practiceCountText.text = "Total Activities: ${piece.practiceCount + piece.performanceCount}"
-        binding.lastPracticeText.text = "Last Activity: ${DateFormatter.formatDate(piece.lastPracticeDate ?: piece.lastPerformanceDate)}"
-        binding.secondLastPracticeText.text = "2nd Last Activity: ${DateFormatter.formatDateWithFallback(piece.secondLastPracticeDate ?: piece.secondLastPerformanceDate)}"
-        binding.thirdLastPracticeText.text = "3rd Last Activity: ${DateFormatter.formatDateWithFallback(piece.thirdLastPracticeDate ?: piece.thirdLastPerformanceDate)}"
-        binding.lastSatisfactoryPracticeText.text = "Last High Success: ${DateFormatter.formatDate(piece.lastSatisfactoryPractice ?: piece.lastSatisfactoryPerformance)}"
-        
-        // Placeholders for MyStreak task fields that arrive with the Phase 2 schema.
-        binding.performanceCountText.text = "Minimum Success: TBD"
-        binding.lastPerformanceText.text = "Medium Success: TBD"
-        binding.secondLastPerformanceText.text = "High Success: TBD"
-        binding.thirdLastPerformanceText.text = "Active Status: Active"
-        binding.lastSatisfactoryPerformanceText.text = "Task Color: TBD"
+        binding.practiceCountText.text = "Total Activities: ${details.activities.size}"
+        binding.lastPracticeText.text = "Last Activity: ${DateFormatter.formatDate(details.lastActivity?.timestamp)}"
+        binding.secondLastPracticeText.text = "Minimum Success: ${piece.minimumSuccess}"
+        binding.thirdLastPracticeText.text = "Medium Success: ${piece.mediumSuccess}"
+        binding.lastSatisfactoryPracticeText.text = "High Success: ${piece.highSuccess}"
+
+        binding.performanceCountText.text = "Task Color: ${piece.color}"
+        binding.lastPerformanceText.text = ""
+        binding.secondLastPerformanceText.text = ""
+        binding.thirdLastPerformanceText.text = ""
+        binding.lastSatisfactoryPerformanceText.text = ""
         
         // Legacy Activity Data Section (calculated from activities for comparison)
         val practiceCountLegacy = details.activities.count { it.activityType == com.pseddev.playstreak.data.entities.ActivityType.PRACTICE }

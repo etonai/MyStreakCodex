@@ -216,7 +216,7 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds.
 
 ### Phase 6: Task Management UI
-**Status:** Open  
+**Status:** Completed  
 **Date Added:** 2026-04-30  
 **Priority:** High (Core UI)  
 **Description:** Replace the Pieces UI with Tasks list, add/edit/detail, active/inactive management, and deletion confirmation.
@@ -240,18 +240,26 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - Hide inactive Tasks from logging flows.
 
 **Acceptance Criteria:**
-- [ ] Active and inactive Tasks appear in the Tasks tab.
-- [ ] Inactive Tasks are visually distinct and can be reactivated.
-- [ ] Task properties are editable after creation.
-- [ ] Deleting a Task warns that historical Activities will be permanently removed.
-- [ ] Today's count displays raw log count for each Task.
-- [ ] Color palette is accessible in light and dark themes.
+- [x] Active and inactive Tasks appear in the Tasks tab.
+- [x] Inactive Tasks are visually distinct and can be reactivated.
+- [x] Task properties are editable after creation.
+- [x] Deleting a Task warns that historical Activities will be permanently removed.
+- [x] Today's count displays raw log count for each Task.
+- [x] Color palette is accessible in light and dark themes.
 
 **Implementation Notes:**
 - The MyStreak spec says the palette should match PlayStreak, but `PlayStreakForMyStreak.md` notes PlayStreak does not currently have per-piece colors. Define a new accessible predefined palette in `colors.xml` and document it as the MyStreak v1 palette.
 
+**Progress Notes:**
+- 2026-04-30: Tasks tab rows now show task color, priority, active/inactive status, total Activity count, today's raw Activity count, and last Activity date.
+- 2026-04-30: Inactive tasks remain visible in the Tasks tab with reduced opacity and can be reactivated through edit.
+- 2026-04-30: Add Task and Edit Task forms now support name, predefined color palette, high/low priority, minimum/medium/high success descriptions, and active status.
+- 2026-04-30: Task deletion keeps the existing confirmation warning that historical Activities are permanently removed.
+- 2026-04-30: Inactive tasks are hidden from the Add Activity selector and from per-row quick logging.
+- 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds.
+
 ### Phase 7: Activity Logging, Editing, and Deletion
-**Status:** Open  
+**Status:** Completed  
 **Date Added:** 2026-04-30  
 **Priority:** High (Core Workflow)  
 **Description:** Adapt PlayStreak's add-activity flow to MyStreak's task success-level model.
@@ -268,13 +276,21 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - Support deleting an Activity with confirmation.
 
 **Acceptance Criteria:**
-- [ ] Logging flow only lists active Tasks.
-- [ ] Each logged Activity has exactly one Task, timestamp, and success level.
-- [ ] Below-minimum attempts cannot be recorded as Activities.
-- [ ] Activity edit screen does not allow Task reassignment.
-- [ ] Future dates are rejected with clear feedback.
-- [ ] Moving an Activity from today to a past date updates today's live data immediately.
-- [ ] Deletion updates dashboard, calendar live day, streak, and task counts appropriately.
+- [x] Logging flow only lists active Tasks.
+- [x] Each logged Activity has exactly one Task, timestamp, and success level.
+- [x] Below-minimum attempts cannot be recorded as Activities.
+- [x] Activity edit screen does not allow Task reassignment.
+- [x] Future dates are rejected with clear feedback.
+- [x] Moving an Activity from today to a past date updates today's live data immediately.
+- [x] Deletion updates dashboard, calendar live day, streak, and task counts appropriately.
+
+**Progress Notes:**
+- 2026-04-30: Simplified Add Activity to a single Task-selection path instead of legacy Practice/Performance choice.
+- 2026-04-30: Success level selection now shows Minimum, Medium, and High with the selected Task's threshold descriptions.
+- 2026-04-30: Activity summary/edit no longer displays or records duration or notes.
+- 2026-04-30: Activity edits keep the existing Task association fixed while allowing success level and date/time changes.
+- 2026-04-30: Quick-add logging from the Tasks tab now uses the MyStreak success-level model and no longer exposes legacy Practice/Performance fields.
+- 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds.
 
 ### Phase 8: Calendar Conversion
 **Status:** Open  
@@ -298,27 +314,6 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - [ ] Day activity listings reflect actual Activities even when frozen color does not.
 - [ ] Calendar remains usable in dark mode.
 
-### Phase 9: Import/Export and Local Data
-**Status:** Open  
-**Date Added:** 2026-04-30  
-**Priority:** Medium (Data Portability)  
-**Description:** Adapt PlayStreak's JSON import/export approach to MyStreak's Task and Activity schema.
-
-**Technical Requirements:**
-- Define a MyStreak JSON schema containing Tasks, Activities, and frozen calendar day states if implemented.
-- Use Android file picker flow and full-replace import semantics from PlayStreak.
-- Validate JSON before import.
-- Warn that import replaces existing data.
-- Export all local data required to restore the visible MyStreak experience.
-- Decide whether old PlayStreak JSON import is unsupported, blocked with a helpful message, or converted best-effort.
-
-**Acceptance Criteria:**
-- [ ] Exported JSON can be imported into a clean MyStreak install.
-- [ ] Import preserves Task colors, priorities, active states, thresholds, Activities, and frozen calendar colors.
-- [ ] Invalid JSON produces actionable validation errors.
-- [ ] Import confirmation warning is shown before replacing data.
-- [ ] Import/export UI copy uses MyStreak terminology.
-
 ### Phase 10: Test, Cleanup, and Release Readiness
 **Status:** Open  
 **Date Added:** 2026-04-30  
@@ -334,9 +329,8 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
   - calendar color calculation
   - frozen day behavior
   - active/inactive Task filtering
-  - import/export round trip
 - Build debug and release variants.
-- Manually verify first-run, add Task, log Activity, edit Activity, delete Activity, toggle inactive, calendar day tap, dark mode, and import/export.
+- Manually verify first-run, add Task, log Activity, edit Activity, delete Activity, toggle inactive, calendar day tap, and dark mode.
 - Review privacy/legal text for MyStreak-specific claims.
 
 **Acceptance Criteria:**
@@ -354,9 +348,8 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 3. Replace the database model with Tasks, Activities, and optional frozen calendar day states.
 4. Convert repository queries and business logic.
 5. Build Dashboard, Tasks, Calendar, and Activity edit flows.
-6. Adapt import/export to the new schema.
-7. Remove obsolete PlayStreak code and broaden tests.
-8. Complete release-readiness verification.
+6. Remove obsolete PlayStreak code and broaden tests.
+7. Complete release-readiness verification.
 
 ## Cycle Notes
 
@@ -376,13 +369,14 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 | Database migration complexity from PlayStreak to MyStreak | Prefer a new database name for early MyStreak builds unless preserving PlayStreak user data is explicitly required. |
 | Music-specific statistics code creates hidden behavior regressions | Remove or replace practice/performance statistic updates when the Task schema lands. |
 | Frozen calendar colors become inconsistent after edits | Treat immutable frozen colors as a first-class data model and test retroactive edit cases. |
-| No settings screen conflicts with import/export needs | Decide whether import/export is deferred or exposed through a small overflow/action entry point. |
+| Import/export needs are deferred out of DC 1 | Track MyStreak import/export and data portability in DevCycle 2026-002. |
 | Task-tab logging entry point is unresolved | Make the UX decision before implementing the Tasks tab so row tap behavior and log buttons do not conflict. |
 | PlayStreak feature-gating code affects MyStreak limits | Remove Pro/Free gating and associated limits from MyStreak's core flows. |
 
 ## Future Cycles
 
 - MyStreak v1 implementation cycle split into code phases if this planning cycle is accepted.
+- MyStreak import/export and local data portability in DevCycle 2026-002.
 - Optional PlayStreak data conversion/import path if legacy users need migration.
 - Optional reminders/notifications, explicitly out of scope for this version.
 - Optional cloud backup/sync, explicitly out of scope for this version.
@@ -394,5 +388,5 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - [ ] Approve whether this cycle remains a planning cycle or becomes the active implementation cycle.
 - [ ] Define the minimum DevCycle 2026-001 milestone that triggers creating the new `MyStreakCodex` GitHub repository.
 - [ ] Decide database/package identity strategy.
-- [ ] Decide import/export placement with no settings screen.
+- [x] Move import/export placement and schema work to DevCycle 2026-002.
 - [ ] Break implementation into smaller follow-up DevCycles if desired.
