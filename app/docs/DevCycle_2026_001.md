@@ -153,7 +153,7 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds. Automated tests for this phase are still deferred.
 
 ### Phase 4: Navigation and Screen Structure
-**Status:** Open  
+**Status:** Completed  
 **Date Added:** 2026-04-30  
 **Priority:** High (User Experience)  
 **Description:** Restructure PlayStreak navigation into MyStreak's three primary tabs: Dashboard, Calendar, and Tasks.
@@ -166,16 +166,23 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - Ensure Activity editing is reachable from Dashboard daily lists and Calendar daily listing, since MyStreak has no Timeline tab.
 
 **Acceptance Criteria:**
-- [ ] Bottom navigation shows only Dashboard, Calendar, and Tasks.
-- [ ] Dashboard is the primary landing view.
-- [ ] Removed PlayStreak screens are unreachable from production navigation.
-- [ ] Task list entry tap opens Task detail/edit.
-- [ ] A clear log action exists on the Dashboard.
-- [ ] A clear log action exists from the Tasks tab, either per-task or inside Task detail, pending final UX decision.
+- [x] Bottom navigation shows only Dashboard, Calendar, and Tasks.
+- [x] Dashboard is the primary landing view.
+- [x] Removed PlayStreak screens are unreachable from production navigation.
+- [x] Task list entry tap opens Task detail/edit.
+- [x] A clear log action exists on the Dashboard.
+- [x] A clear log action exists from the Tasks tab, either per-task or inside Task detail, pending final UX decision.
 
 **Open Product Questions:**
-- How exactly should logging from the Tasks tab work: inline log button, Task detail log button, or both?
+- How exactly should logging from the Tasks tab work long-term: keep the current inline row action, move it into Task detail, or support both?
 - Should Import/Export be exposed in this version without a settings screen, and if so where?
+
+**Progress Notes:**
+- 2026-04-30: Replaced the top tab strip with a bottom navigation bar containing only Dashboard, Calendar, and Tasks.
+- 2026-04-30: Kept Dashboard as the first ViewPager page so it remains the landing view.
+- 2026-04-30: Removed the main shell's dormant navigation action to the legacy About/settings hub. Legacy configuration, achievements, pruning, favorites, and About screens remain in source for now but are no longer reachable from production app navigation.
+- 2026-04-30: Confirmed Dashboard still has an Add Activity entry point, and Tasks still has Add Task plus per-row quick activity logging and task detail/edit access.
+- 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds.
 
 ### Phase 5: Dashboard Implementation
 **Status:** Open  

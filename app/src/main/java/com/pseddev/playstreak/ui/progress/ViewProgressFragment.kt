@@ -1,16 +1,3 @@
-/*
- * Timeline Tab Temporarily Disabled for Evaluation
- * 
- * DevCycle 2025-0005 Phase 4: Timeline tab has been temporarily removed to evaluate
- * user preference for Calendar Activities Detail Mode vs. separate Timeline functionality.
- * 
- * RESTORATION PROCESS:
- * 1. In setupTabs() TabLayoutMediator: Uncomment line 65 and move line 66 to position 5
- * 2. In ViewProgressPagerAdapter: Change getItemCount() back to (6/5) and uncomment line 106
- * 3. Restore data loading in TimelineViewModel.kt and TimelineFragment.kt
- * 
- * All Timeline code is preserved via comments for quick restoration.
- */
 package com.pseddev.playstreak.ui.progress
 
 import android.os.Bundle
@@ -19,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.pseddev.playstreak.databinding.FragmentViewProgressBinding
-import com.google.android.material.tabs.TabLayoutMediator
+import com.pseddev.playstreak.R
 
 class ViewProgressFragment : Fragment() {
     
@@ -39,24 +27,38 @@ class ViewProgressFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        setupTabs()
+        setupBottomNavigation()
     }
     
-    private fun setupTabs() {
+    private fun setupBottomNavigation() {
         val pagerAdapter = ViewProgressPagerAdapter(this)
         binding.viewPager.adapter = pagerAdapter
-        
-        // Improve nested scrolling for RecyclerViews inside ViewPager2
         binding.viewPager.isUserInputEnabled = true
-        
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> "Dashboard"
-                1 -> "Calendar"
-                2 -> "Tasks"
-                else -> ""
+
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            val page = when (item.itemId) {
+                R.id.navigation_dashboard -> 0
+                R.id.navigation_calendar -> 1
+                R.id.navigation_tasks -> 2
+                else -> return@setOnItemSelectedListener false
             }
-        }.attach()
+            binding.viewPager.currentItem = page
+            true
+        }
+
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                val itemId = when (position) {
+                    0 -> R.id.navigation_dashboard
+                    1 -> R.id.navigation_calendar
+                    2 -> R.id.navigation_tasks
+                    else -> return
+                }
+                if (binding.bottomNavigation.selectedItemId != itemId) {
+                    binding.bottomNavigation.selectedItemId = itemId
+                }
+            }
+        })
     }
     
     override fun onDestroyView() {

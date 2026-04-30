@@ -67,9 +67,6 @@
         <action
             android:id="@+id/action_viewProgressFragment_to_selectLevelFragment"
             app:destination="@id/selectLevelFragment" />
-        <action
-            android:id="@+id/action_progressFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
     </fragment>
         
     <fragment
