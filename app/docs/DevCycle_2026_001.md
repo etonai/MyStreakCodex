@@ -156,7 +156,7 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 **Status:** Completed  
 **Date Added:** 2026-04-30  
 **Priority:** High (User Experience)  
-**Description:** Restructure PlayStreak navigation into MyStreak's three primary tabs: Dashboard, Calendar, and Tasks.
+**Description:** Restructure PlayStreak navigation into MyStreak's three primary top tabs: Dashboard, Calendar, and Tasks.
 
 **Technical Requirements:**
 - Replace or simplify the current progress area so the first screen exposes Dashboard, Calendar, and Tasks.
@@ -166,7 +166,7 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - Ensure Activity editing is reachable from Dashboard daily lists and Calendar daily listing, since MyStreak has no Timeline tab.
 
 **Acceptance Criteria:**
-- [x] Bottom navigation shows only Dashboard, Calendar, and Tasks.
+- [x] Primary tabs show only Dashboard, Calendar, and Tasks.
 - [x] Dashboard is the primary landing view.
 - [x] Removed PlayStreak screens are unreachable from production navigation.
 - [x] Task list entry tap opens Task detail/edit.
@@ -178,14 +178,14 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - Should Import/Export be exposed in this version without a settings screen, and if so where?
 
 **Progress Notes:**
-- 2026-04-30: Replaced the top tab strip with a bottom navigation bar containing only Dashboard, Calendar, and Tasks.
+- 2026-04-30: Kept the PlayStreak-style top tab strip, limited to Dashboard, Calendar, and Tasks. A brief bottom-navigation implementation was reverted because top tabs are the preferred MyStreak design.
 - 2026-04-30: Kept Dashboard as the first ViewPager page so it remains the landing view.
 - 2026-04-30: Removed the main shell's dormant navigation action to the legacy About/settings hub. Legacy configuration, achievements, pruning, favorites, and About screens remain in source for now but are no longer reachable from production app navigation.
 - 2026-04-30: Confirmed Dashboard still has an Add Activity entry point, and Tasks still has Add Task plus per-row quick activity logging and task detail/edit access.
 - 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds.
 
 ### Phase 5: Dashboard Implementation
-**Status:** Open  
+**Status:** Completed  
 **Date Added:** 2026-04-30  
 **Priority:** High (Core UI)  
 **Description:** Build the MyStreak Dashboard as the main daily accountability screen.
@@ -201,12 +201,19 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - Support dark mode using existing theme patterns.
 
 **Acceptance Criteria:**
-- [ ] Dashboard correctly handles days with no Activities.
-- [ ] Today's and yesterday's lists show inactive Task history.
-- [ ] Activity rows support edit/delete entry points with confirmation for deletion.
-- [ ] Week Summary counts each individual Activity log instance.
-- [ ] Week Summary excludes Activities from currently-inactive Tasks.
-- [ ] Outstanding list excludes inactive Tasks and tasks already logged today.
+- [x] Dashboard correctly handles days with no Activities.
+- [x] Today's and yesterday's lists show inactive Task history.
+- [x] Activity rows support edit/delete entry points with confirmation for deletion.
+- [x] Week Summary counts each individual Activity log instance.
+- [x] Week Summary excludes Activities from currently-inactive Tasks.
+- [x] Outstanding list excludes inactive Tasks and tasks already logged today.
+
+**Progress Notes:**
+- 2026-04-30: Replaced plain-text Today and Yesterday summaries with always-expanded activity rows.
+- 2026-04-30: Dashboard activity rows now show Task color, time, Task name, and success level.
+- 2026-04-30: Added Dashboard edit/delete actions for Activities. Delete shows confirmation; edit reuses the existing Activity edit flow.
+- 2026-04-30: Empty Today and Yesterday states now render in place instead of collapsing the section.
+- 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds.
 
 ### Phase 6: Task Management UI
 **Status:** Open  

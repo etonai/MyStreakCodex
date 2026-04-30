@@ -4,11 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import com.pseddev.playstreak.data.entities.Activity
 import com.pseddev.playstreak.data.repository.PianoRepository
 import com.pseddev.playstreak.utils.ProUserManager
 import com.pseddev.playstreak.utils.StreakCalculator
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class DashboardViewModel(
@@ -53,7 +56,7 @@ class DashboardViewModel(
             activities.mapNotNull { activity ->
                 val piece = pieces.find { it.id == activity.pieceOrTechniqueId }
                 piece?.let { ActivityWithPiece(activity, it) }
-            }
+            }.sortedBy { it.activity.timestamp }
         }.asLiveData()
 
     val yesterdayActivities: LiveData<List<ActivityWithPiece>> =
@@ -64,7 +67,7 @@ class DashboardViewModel(
             activities.mapNotNull { activity ->
                 val piece = pieces.find { it.id == activity.pieceOrTechniqueId }
                 piece?.let { ActivityWithPiece(activity, it) }
-            }
+            }.sortedBy { it.activity.timestamp }
         }.asLiveData()
 
     val weekSummary: LiveData<String> = repository.getRollingWeekSummaryText().asLiveData()
@@ -106,6 +109,12 @@ class DashboardViewModel(
         .asLiveData()
 
     suspend fun calculateStreak(): Int = repository.calculateCurrentStreak()
+
+    fun deleteActivity(activity: Activity) {
+        viewModelScope.launch {
+            repository.deleteActivity(activity)
+        }
+    }
 }
 
 class DashboardViewModelFactory(

@@ -1,15 +1,25 @@
 package com.pseddev.playstreak.ui.progress
 
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.pseddev.playstreak.PlayStreakApplication
 import com.pseddev.playstreak.R
+import com.pseddev.playstreak.data.entities.SuccessLevel
 import com.pseddev.playstreak.databinding.FragmentDashboardBinding
+import com.pseddev.playstreak.databinding.ItemDashboardActivityBinding
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class DashboardFragment : Fragment() {
 
@@ -38,41 +48,21 @@ class DashboardFragment : Fragment() {
         setupClickListeners()
 
         viewModel.todayActivities.observe(viewLifecycleOwner) { activities ->
-            binding.todayCountText.text = "${activities.size} activities"
-
-            if (activities.isNotEmpty()) {
-                binding.todayActivitiesGroup.visibility = View.VISIBLE
-                binding.todayActivitiesList.text = activities.joinToString("\n") { activityWithPiece ->
-                    val activity = activityWithPiece.activity
-                    val task = activityWithPiece.pieceOrTechnique
-                    val time = android.text.format.DateFormat.format("h:mm a", activity.timestamp)
-                    val level = "(${activity.level})"
-                    val minutes = if (activity.minutes > 0) " (${activity.minutes} min)" else ""
-                    "- $time - ${task.name} - Success $level$minutes"
-                }
-            } else {
-                binding.todayActivitiesGroup.visibility = View.GONE
-                binding.todayActivitiesList.text = ""
-            }
+            binding.todayCountText.text = activityCountText(activities.size)
+            bindActivityList(
+                container = binding.todayActivitiesList,
+                emptyView = binding.todayActivitiesEmptyText,
+                activities = activities
+            )
         }
 
         viewModel.yesterdayActivities.observe(viewLifecycleOwner) { activities ->
-            binding.yesterdayCountText.text = "${activities.size} activities"
-
-            if (activities.isNotEmpty()) {
-                binding.yesterdayActivitiesGroup.visibility = View.VISIBLE
-                binding.yesterdayActivitiesList.text = activities.joinToString("\n") { activityWithPiece ->
-                    val activity = activityWithPiece.activity
-                    val task = activityWithPiece.pieceOrTechnique
-                    val time = android.text.format.DateFormat.format("h:mm a", activity.timestamp)
-                    val level = "(${activity.level})"
-                    val minutes = if (activity.minutes > 0) " (${activity.minutes} min)" else ""
-                    "- $time - ${task.name} - Success $level$minutes"
-                }
-            } else {
-                binding.yesterdayActivitiesGroup.visibility = View.GONE
-                binding.yesterdayActivitiesList.text = ""
-            }
+            binding.yesterdayCountText.text = activityCountText(activities.size)
+            bindActivityList(
+                container = binding.yesterdayActivitiesList,
+                emptyView = binding.yesterdayActivitiesEmptyText,
+                activities = activities
+            )
         }
 
         viewModel.currentStreak.observe(viewLifecycleOwner) { streak ->
@@ -100,6 +90,103 @@ class DashboardFragment : Fragment() {
         binding.buttonAddActivity.setOnClickListener {
             findNavController().navigate(R.id.action_viewProgressFragment_to_addActivityFragment)
         }
+    }
+
+    private fun bindActivityList(
+        container: LinearLayout,
+        emptyView: View,
+        activities: List<ActivityWithPiece>
+    ) {
+        container.removeAllViews()
+        emptyView.visibility = if (activities.isEmpty()) View.VISIBLE else View.GONE
+        container.visibility = if (activities.isEmpty()) View.GONE else View.VISIBLE
+
+        activities.forEach { item ->
+            val itemBinding = ItemDashboardActivityBinding.inflate(
+                layoutInflater,
+                container,
+                false
+            )
+            bindActivityRow(itemBinding, item)
+            container.addView(itemBinding.root)
+        }
+    }
+
+    private fun bindActivityRow(
+        itemBinding: ItemDashboardActivityBinding,
+        item: ActivityWithPiece
+    ) {
+        val activity = item.activity
+        val task = item.pieceOrTechnique
+        val time = SimpleDateFormat("h:mm a", Locale.US).format(Date(activity.timestamp))
+
+        itemBinding.activityPrimaryText.text = "$time - ${task.name}"
+        itemBinding.activitySecondaryText.text = successLevelText(activity.successLevel)
+
+        val indicator = itemBinding.taskColorIndicator.background.mutate() as? GradientDrawable
+        indicator?.setColor(parseTaskColor(task.color))
+        itemBinding.taskColorIndicator.background = indicator
+
+        itemBinding.editButton.setOnClickListener {
+            editActivity(item)
+        }
+
+        itemBinding.deleteButton.setOnClickListener {
+            showDeleteConfirmationDialog(item)
+        }
+    }
+
+    private fun successLevelText(successLevel: SuccessLevel): String {
+        return when (successLevel) {
+            SuccessLevel.MINIMUM -> "Success: Minimum"
+            SuccessLevel.MEDIUM -> "Success: Medium"
+            SuccessLevel.HIGH -> "Success: High"
+        }
+    }
+
+    private fun activityCountText(count: Int): String {
+        return "$count activit${if (count == 1) "y" else "ies"}"
+    }
+
+    private fun parseTaskColor(color: String): Int {
+        return try {
+            Color.parseColor(color)
+        } catch (_: IllegalArgumentException) {
+            Color.parseColor("#66B2FF")
+        }
+    }
+
+    private fun editActivity(activityWithPiece: ActivityWithPiece) {
+        EditActivityStorage.setEditActivity(
+            activityWithPiece.activity,
+            activityWithPiece.pieceOrTechnique.name,
+            activityWithPiece.pieceOrTechnique.type
+        )
+
+        findNavController().navigate(
+            R.id.action_viewProgressFragment_to_selectLevelFragment,
+            bundleOf(
+                "activityType" to activityWithPiece.activity.activityType,
+                "pieceId" to activityWithPiece.activity.pieceOrTechniqueId,
+                "pieceName" to activityWithPiece.pieceOrTechnique.name,
+                "itemType" to activityWithPiece.pieceOrTechnique.type
+            )
+        )
+    }
+
+    private fun showDeleteConfirmationDialog(activityWithPiece: ActivityWithPiece) {
+        val dateFormat = SimpleDateFormat("MMM d, yyyy h:mm a", Locale.US)
+        val dateString = dateFormat.format(Date(activityWithPiece.activity.timestamp))
+        val taskName = activityWithPiece.pieceOrTechnique.name
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete Activity")
+            .setMessage("Delete this activity?\n\n$taskName\n$dateString")
+            .setPositiveButton("Delete") { _, _ ->
+                viewModel.deleteActivity(activityWithPiece.activity)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     override fun onDestroyView() {
