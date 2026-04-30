@@ -105,7 +105,7 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds.
 
 ### Phase 3: Repository and Business Logic Conversion
-**Status:** Open  
+**Status:** Completed  
 **Date Added:** 2026-04-30  
 **Priority:** Critical (Core Behavior)  
 **Description:** Convert repository-level calculations from music practice statistics to task activity, priority, streak, and calendar-color logic.
@@ -130,17 +130,27 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - Enforce no future timestamps when editing Activities.
 
 **Acceptance Criteria:**
-- [ ] Streak calculation is correct across local midnight boundaries.
-- [ ] Dashboard summary excludes Activities whose current Task is inactive.
-- [ ] Today's and yesterday's activity lists include Activities from inactive Tasks.
-- [ ] Outstanding high-priority list updates immediately after logging.
-- [ ] Calendar color rules match the MyStreak specification.
-- [ ] Frozen past calendar colors remain immutable after priority changes, inactive toggles, retroactive additions, and deletions.
-- [ ] Retroactive move of today's only Activity removes today's live streak credit immediately.
+- [x] Streak calculation is correct across local midnight boundaries.
+- [x] Dashboard summary excludes Activities whose current Task is inactive.
+- [x] Today's and yesterday's activity lists include Activities from inactive Tasks.
+- [x] Outstanding high-priority list updates immediately after logging.
+- [x] Calendar color rules match the MyStreak specification.
+- [x] Frozen past calendar colors remain immutable after priority changes, inactive toggles, retroactive additions, and deletions.
+- [x] Retroactive move of today's only Activity removes today's live streak credit immediately.
+- [ ] Unit tests cover streak, summary, outstanding, calendar color, and frozen-day behavior.
 
 **Implementation Notes:**
 - Existing helpers such as `StreakCalculator` and repository date-range methods can be reused or adapted.
 - Freezing may require a new `DailyCalendarState` entity with date key, color level, and frozen timestamp.
+
+**Progress Notes:**
+- 2026-04-30: Added `DailyCalendarState` storage and DAO support for immutable frozen past calendar color levels.
+- 2026-04-30: Added repository-level MyStreak business logic for rolling 7-day summary, high-priority outstanding tasks, live/frozen calendar color levels, and future timestamp rejection.
+- 2026-04-30: Main startup now freezes past calendar days before showing the app's sync prompt.
+- 2026-04-30: Dashboard now uses repository-provided active-task summary and high-priority outstanding data.
+- 2026-04-30: Calendar now renders MyStreak color levels instead of PlayStreak's Pro/practice/performance heat map. The color guide is always visible and uses the MyStreak labels.
+- 2026-04-30: Activity edit date picker prevents future dates and save rejects any future timestamp.
+- 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds. Automated tests for this phase are still deferred.
 
 ### Phase 4: Navigation and Screen Structure
 **Status:** Open  

@@ -83,6 +83,14 @@ class DashboardFragment : Fragment() {
             binding.weekSummaryText.text = summary
         }
 
+        viewModel.highPriorityOutstanding.observe(viewLifecycleOwner) { taskNames ->
+            binding.highPriorityOutstandingText.text = if (taskNames.isEmpty()) {
+                "All high priority tasks are done for today."
+            } else {
+                taskNames.joinToString("\n") { "- $it" }
+            }
+        }
+
         // Suggestions remain in the legacy model for now, but are not part of MyStreak Phase 1 UI.
         binding.suggestionsCard.visibility = View.GONE
         binding.performanceSuggestionsCard.visibility = View.GONE

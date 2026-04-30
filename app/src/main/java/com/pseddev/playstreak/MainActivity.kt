@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         
         // Check if we should show sync dialog after a brief delay
         lifecycleScope.launch {
+            (application as PlayStreakApplication).repository.freezePastCalendarDaysIfNeeded()
             delay(1000) // Wait for UI to settle
             checkAndShowSyncDialog()
         }

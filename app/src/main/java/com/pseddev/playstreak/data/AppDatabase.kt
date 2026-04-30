@@ -8,25 +8,29 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.pseddev.playstreak.data.daos.AchievementDao
 import com.pseddev.playstreak.data.daos.ActivityDao
+import com.pseddev.playstreak.data.daos.DailyCalendarStateDao
 import com.pseddev.playstreak.data.daos.PieceOrTechniqueDao
 import com.pseddev.playstreak.data.entities.Achievement
 import com.pseddev.playstreak.data.entities.AchievementType
 import com.pseddev.playstreak.data.entities.Activity
 import com.pseddev.playstreak.data.entities.ActivityType
+import com.pseddev.playstreak.data.entities.CalendarColorLevel
+import com.pseddev.playstreak.data.entities.DailyCalendarState
 import com.pseddev.playstreak.data.entities.ItemType
 import com.pseddev.playstreak.data.entities.PieceOrTechnique
 import com.pseddev.playstreak.data.entities.SuccessLevel
 import com.pseddev.playstreak.data.entities.TaskPriority
 
 @Database(
-    entities = [PieceOrTechnique::class, Activity::class, Achievement::class],
-    version = 6,
+    entities = [PieceOrTechnique::class, Activity::class, DailyCalendarState::class, Achievement::class],
+    version = 7,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun pieceOrTechniqueDao(): PieceOrTechniqueDao
     abstract fun activityDao(): ActivityDao
+    abstract fun dailyCalendarStateDao(): DailyCalendarStateDao
     abstract fun achievementDao(): AchievementDao
 
     companion object {
@@ -73,6 +77,12 @@ class Converters {
 
     @TypeConverter
     fun toSuccessLevel(successLevel: String): SuccessLevel = SuccessLevel.valueOf(successLevel)
+
+    @TypeConverter
+    fun fromCalendarColorLevel(colorLevel: CalendarColorLevel): String = colorLevel.name
+
+    @TypeConverter
+    fun toCalendarColorLevel(colorLevel: String): CalendarColorLevel = CalendarColorLevel.valueOf(colorLevel)
 
     @TypeConverter
     fun fromAchievementType(type: AchievementType): String = type.name

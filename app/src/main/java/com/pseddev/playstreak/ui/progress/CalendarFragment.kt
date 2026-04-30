@@ -20,9 +20,8 @@ import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.ViewContainer
 import com.pseddev.playstreak.PlayStreakApplication
 import com.pseddev.playstreak.R
-import com.pseddev.playstreak.data.entities.ActivityType
+import com.pseddev.playstreak.data.entities.CalendarColorLevel
 import com.pseddev.playstreak.databinding.FragmentCalendarBinding
-import com.pseddev.playstreak.utils.ProUserManager
 import com.pseddev.playstreak.utils.PreferencesManager
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
@@ -46,8 +45,8 @@ class CalendarFragment : Fragment() {
     
     private var selectedDate: LocalDate? = null
     private var monthlyActivities: Map<LocalDate, List<ActivityWithPiece>> = emptyMap()
+    private var monthlyColorLevels: Map<LocalDate, CalendarColorLevel> = emptyMap()
     private var currentDisplayMonth: YearMonth = YearMonth.now()
-    private lateinit var proUserManager: ProUserManager
     private lateinit var preferencesManager: PreferencesManager
     
     override fun onCreateView(
@@ -62,7 +61,6 @@ class CalendarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        proUserManager = ProUserManager.getInstance(requireContext())
         preferencesManager = PreferencesManager.getInstance(requireContext())
         
         setupClickListeners()
@@ -137,6 +135,11 @@ class CalendarFragment : Fragment() {
             val instant = java.time.Instant.ofEpochMilli(dateMillis)
             instant.atZone(ZoneId.systemDefault()).toLocalDate()
         }
+
+        monthlyColorLevels = summary.dailyColorLevels.mapKeys { (dateMillis, _) ->
+            val instant = java.time.Instant.ofEpochMilli(dateMillis)
+            instant.atZone(ZoneId.systemDefault()).toLocalDate()
+        }
         
         // Refresh calendar to update colors
         binding.calendarView.notifyCalendarChanged()
@@ -152,9 +155,8 @@ class CalendarFragment : Fragment() {
             if (day.position == DayPosition.MonthDate) {
                 textView.visibility = View.VISIBLE
                 
-                // Get activities for this date
-                val activities = monthlyActivities[day.date] ?: emptyList()
-                val color = getCalendarColorForActivities(activities)
+                val colorLevel = monthlyColorLevels[day.date] ?: CalendarColorLevel.NONE
+                val color = getCalendarColorForLevel(colorLevel)
                 
                 // Set background color
                 val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.calendar_day_background)?.mutate() as? GradientDrawable
@@ -177,7 +179,7 @@ class CalendarFragment : Fragment() {
                     textView.alpha = 1.0f
                     
                     // Handle selection styling based on dark mode and activity presence
-                    if (isDarkMode() && activities.isEmpty()) {
+                    if (isDarkMode() && colorLevel == CalendarColorLevel.NONE) {
                         // Dark mode with no activities: use medium gray background for visibility
                         val selectedDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.calendar_day_background)?.mutate() as? GradientDrawable
                         val mediumGrayColor = ContextCompat.getColor(requireContext(), R.color.calendar_dark_mode_selection)
@@ -271,7 +273,8 @@ class CalendarFragment : Fragment() {
     
     private fun updateSelectedDateView(activities: List<ActivityWithPiece>) {
         // Update color indicator with larger, more prominent display
-        val color = getCalendarColorForActivities(activities)
+        val colorLevel = selectedDate?.let { monthlyColorLevels[it] } ?: CalendarColorLevel.NONE
+        val color = getCalendarColorForLevel(colorLevel)
         val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.circle_indicator)?.mutate()
         drawable?.setTint(color)
         binding.activityColorIndicator.background = drawable
@@ -303,7 +306,7 @@ class CalendarFragment : Fragment() {
             binding.linearLayoutSelectedDateActivities.visibility = View.GONE
             binding.linearLayoutSelectedDateActivities.removeAllViews()
         } else {
-            val activityTypeText = getActivityTypeDescription(activities)
+            val activityTypeText = getColorLevelDescription(colorLevel)
             val activityWord = if (activities.size == 1) "activity" else "activities"
             binding.selectedDateText.text = "$dateText: ${activities.size} $activityWord ($activityTypeText)"
             binding.activityColorIndicator.visibility = View.VISIBLE
@@ -340,15 +343,13 @@ class CalendarFragment : Fragment() {
         binding.monthlyActivitiesText.text = summary.totalActivities.toString()
     }
     
-    private fun getActivityTypeDescription(activities: List<ActivityWithPiece>): String {
-        val hasPerformance = activities.any { it.activity.activityType == ActivityType.PERFORMANCE }
-        val practiceCount = activities.count { it.activity.activityType == ActivityType.PRACTICE }
-        val performanceCount = activities.count { it.activity.activityType == ActivityType.PERFORMANCE }
-        
-        return when {
-            hasPerformance && practiceCount > 0 -> "Mixed success"
-            hasPerformance -> "Priority placeholder"
-            else -> "Activity"
+    private fun getColorLevelDescription(colorLevel: CalendarColorLevel): String {
+        return when (colorLevel) {
+            CalendarColorLevel.NONE -> "No activity"
+            CalendarColorLevel.ANY_ACTIVITY -> "Any activity"
+            CalendarColorLevel.HIGH_PRIORITY_ACTIVITY -> "High priority activity"
+            CalendarColorLevel.HALF_HIGH_PRIORITY -> "Half of high-priority tasks"
+            CalendarColorLevel.ALL_HIGH_PRIORITY -> "All high-priority tasks"
         }
     }
     
@@ -371,41 +372,20 @@ class CalendarFragment : Fragment() {
         return nightModeFlags == Configuration.UI_MODE_NIGHT_YES
     }
     
-    private fun getCalendarColorForActivities(activities: List<ActivityWithPiece>): Int {
-        if (activities.isEmpty()) {
-            return ContextCompat.getColor(requireContext(), R.color.calendar_no_activity)
+    private fun getCalendarColorForLevel(colorLevel: CalendarColorLevel): Int {
+        val colorRes = when (colorLevel) {
+            CalendarColorLevel.NONE -> R.color.calendar_no_activity
+            CalendarColorLevel.ANY_ACTIVITY -> R.color.calendar_practice_light
+            CalendarColorLevel.HIGH_PRIORITY_ACTIVITY -> R.color.calendar_practice_medium
+            CalendarColorLevel.HALF_HIGH_PRIORITY -> R.color.calendar_practice_dark
+            CalendarColorLevel.ALL_HIGH_PRIORITY -> R.color.calendar_performance_dark
         }
-        
-        // Free users get simplified heat map: only light blue for any activities
-        if (!proUserManager.isProUser()) {
-            return ContextCompat.getColor(requireContext(), R.color.calendar_practice_light)
-        }
-        
-        // Pro users get full heat map with multiple colors and intensities
-        val activityCount = activities.size
-        val hasPerformance = activities.any { it.activity.activityType == ActivityType.PERFORMANCE }
-        
-        return if (hasPerformance) {
-            // Performance days use green colors
-            when {
-                activityCount >= 11 -> ContextCompat.getColor(requireContext(), R.color.calendar_performance_dark)
-                activityCount >= 5 -> ContextCompat.getColor(requireContext(), R.color.calendar_performance_medium)
-                else -> ContextCompat.getColor(requireContext(), R.color.calendar_performance_light)
-            }
-        } else {
-            // Practice-only days use blue colors
-            when {
-                activityCount >= 11 -> ContextCompat.getColor(requireContext(), R.color.calendar_practice_dark)
-                activityCount >= 5 -> ContextCompat.getColor(requireContext(), R.color.calendar_practice_medium)
-                else -> ContextCompat.getColor(requireContext(), R.color.calendar_practice_light)
-            }
-        }
+        return ContextCompat.getColor(requireContext(), colorRes)
     }
     
     private fun updateColorGuideVisibility() {
-        val isProUser = proUserManager.isProUser()
-        binding.colorGuideTitle.visibility = if (isProUser) View.VISIBLE else View.GONE
-        binding.colorGuideContainer.visibility = if (isProUser) View.VISIBLE else View.GONE
+        binding.colorGuideTitle.visibility = View.VISIBLE
+        binding.colorGuideContainer.visibility = View.VISIBLE
     }
     
     private fun setupClickListeners() {

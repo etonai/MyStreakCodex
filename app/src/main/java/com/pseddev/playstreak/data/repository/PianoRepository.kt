@@ -3,12 +3,16 @@ package com.pseddev.playstreak.data.repository
 import android.util.Log
 import com.pseddev.playstreak.data.daos.ActivityDao
 import com.pseddev.playstreak.data.daos.AchievementDao
+import com.pseddev.playstreak.data.daos.DailyCalendarStateDao
 import com.pseddev.playstreak.data.daos.PieceOrTechniqueDao
 import com.pseddev.playstreak.data.entities.Achievement
 import com.pseddev.playstreak.data.entities.Activity
 import com.pseddev.playstreak.data.entities.ActivityType
+import com.pseddev.playstreak.data.entities.CalendarColorLevel
+import com.pseddev.playstreak.data.entities.DailyCalendarState
 import com.pseddev.playstreak.data.entities.ItemType
 import com.pseddev.playstreak.data.entities.PieceOrTechnique
+import com.pseddev.playstreak.data.entities.TaskPriority
 import com.pseddev.playstreak.ui.progress.ActivityWithPiece
 import com.pseddev.playstreak.utils.CsvHandler
 import com.pseddev.playstreak.utils.JsonExporter
@@ -20,13 +24,16 @@ import com.pseddev.playstreak.data.models.JsonValidationResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import java.io.Writer
 import java.io.Reader
 import java.util.Calendar
+import java.util.TimeZone
 
 class PianoRepository(
     private val pieceOrTechniqueDao: PieceOrTechniqueDao,
     private val activityDao: ActivityDao,
+    private val dailyCalendarStateDao: DailyCalendarStateDao,
     private val achievementDao: AchievementDao,
     private val context: android.content.Context
 ) {
@@ -38,6 +45,15 @@ class PianoRepository(
     
     fun getFavorites(): Flow<List<PieceOrTechnique>> = 
         pieceOrTechniqueDao.getFavorites()
+
+    fun getActiveTasks(): Flow<List<PieceOrTechnique>> =
+        pieceOrTechniqueDao.getActiveTasks()
+
+    fun getInactiveTasks(): Flow<List<PieceOrTechnique>> =
+        pieceOrTechniqueDao.getInactiveTasks()
+
+    fun getActiveHighPriorityTasks(): Flow<List<PieceOrTechnique>> =
+        pieceOrTechniqueDao.getActiveHighPriorityTasks()
     
     fun getPieces(): Flow<List<PieceOrTechnique>> = 
         pieceOrTechniqueDao.getByType(ItemType.PIECE)
@@ -86,6 +102,9 @@ class PianoRepository(
     
     fun getActivitiesForDateRange(startTime: Long, endTime: Long): Flow<List<Activity>> = 
         activityDao.getActivitiesForDateRange(startTime, endTime)
+
+    fun getFrozenCalendarStatesForDateRange(startTime: Long, endTime: Long): Flow<List<DailyCalendarState>> =
+        dailyCalendarStateDao.getStatesForDateRange(startTime, endTime)
     
     fun getTodaysActivities(): Flow<List<Activity>> {
         val calendar = Calendar.getInstance().apply {
@@ -115,6 +134,7 @@ class PianoRepository(
     }
     
     suspend fun insertActivity(activity: Activity) {
+        requireNotFuture(activity)
         activityDao.insert(activity)
         
         // Increment lifetime activity counter
@@ -124,6 +144,7 @@ class PianoRepository(
     }
     
     suspend fun updateActivity(activity: Activity) {
+        requireNotFuture(activity)
         activityDao.update(activity)
         updatePieceStatistics(activity.pieceOrTechniqueId)
     }
@@ -140,6 +161,9 @@ class PianoRepository(
     
     suspend fun deleteAllActivities() = 
         activityDao.deleteAll()
+
+    suspend fun deleteAllCalendarStates() =
+        dailyCalendarStateDao.deleteAll()
         
     suspend fun deleteAllAchievements() = 
         achievementDao.deleteAllAchievements()
@@ -165,6 +189,117 @@ class PianoRepository(
     suspend fun calculateCurrentStreak(): Int {
         val activities = getAllActivities().first()
         return StreakCalculator().calculateCurrentStreak(activities)
+    }
+
+    fun getRollingWeekSummaryText(): Flow<String> {
+        val (startTime, endTime) = getRollingSevenDayRange()
+        return combine(
+            getActivitiesForDateRange(startTime, endTime),
+            getAllPiecesAndTechniques()
+        ) { activities, tasks ->
+            val activeTaskIds = tasks.filter { it.isActive }.map { it.id }.toSet()
+            val highPriorityTaskIds = tasks
+                .filter { it.isActive && it.priority == TaskPriority.HIGH }
+                .map { it.id }
+                .toSet()
+            val activeActivities = activities.filter { it.taskId in activeTaskIds }
+            val highPriorityActivities = activeActivities.count { it.taskId in highPriorityTaskIds }
+
+            buildString {
+                append("- ${activeActivities.size} activit${if (activeActivities.size != 1) "ies" else "y"} logged\n")
+                append("- $highPriorityActivities high priority activit${if (highPriorityActivities != 1) "ies" else "y"} logged")
+            }
+        }
+    }
+
+    fun getHighPriorityOutstandingTasksForToday(): Flow<List<PieceOrTechnique>> {
+        val (startTime, endTime) = getTodayRange()
+        return combine(
+            getActiveHighPriorityTasks(),
+            getActivitiesForDateRange(startTime, endTime)
+        ) { highPriorityTasks, todayActivities ->
+            val completedTaskIds = todayActivities.map { it.taskId }.toSet()
+            highPriorityTasks.filter { it.id !in completedTaskIds }
+        }
+    }
+
+    fun getCalendarColorLevelsForDateRange(startTime: Long, endTime: Long): Flow<Map<Long, CalendarColorLevel>> {
+        return combine(
+            getActivitiesForDateRange(startTime, endTime),
+            getAllPiecesAndTechniques(),
+            getFrozenCalendarStatesForDateRange(startTime, endTime)
+        ) { activities, tasks, frozenStates ->
+            val frozenByDay = frozenStates.associateBy { it.dayStartMillis }
+            val todayStart = startOfDay(System.currentTimeMillis())
+            val dayStarts = generateDayStarts(startTime, endTime)
+
+            dayStarts.associateWith { dayStart ->
+                val dayEnd = dayStart + DAY_MILLIS
+                if (dayStart < todayStart) {
+                    frozenByDay[dayStart]?.colorLevel ?: CalendarColorLevel.NONE
+                } else {
+                    val dayActivities = activities.filter { it.timestamp >= dayStart && it.timestamp < dayEnd }
+                    calculateCalendarColorLevel(dayActivities, tasks.filter { it.isActive })
+                }
+            }
+        }
+    }
+
+    suspend fun freezePastCalendarDaysIfNeeded() {
+        val todayStart = startOfDay(System.currentTimeMillis())
+        val allActivities = getAllActivities().first()
+        val allTasks = getAllPiecesAndTechniques().first()
+        val activityDays = allActivities
+            .map { startOfDay(it.timestamp) }
+            .filter { it < todayStart }
+            .toSet()
+
+        activityDays.forEach { dayStart ->
+            val existing = dailyCalendarStateDao.getStateForDay(dayStart)
+            if (existing == null) {
+                val dayActivities = allActivities.filter {
+                    it.timestamp >= dayStart && it.timestamp < dayStart + DAY_MILLIS
+                }
+                val level = calculateCalendarColorLevel(dayActivities, allTasks.filter { it.isActive })
+                dailyCalendarStateDao.insertIfAbsent(
+                    DailyCalendarState(
+                        dayStartMillis = dayStart,
+                        colorLevel = level
+                    )
+                )
+            }
+        }
+    }
+
+    fun calculateCalendarColorLevel(
+        activities: List<Activity>,
+        activeTasks: List<PieceOrTechnique>
+    ): CalendarColorLevel {
+        if (activities.isEmpty()) return CalendarColorLevel.NONE
+
+        val highPriorityTaskIds = activeTasks
+            .filter { it.priority == TaskPriority.HIGH }
+            .map { it.id }
+            .toSet()
+        val performedHighPriorityTaskIds = activities
+            .map { it.taskId }
+            .filter { it in highPriorityTaskIds }
+            .toSet()
+
+        if (highPriorityTaskIds.isEmpty() || performedHighPriorityTaskIds.isEmpty()) {
+            return CalendarColorLevel.ANY_ACTIVITY
+        }
+
+        if (performedHighPriorityTaskIds.size == highPriorityTaskIds.size) {
+            return CalendarColorLevel.ALL_HIGH_PRIORITY
+        }
+
+        val halfThreshold = highPriorityTaskIds.size / 2
+        if (halfThreshold > 0 && performedHighPriorityTaskIds.size >= halfThreshold) {
+            return CalendarColorLevel.HALF_HIGH_PRIORITY
+        }
+
+        return CalendarColorLevel.HIGH_PRIORITY_ACTIVITY
     }
     
     suspend fun getPieceOrTechniqueById(id: Long): PieceOrTechnique? {
@@ -220,6 +355,7 @@ class PianoRepository(
         deleteAllActivities()
         deleteAllPiecesAndTechniques()
         deleteAllAchievements()
+        deleteAllCalendarStates()
         
         // Only proceed with import if we have activities to import
         if (result.activities.isNotEmpty()) {
@@ -324,6 +460,7 @@ class PianoRepository(
             deleteAllActivities()
             deleteAllPiecesAndTechniques()
             deleteAllAchievements()
+            deleteAllCalendarStates()
             
             // Create piece name to new ID mapping
             val pieceNameToIdMap = mutableMapOf<String, Long>()
@@ -396,6 +533,46 @@ class PianoRepository(
     private suspend fun updatePieceStatistics(pieceId: Long) {
         val piece = pieceOrTechniqueDao.getById(pieceId) ?: return
         pieceOrTechniqueDao.update(piece.copy(lastUpdated = System.currentTimeMillis()))
+    }
+
+    private fun requireNotFuture(activity: Activity) {
+        require(activity.timestamp <= System.currentTimeMillis()) {
+            "Activities cannot be dated in the future."
+        }
+    }
+
+    private fun getTodayRange(): Pair<Long, Long> {
+        val startTime = startOfDay(System.currentTimeMillis())
+        return startTime to startTime + DAY_MILLIS
+    }
+
+    private fun getRollingSevenDayRange(): Pair<Long, Long> {
+        val todayStart = startOfDay(System.currentTimeMillis())
+        return (todayStart - (6 * DAY_MILLIS)) to (todayStart + DAY_MILLIS)
+    }
+
+    private fun startOfDay(timestamp: Long): Long {
+        return Calendar.getInstance().apply {
+            timeInMillis = timestamp
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+    }
+
+    private fun generateDayStarts(startTime: Long, endTime: Long): List<Long> {
+        val starts = mutableListOf<Long>()
+        var current = startOfDay(startTime)
+        while (current < endTime) {
+            starts.add(current)
+            current += DAY_MILLIS
+        }
+        return starts
+    }
+
+    private companion object {
+        const val DAY_MILLIS = 24L * 60L * 60L * 1000L
     }
     
     // Data pruning methods for Phase 3

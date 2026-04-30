@@ -2,6 +2,7 @@ package com.pseddev.playstreak.ui.progress
 
 import androidx.lifecycle.*
 import com.pseddev.playstreak.data.entities.Activity
+import com.pseddev.playstreak.data.entities.CalendarColorLevel
 import com.pseddev.playstreak.data.repository.PianoRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +18,8 @@ data class DayActivitySummary(
 data class MonthlyActivitySummary(
     val activeDays: Int,
     val totalActivities: Int,
-    val dailyActivities: Map<Long, List<ActivityWithPiece>>
+    val dailyActivities: Map<Long, List<ActivityWithPiece>>,
+    val dailyColorLevels: Map<Long, CalendarColorLevel>
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -50,8 +52,11 @@ class CalendarViewModel(private val repository: PianoRepository) : ViewModel() {
     
     val monthlyActivitySummary: LiveData<MonthlyActivitySummary> = 
         currentMonth.flatMapLatest { (startTime, endTime) ->
-            repository.getActivitiesForDateRange(startTime, endTime)
-                .combine(repository.getAllPiecesAndTechniques()) { activities, pieces ->
+            combine(
+                repository.getActivitiesForDateRange(startTime, endTime),
+                repository.getAllPiecesAndTechniques(),
+                repository.getCalendarColorLevelsForDateRange(startTime, endTime)
+            ) { activities, pieces, colorLevels ->
                     val activitiesWithPieces = activities.mapNotNull { activity ->
                         val piece = pieces.find { it.id == activity.pieceOrTechniqueId }
                         piece?.let { ActivityWithPiece(activity, it) }
@@ -72,7 +77,8 @@ class CalendarViewModel(private val repository: PianoRepository) : ViewModel() {
                     MonthlyActivitySummary(
                         activeDays = activitiesByDate.keys.size,
                         totalActivities = activitiesWithPieces.size,
-                        dailyActivities = activitiesByDate
+                        dailyActivities = activitiesByDate,
+                        dailyColorLevels = colorLevels
                     )
                 }
         }

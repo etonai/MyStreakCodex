@@ -189,7 +189,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Activity Level Color Guide:"
+                android:text="Activity Color Guide:"
                 android:textAppearance="?attr/textAppearanceSubtitle2" />
 
             <LinearLayout
@@ -259,47 +259,13 @@
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@color/calendar_performance_light" />
+                        android:background="@color/calendar_performance_dark" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="All high-priority tasks"
                         android:textAppearance="?attr/textAppearanceCaption" />
                 </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="4dp">
-                    <View
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:layout_marginEnd="8dp"
-                        android:background="@color/calendar_performance_medium" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Reserved"
-                        android:textAppearance="?attr/textAppearanceCaption" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical">
-                    <View
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:layout_marginEnd="8dp"
-                        android:background="@color/calendar_performance_dark" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Reserved"
-                        android:textAppearance="?attr/textAppearanceCaption" />
-                </LinearLayout>
-
             </LinearLayout>
 
             <!-- Buffer space to allow scrolling past content -->

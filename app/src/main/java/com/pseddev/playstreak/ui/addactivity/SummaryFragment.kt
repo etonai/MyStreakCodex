@@ -72,6 +72,11 @@ class SummaryFragment : Fragment() {
         setupDateTimeEditing()
         
         binding.buttonSave.setOnClickListener {
+            if (currentTimestamp > System.currentTimeMillis()) {
+                Toast.makeText(requireContext(), "Activities cannot be dated in the future.", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
             val editActivity = viewModel.editActivity.value
             if (editActivity != null) {
                 // Edit mode - update existing activity
@@ -217,6 +222,7 @@ class SummaryFragment : Fragment() {
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
+        datePicker.datePicker.maxDate = System.currentTimeMillis()
         
         datePicker.show()
     }
@@ -236,7 +242,7 @@ class SummaryFragment : Fragment() {
                 newCalendar.set(Calendar.SECOND, 0)
                 newCalendar.set(Calendar.MILLISECOND, 0)
                 
-                currentTimestamp = newCalendar.timeInMillis
+                currentTimestamp = minOf(newCalendar.timeInMillis, System.currentTimeMillis())
                 updateDateDisplay()
             },
             calendar.get(Calendar.HOUR_OF_DAY),

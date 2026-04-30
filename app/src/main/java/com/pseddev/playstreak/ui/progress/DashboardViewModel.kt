@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
-import com.pseddev.playstreak.data.entities.ActivityType
 import com.pseddev.playstreak.data.repository.PianoRepository
 import com.pseddev.playstreak.utils.ProUserManager
 import com.pseddev.playstreak.utils.StreakCalculator
@@ -68,18 +67,11 @@ class DashboardViewModel(
             }
         }.asLiveData()
 
-    val weekSummary: LiveData<String> =
-        repository.getActivitiesForDateRange(sevenDaysAgoStart, todayEnd)
-            .map { activities ->
-                val standardCount = activities.count { it.activityType == ActivityType.PRACTICE }
-                val priorityPlaceholderCount = activities.count { it.activityType == ActivityType.PERFORMANCE }
+    val weekSummary: LiveData<String> = repository.getRollingWeekSummaryText().asLiveData()
 
-                buildString {
-                    append("- ${activities.size} activit${if (activities.size != 1) "ies" else "y"} logged\n")
-                    append("- $standardCount standard activit${if (standardCount != 1) "ies" else "y"}\n")
-                    append("- $priorityPlaceholderCount priority-placeholder activit${if (priorityPlaceholderCount != 1) "ies" else "y"}")
-                }
-            }
+    val highPriorityOutstanding: LiveData<List<String>> =
+        repository.getHighPriorityOutstandingTasksForToday()
+            .map { tasks -> tasks.map { it.name } }
             .asLiveData()
 
     val performanceSuggestions: LiveData<List<SuggestionItem>> =
