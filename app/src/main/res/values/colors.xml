@@ -8,8 +8,14 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
-    <!-- Calendar Colors -->
+    <!-- MyStreak Calendar Colors -->
     <color name="calendar_no_activity">#FFFFFF</color>
+    <color name="calendar_any_activity">#B3D9FF</color>
+    <color name="calendar_priority_activity">#66B2FF</color>
+    <color name="calendar_half_high_priority">#0066CC</color>
+    <color name="calendar_all_high_priority">#00CC00</color>
+
+    <!-- Legacy color names retained while older layouts/classes remain in source. -->
     <color name="calendar_practice_light">#B3D9FF</color>
     <color name="calendar_practice_medium">#66B2FF</color>
     <color name="calendar_practice_dark">#0066CC</color>

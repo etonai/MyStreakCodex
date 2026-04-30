@@ -12,6 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="actionBarSize">48dp</item>
         <!-- Customize your theme here. -->
     </style>
 </resources>

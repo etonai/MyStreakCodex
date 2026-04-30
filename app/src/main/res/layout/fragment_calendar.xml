@@ -208,7 +208,7 @@
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@color/calendar_practice_light" />
+                        android:background="@color/calendar_any_activity" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -225,7 +225,7 @@
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@color/calendar_practice_medium" />
+                        android:background="@color/calendar_priority_activity" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -242,7 +242,7 @@
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@color/calendar_practice_dark" />
+                        android:background="@color/calendar_half_high_priority" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -259,7 +259,7 @@
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@color/calendar_performance_dark" />
+                        android:background="@color/calendar_all_high_priority" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

@@ -45,7 +45,7 @@ class CalendarViewModel(private val repository: PianoRepository) : ViewModel() {
                     activities.mapNotNull { activity ->
                         val piece = pieces.find { it.id == activity.pieceOrTechniqueId }
                         piece?.let { ActivityWithPiece(activity, it) }
-                    }
+                    }.sortedBy { it.activity.timestamp }
                 }
         }
         .asLiveData()

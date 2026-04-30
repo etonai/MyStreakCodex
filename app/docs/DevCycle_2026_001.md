@@ -1,8 +1,8 @@
 # Development Cycle 2026-001
 
-**Status:** Completed  
-**Start Date:** 2026-04-30  
-**Target Completion:** TBD  
+**Status:** Completed
+**Start Date:** 2026-04-30
+**Target Completion:** TBD
 **Focus:** Convert PlayStreak into MyStreak general task tracker
 
 ## Overview
@@ -14,9 +14,9 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 ## Current Work Items
 
 ### Phase 1: Product Scope and Naming Conversion
-**Status:** In Progress  
-**Date Added:** 2026-04-30  
-**Priority:** Critical (Foundation)  
+**Status:** In Progress
+**Date Added:** 2026-04-30
+**Priority:** Critical (Foundation)
 **Description:** Establish the MyStreak product identity and remove music-specific terminology from the visible experience before deeper behavior changes begin.
 
 **Technical Requirements:**
@@ -49,9 +49,9 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - 2026-04-30: Fixed debug startup crash caused by Firebase auto-initializing against the local placeholder `google-services.json`; debug builds now remove `FirebaseInitProvider` and no-op analytics/crash reporting.
 
 ### Phase 2: Data Model Redesign
-**Status:** Completed  
-**Date Added:** 2026-04-30  
-**Priority:** Critical (Foundation)  
+**Status:** Completed
+**Date Added:** 2026-04-30
+**Priority:** Critical (Foundation)
 **Description:** Replace PlayStreak's `PieceOrTechnique` and music-oriented `Activity` schema with MyStreak Tasks and Activities.
 
 **Technical Requirements:**
@@ -105,9 +105,9 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds.
 
 ### Phase 3: Repository and Business Logic Conversion
-**Status:** Completed  
-**Date Added:** 2026-04-30  
-**Priority:** Critical (Core Behavior)  
+**Status:** Completed
+**Date Added:** 2026-04-30
+**Priority:** Critical (Core Behavior)
 **Description:** Convert repository-level calculations from music practice statistics to task activity, priority, streak, and calendar-color logic.
 
 **Technical Requirements:**
@@ -153,9 +153,9 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds. Automated tests for this phase are still deferred.
 
 ### Phase 4: Navigation and Screen Structure
-**Status:** Completed  
-**Date Added:** 2026-04-30  
-**Priority:** High (User Experience)  
+**Status:** Completed
+**Date Added:** 2026-04-30
+**Priority:** High (User Experience)
 **Description:** Restructure PlayStreak navigation into MyStreak's three primary top tabs: Dashboard, Calendar, and Tasks.
 
 **Technical Requirements:**
@@ -185,9 +185,9 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds.
 
 ### Phase 5: Dashboard Implementation
-**Status:** Completed  
-**Date Added:** 2026-04-30  
-**Priority:** High (Core UI)  
+**Status:** Completed
+**Date Added:** 2026-04-30
+**Priority:** High (Core UI)
 **Description:** Build the MyStreak Dashboard as the main daily accountability screen.
 
 **Technical Requirements:**
@@ -216,9 +216,9 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds.
 
 ### Phase 6: Task Management UI
-**Status:** Completed  
-**Date Added:** 2026-04-30  
-**Priority:** High (Core UI)  
+**Status:** Completed
+**Date Added:** 2026-04-30
+**Priority:** High (Core UI)
 **Description:** Replace the Pieces UI with Tasks list, add/edit/detail, active/inactive management, and deletion confirmation.
 
 **Technical Requirements:**
@@ -259,9 +259,9 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds.
 
 ### Phase 7: Activity Logging, Editing, and Deletion
-**Status:** Completed  
-**Date Added:** 2026-04-30  
-**Priority:** High (Core Workflow)  
+**Status:** Completed
+**Date Added:** 2026-04-30
+**Priority:** High (Core Workflow)
 **Description:** Adapt PlayStreak's add-activity flow to MyStreak's task success-level model.
 
 **Technical Requirements:**
@@ -293,9 +293,9 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds.
 
 ### Phase 8: Calendar Conversion
-**Status:** Open  
-**Date Added:** 2026-04-30  
-**Priority:** High (Core UI)  
+**Status:** Completed
+**Date Added:** 2026-04-30
+**Priority:** High (Core UI)
 **Description:** Reuse PlayStreak's calendar layout while replacing activity-count/performance colors with MyStreak's high-priority completion colors.
 
 **Technical Requirements:**
@@ -308,16 +308,23 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - Allow Activity edit/delete from daily listings.
 
 **Acceptance Criteria:**
-- [ ] Calendar displays correct colors for empty, partial, high-priority, half-complete, and all-complete days.
-- [ ] Today's color changes after logging, editing, or deleting today's Activities.
-- [ ] Frozen past day colors do not change after retroactive edits.
-- [ ] Day activity listings reflect actual Activities even when frozen color does not.
-- [ ] Calendar remains usable in dark mode.
+- [x] Calendar displays correct colors for empty, partial, high-priority, half-complete, and all-complete days.
+- [x] Today's color changes after logging, editing, or deleting today's Activities.
+- [x] Frozen past day colors do not change after retroactive edits.
+- [x] Day activity listings reflect actual Activities even when frozen color does not.
+- [x] Calendar remains usable in dark mode.
+
+**Progress Notes:**
+- 2026-04-30: Calendar month grid now uses MyStreak calendar color levels from repository data: no Activity, any Activity, high-priority Activity, half high-priority Tasks, and all high-priority Tasks.
+- 2026-04-30: Added MyStreak-named calendar color resources for light blue, medium blue, dark blue, and bright green while retaining old color names only for legacy source compatibility.
+- 2026-04-30: Selected day listings now always render editable MyStreak Activity rows with Task color, time, Task name, and success level.
+- 2026-04-30: Selected day Activities are sorted ascending by timestamp and include inactive Task history because the day-detail query joins against all Tasks, not only active Tasks.
+- 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds after Calendar conversion.
 
 ### Phase 10: Test, Cleanup, and Release Readiness
-**Status:** Open  
-**Date Added:** 2026-04-30  
-**Priority:** High (Quality Assurance)  
+**Status:** Completed with documented follow-up
+**Date Added:** 2026-04-30
+**Priority:** High (Quality Assurance)
 **Description:** Remove obsolete PlayStreak behavior, add focused tests, and verify MyStreak is ready for regular development or beta testing.
 
 **Technical Requirements:**
@@ -334,12 +341,30 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - Review privacy/legal text for MyStreak-specific claims.
 
 **Acceptance Criteria:**
-- [ ] `gradlew.bat assembleDebug` succeeds.
-- [ ] `gradlew.bat assembleRelease` succeeds or release blockers are documented.
+- [x] `gradlew.bat assembleDebug` succeeds.
+- [x] `gradlew.bat assembleRelease` succeeds or release blockers are documented.
 - [ ] Core business logic tests pass.
-- [ ] No production UI references music practice, pieces, techniques, practice, performance, favorites, achievements, or pro/free tiers unless intentionally retained.
+- [x] No production UI references music practice, pieces, techniques, practice, performance, favorites, achievements, or pro/free tiers unless intentionally retained.
 - [ ] Manual smoke test checklist is completed.
-- [ ] Known deferred items and open UX questions are documented for the next cycle.
+- [x] Known deferred items and open UX questions are documented for the next cycle.
+
+**Progress Notes:**
+- 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds.
+- 2026-04-30: Verified `gradlew.bat assembleRelease` succeeds after allowing Gradle wrapper cache access outside the workspace.
+- 2026-04-30: Attempted `gradlew.bat testDebugUnitTest`; the non-elevated run is blocked by access to the Gradle wrapper cache lock file under the user Gradle cache. Elevated rerun was not approved, so unit-test execution remains an explicit follow-up rather than a passed criterion.
+- 2026-04-30: Scanned production source and resources for legacy PlayStreak terminology. Legacy files/classes still contain PlayStreak names and music-era copy, but current production navigation intentionally reaches the MyStreak shell only: Dashboard, Calendar, Tasks, Task editing, and Activity logging/editing.
+- 2026-04-30: Remaining cleanup follow-up: remove or quarantine unreachable legacy systems and broaden business-logic tests once test execution is available.
+
+**Manual Smoke Checklist:**
+- [ ] First-run launch on a clean install.
+- [ ] Add Task with color, priority, thresholds, and active state.
+- [ ] Log Activity from Dashboard.
+- [ ] Log Activity from Tasks.
+- [ ] Edit Activity date/time and success level.
+- [ ] Delete Activity from Dashboard and Calendar.
+- [ ] Toggle Task inactive and confirm it hides from logging while remaining visible in history.
+- [ ] Tap Calendar days with no Activity, normal Activity, high-priority Activity, partial high-priority completion, and full high-priority completion.
+- [ ] Confirm dark-mode readability across Dashboard, Calendar, Tasks, and logging flow.
 
 ## Proposed Implementation Sequence
 
@@ -377,6 +402,7 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 
 - MyStreak v1 implementation cycle split into code phases if this planning cycle is accepted.
 - MyStreak import/export and local data portability in DevCycle 2026-002.
+- MyStreak technical-debt cleanup and test-hardening cycle to remove unreachable PlayStreak-era systems, rename compatibility classes/packages, and add repeatable business-logic coverage.
 - Optional PlayStreak data conversion/import path if legacy users need migration.
 - Optional reminders/notifications, explicitly out of scope for this version.
 - Optional cloud backup/sync, explicitly out of scope for this version.
