@@ -30,7 +30,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Current PlayStreak 🎵"
+                    android:text="Current Streak"
                     android:textAppearance="?attr/textAppearanceSubtitle1" />
 
                 <TextView
@@ -176,7 +176,7 @@
             android:layout_marginBottom="8dp"
             android:background="?android:attr/listDivider" />
 
-        <!-- Practice Suggestions Card -->
+        <!-- Legacy suggestions are hidden for MyStreak Phase 1. -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/suggestionsCard"
             android:layout_width="match_parent"
@@ -194,7 +194,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Practice Suggestions"
+                    android:text="Task Suggestions"
                     android:textAppearance="?attr/textAppearanceSubtitle1" />
 
                 <TextView
@@ -208,7 +208,7 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Performance Suggestions Card (Pro Only) -->
+        <!-- Legacy performance suggestions are hidden for MyStreak Phase 1. -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/performanceSuggestionsCard"
             android:layout_width="match_parent"
@@ -226,7 +226,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Performance Suggestions"
+                    android:text="Priority Suggestions"
                     android:textAppearance="?attr/textAppearanceSubtitle1" />
 
                 <TextView

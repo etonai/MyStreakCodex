@@ -212,7 +212,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Practice (1-4 activities)"
+                        android:text="Any activity"
                         android:textAppearance="?attr/textAppearanceCaption" />
                 </LinearLayout>
 
@@ -229,7 +229,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Practice (5-10 activities)"
+                        android:text="Priority activity"
                         android:textAppearance="?attr/textAppearanceCaption" />
                 </LinearLayout>
 
@@ -246,7 +246,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Practice (11+ activities)"
+                        android:text="Half of high-priority tasks"
                         android:textAppearance="?attr/textAppearanceCaption" />
                 </LinearLayout>
 
@@ -263,7 +263,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Performance (1-4 activities)"
+                        android:text="All high-priority tasks"
                         android:textAppearance="?attr/textAppearanceCaption" />
                 </LinearLayout>
 
@@ -280,7 +280,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Performance (5-10 activities)"
+                        android:text="Reserved"
                         android:textAppearance="?attr/textAppearanceCaption" />
                 </LinearLayout>
 
@@ -296,7 +296,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Performance (11+ activities)"
+                        android:text="Reserved"
                         android:textAppearance="?attr/textAppearanceCaption" />
                 </LinearLayout>
 

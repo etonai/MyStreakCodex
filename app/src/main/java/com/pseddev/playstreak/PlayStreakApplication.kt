@@ -28,7 +28,11 @@ class PlayStreakApplication : Application() {
     
     override fun onCreate() {
         super.onCreate()
-        
+
+        if (BuildConfig.DEBUG) {
+            return
+        }
+
         // Initialize Firebase Analytics
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
         firebaseAnalytics.setAnalyticsCollectionEnabled(true)

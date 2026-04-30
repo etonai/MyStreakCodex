@@ -46,15 +46,14 @@ class AddPieceFragment : Fragment() {
             val name = binding.pieceNameEditText.text?.toString()?.trim()
             
             if (name.isNullOrBlank()) {
-                binding.pieceNameInputLayout.error = "Please enter a piece name"
+                binding.pieceNameInputLayout.error = "Please enter a task name"
                 return@setOnClickListener
             }
             
             binding.pieceNameInputLayout.error = null
             
-            val type = if (binding.radioPiece.isChecked) ItemType.PIECE else ItemType.TECHNIQUE
-            // Only mark as favorite if the switch is visible and checked
-            val isFavorite = binding.favoriteSwitch.visibility == View.VISIBLE && binding.favoriteSwitch.isChecked
+            val type = ItemType.PIECE
+            val isFavorite = false
             
             viewModel.savePiece(name, type, isFavorite)
         }
@@ -68,7 +67,7 @@ class AddPieceFragment : Fragment() {
         viewModel.saveResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is AddPieceResult.Success -> {
-                    Toast.makeText(requireContext(), "Piece added successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Task added successfully", Toast.LENGTH_SHORT).show()
                     findNavController().navigateUp()
                 }
                 is AddPieceResult.Error -> {
@@ -78,13 +77,13 @@ class AddPieceFragment : Fragment() {
                     showPieceLimitDialog(result.currentCount, result.limit, result.isProUser)
                 }
                 is AddPieceResult.DuplicateName -> {
-                    binding.pieceNameInputLayout.error = "This piece already exists"
+                    binding.pieceNameInputLayout.error = "This task already exists"
                 }
             }
         }
         
-        viewModel.canAddFavorites.observe(viewLifecycleOwner) { canAdd ->
-            binding.favoriteSwitch.visibility = if (canAdd) View.VISIBLE else View.GONE
+        viewModel.canAddFavorites.observe(viewLifecycleOwner) {
+            binding.favoriteSwitch.visibility = View.GONE
         }
         
         viewModel.showCelebration.observe(viewLifecycleOwner) { achievementType ->
@@ -100,13 +99,13 @@ class AddPieceFragment : Fragment() {
     }
     
     private fun showPieceLimitDialog(currentCount: Int, limit: Int, isProUser: Boolean) {
-        val message = "Piece Limit Reached\n\n" +
-                "You currently have $currentCount pieces and techniques. " +
-                "This app supports up to $limit pieces total to ensure good performance.\n\n" +
-                "You can keep all your existing pieces, but cannot add new ones until you remove some pieces."
+        val message = "Task Limit Reached\n\n" +
+                "You currently have $currentCount tasks. " +
+                "This app supports up to $limit tasks total to ensure good performance.\n\n" +
+                "You can keep all your existing tasks, but cannot add new ones until you remove some tasks."
 
         AlertDialog.Builder(requireContext())
-            .setTitle("Cannot Add Piece")
+            .setTitle("Cannot Add Task")
             .setMessage(message)
             .setPositiveButton("OK") { dialog, _ ->
                 dialog.dismiss()

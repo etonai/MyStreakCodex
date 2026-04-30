@@ -1,21 +1,21 @@
 <resources>
-    <string name="app_name">PlayStreak 🎵</string>
-    
-    <!-- Practice Levels -->
-    <string name="practice_level_1">Level 1 - Essentials</string>
-    <string name="practice_level_2">Level 2 - Incomplete</string>
-    <string name="practice_level_3">Level 3 - Complete with Review</string>
-    <string name="practice_level_4">Level 4 - Perfect Complete</string>
-    
-    <!-- Performance Levels -->
-    <string name="performance_level_1">Level 1 - Failed</string>
-    <string name="performance_level_2">Level 2 - Unsatisfactory</string>
-    <string name="performance_level_3">Level 3 - Satisfactory</string>
-    
-    <!-- Performance Types -->
-    <string name="performance_online">Online Performance</string>
-    <string name="performance_live">Live Performance</string>
-    
+    <string name="app_name">MyStreak</string>
+
+    <!-- Legacy level labels retained until the Activity model is converted in Phase 2. -->
+    <string name="practice_level_1">Minimum</string>
+    <string name="practice_level_2">Medium</string>
+    <string name="practice_level_3">High</string>
+    <string name="practice_level_4">High</string>
+
+    <!-- Legacy performance labels retained until the Activity model is converted in Phase 2. -->
+    <string name="performance_level_1">Minimum</string>
+    <string name="performance_level_2">Medium</string>
+    <string name="performance_level_3">High</string>
+
+    <!-- Legacy performance type labels retained until the Activity model is converted in Phase 2. -->
+    <string name="performance_online">Activity</string>
+    <string name="performance_live">Activity</string>
+
     <!-- Accessibility -->
     <string name="add_activity">Add Activity</string>
 </resources>

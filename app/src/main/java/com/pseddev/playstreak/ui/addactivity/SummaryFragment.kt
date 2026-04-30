@@ -145,32 +145,14 @@ class SummaryFragment : Fragment() {
     }
     
     private fun setupSummary() {
-        binding.textPiece.text = "Piece: ${args.pieceName}"
-        binding.textType.text = "Type: ${args.activityType.name.lowercase().replaceFirstChar { it.uppercase() }}"
+        binding.textPiece.text = "Task: ${args.pieceName}"
+        binding.textType.text = "Type: Activity"
         
-        val levelText = when (args.activityType) {
-            ActivityType.PRACTICE -> {
-                when (args.level) {
-                    1 -> "Level: 1 - Essentials"
-                    2 -> "Level: 2 - Incomplete"
-                    3 -> "Level: 3 - Complete with Review"
-                    4 -> "Level: 4 - Perfect Complete"
-                    else -> "Level: ${args.level}"
-                }
-            }
-            ActivityType.PERFORMANCE -> {
-                val performanceTypeText = when (args.performanceType) {
-                    "online" -> "Online"
-                    "live" -> "Live"
-                    else -> ""
-                }
-                when (args.level) {
-                    1 -> "Level: 1 - Failed ($performanceTypeText)"
-                    2 -> "Level: 2 - Unsatisfactory ($performanceTypeText)"
-                    3 -> "Level: 3 - Satisfactory ($performanceTypeText)"
-                    else -> "Level: ${args.level} ($performanceTypeText)"
-                }
-            }
+        val levelText = when (args.level) {
+            1 -> "Success: Minimum"
+            2 -> "Success: Medium"
+            3, 4 -> "Success: High"
+            else -> "Success: Level ${args.level}"
         }
         binding.textLevel.text = levelText
         

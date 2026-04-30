@@ -236,29 +236,13 @@ class CalendarFragment : Fragment() {
         } else {
             piece.name
         }
-        itemBinding.pieceNameText.text = displayName
+        itemBinding.pieceNameText.text = piece.name
         
-        val typeText = when (activity.activityType) {
-            ActivityType.PRACTICE -> {
-                val level = when (activity.level) {
-                    1 -> "Level 1 - Essentials"
-                    2 -> "Level 2 - Incomplete"
-                    3 -> "Level 3 - Complete with Issues"
-                    4 -> "Level 4 - Complete and Satisfactory"
-                    else -> "Level ${activity.level}"
-                }
-                "Practice - $level"
-            }
-            ActivityType.PERFORMANCE -> {
-                val level = when (activity.level) {
-                    1 -> "Level 1 - Failed"
-                    2 -> "Level 2 - Unsatisfactory"
-                    3 -> "Level 3 - Satisfactory"
-                    else -> "Level ${activity.level}"
-                }
-                val type = if (activity.performanceType == "online") "Online" else "Live"
-                "Performance - $type - $level"
-            }
+        val typeText = when (activity.level) {
+            1 -> "Success - Minimum"
+            2 -> "Success - Medium"
+            3, 4 -> "Success - High"
+            else -> "Success - Level ${activity.level}"
         }
         itemBinding.activityTypeText.text = typeText
         
@@ -274,21 +258,7 @@ class CalendarFragment : Fragment() {
             itemBinding.notesText.text = ""
         }
         
-        // Show add activity button only for Pro users
-        if (proUserManager.isProUser()) {
-            itemBinding.addActivityButton.visibility = View.VISIBLE
-            itemBinding.addActivityButton.setOnClickListener {
-                // Show quick add activity dialog with piece pre-filled
-                val dialog = QuickAddActivityDialogFragment.newInstance(
-                    piece.id,
-                    piece.name,
-                    "calendar_quick"
-                )
-                dialog.show(parentFragmentManager, "QuickAddActivityDialog")
-            }
-        } else {
-            itemBinding.addActivityButton.visibility = View.GONE
-        }
+        itemBinding.addActivityButton.visibility = View.GONE
         
         itemBinding.deleteButton.setOnClickListener {
             showDeleteConfirmationDialog(item)
@@ -351,10 +321,9 @@ class CalendarFragment : Fragment() {
                 
                 val summary = activities.joinToString("\n") { item ->
                     val time = android.text.format.DateFormat.format("h:mm a", item.activity.timestamp)
-                    val type = item.activity.activityType.name.lowercase().replaceFirstChar { it.uppercase() }
                     val level = "(${item.activity.level})"
                     val minutes = if (item.activity.minutes > 0) " - ${item.activity.minutes} min" else ""
-                    "$time - ${item.pieceOrTechnique.name} - $type $level$minutes"
+                    "$time - ${item.pieceOrTechnique.name} - Success $level$minutes"
                 }
                 binding.selectedDateActivities.text = summary
             }
@@ -377,9 +346,9 @@ class CalendarFragment : Fragment() {
         val performanceCount = activities.count { it.activity.activityType == ActivityType.PERFORMANCE }
         
         return when {
-            hasPerformance && practiceCount > 0 -> "Mixed"
-            hasPerformance -> "Performance"
-            else -> "Practice"
+            hasPerformance && practiceCount > 0 -> "Mixed success"
+            hasPerformance -> "Priority placeholder"
+            else -> "Activity"
         }
     }
     

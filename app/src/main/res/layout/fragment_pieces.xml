@@ -98,7 +98,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="No pieces added yet"
+                android:text="No tasks added yet"
                 android:textAppearance="?attr/textAppearanceBody1"
                 android:visibility="gone" />
 
@@ -106,7 +106,7 @@
 
     </LinearLayout>
 
-    <!-- Enhanced Piece Details Card (shown on selection) -->
+    <!-- Enhanced Task Details Card (shown on selection) -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/pieceDetailsCard"
         android:layout_width="match_parent"
@@ -127,7 +127,7 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <!-- Header with piece name and close button -->
+                <!-- Header with task name and close button -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -185,7 +185,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Practice Statistics"
+                    android:text="Activity Statistics"
                     android:textAppearance="?attr/textAppearanceSubtitle1"
                     android:textStyle="bold" />
 
@@ -229,7 +229,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Performance Statistics"
+                    android:text="Completion Statistics"
                     android:textAppearance="?attr/textAppearanceSubtitle1"
                     android:textStyle="bold" />
 
@@ -321,14 +321,14 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Add Piece Button -->
+    <!-- Add Task Button -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/buttonAddPiece"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:text="Add Piece"
+        android:text="Add Task"
         android:textColor="?attr/colorOnPrimary"
         app:icon="@android:drawable/ic_input_add"
         app:iconTint="?attr/colorOnPrimary"

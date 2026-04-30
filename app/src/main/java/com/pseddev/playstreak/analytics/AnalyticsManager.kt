@@ -2,6 +2,7 @@ package com.pseddev.playstreak.analytics
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.pseddev.playstreak.BuildConfig
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
 import com.pseddev.playstreak.PlayStreakApplication
@@ -17,7 +18,7 @@ import java.util.*
 class AnalyticsManager(private val context: Context) {
     
     // Firebase Analytics enabled (performance issue was emulator-related)
-    private val analyticsEnabled = true
+    private val analyticsEnabled = !BuildConfig.DEBUG
     
     private val firebaseAnalytics: FirebaseAnalytics by lazy {
         (context.applicationContext as PlayStreakApplication).firebaseAnalytics

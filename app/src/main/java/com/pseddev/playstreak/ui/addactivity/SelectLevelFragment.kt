@@ -93,20 +93,7 @@ class SelectLevelFragment : Fragment() {
             
             // Determine next navigation
             when {
-                // Time input for Practice Level 2 or any Technique
-                args.activityType == ActivityType.PRACTICE && 
-                (selectedLevel == 2 || args.itemType == ItemType.TECHNIQUE) -> {
-                    val action = SelectLevelFragmentDirections
-                        .actionSelectLevelFragmentToTimeInputFragment(
-                            activityType = args.activityType,
-                            pieceId = args.pieceId,
-                            pieceName = args.pieceName,
-                            level = selectedLevel,
-                            performanceType = performanceType
-                        )
-                    findNavController().navigate(action)
-                }
-                // Notes input for Performance
+                // Notes input for legacy Performance records.
                 args.activityType == ActivityType.PERFORMANCE -> {
                     val action = SelectLevelFragmentDirections
                         .actionSelectLevelFragmentToNotesInputFragment(
@@ -136,22 +123,22 @@ class SelectLevelFragment : Fragment() {
     
     private fun setupLevelOptions() {
         if (args.activityType == ActivityType.PRACTICE) {
-            binding.textLevelLabel.text = "Practice Level:"
-            binding.radioLevel1.text = "Level 1 - Essentials"
-            binding.radioLevel2.text = "Level 2 - Incomplete"
-            binding.radioLevel3.text = "Level 3 - Complete with Issues"
+            binding.textLevelLabel.text = "Success Level:"
+            binding.radioLevel1.text = "Minimum"
+            binding.radioLevel2.text = "Medium"
+            binding.radioLevel3.text = "High"
             binding.radioLevel4.apply {
-                text = "Level 4 - Complete and Satisfactory"
-                visibility = View.VISIBLE
+                text = "High"
+                visibility = View.GONE
             }
             binding.performanceTypeGroup.visibility = View.GONE
         } else {
-            binding.textLevelLabel.text = "Performance Level:"
-            binding.radioLevel1.text = "Level 1 - Failed"
-            binding.radioLevel2.text = "Level 2 - Unsatisfactory"
-            binding.radioLevel3.text = "Level 3 - Satisfactory"
+            binding.textLevelLabel.text = "Success Level:"
+            binding.radioLevel1.text = "Minimum"
+            binding.radioLevel2.text = "Medium"
+            binding.radioLevel3.text = "High"
             binding.radioLevel4.visibility = View.GONE
-            binding.performanceTypeGroup.visibility = View.VISIBLE
+            binding.performanceTypeGroup.visibility = View.GONE
         }
     }
     

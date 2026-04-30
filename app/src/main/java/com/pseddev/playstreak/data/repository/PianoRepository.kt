@@ -350,7 +350,7 @@ class PianoRepository(
             importedActivities.forEach { activity ->
                 val newPieceId = originalPieceIdToNewIdMap[activity.pieceOrTechniqueId]
                 if (newPieceId != null) {
-                    val activityWithCorrectId = activity.copy(pieceOrTechniqueId = newPieceId)
+                    val activityWithCorrectId = activity.copy(taskId = newPieceId)
                     insertActivity(activityWithCorrectId)
                 } else {
                     Log.w("JsonImport", "Could not find new piece ID for original piece ID ${activity.pieceOrTechniqueId}")
@@ -394,57 +394,8 @@ class PianoRepository(
     }
     
     private suspend fun updatePieceStatistics(pieceId: Long) {
-        try {
-            val piece = pieceOrTechniqueDao.getById(pieceId)
-            if (piece == null) {
-                return
-            }
-            val activities = getActivitiesForPiece(pieceId).first()
-            
-            // Separate activities by type
-            val practices = activities.filter { it.activityType == ActivityType.PRACTICE }
-                .sortedByDescending { it.timestamp }
-            val performances = activities.filter { it.activityType == ActivityType.PERFORMANCE }
-                .sortedByDescending { it.timestamp }
-            
-            // Calculate statistics
-            val practiceCount = practices.size
-            val performanceCount = performances.size
-            
-            // Get last dates for practices
-            val lastPracticeDate = practices.getOrNull(0)?.timestamp
-            val secondLastPracticeDate = practices.getOrNull(1)?.timestamp
-            val thirdLastPracticeDate = practices.getOrNull(2)?.timestamp
-            
-            // Get last dates for performances
-            val lastPerformanceDate = performances.getOrNull(0)?.timestamp
-            val secondLastPerformanceDate = performances.getOrNull(1)?.timestamp
-            val thirdLastPerformanceDate = performances.getOrNull(2)?.timestamp
-            
-            // Find last satisfactory activities (level 4 for practice, level 3 for performance)
-            val lastSatisfactoryPractice = practices.firstOrNull { it.level >= 4 }?.timestamp
-            val lastSatisfactoryPerformance = performances.firstOrNull { it.level >= 3 }?.timestamp
-            
-            // Update piece with calculated statistics
-            val updatedPiece = piece.copy(
-                practiceCount = practiceCount,
-                performanceCount = performanceCount,
-                lastPracticeDate = lastPracticeDate,
-                secondLastPracticeDate = secondLastPracticeDate,
-                thirdLastPracticeDate = thirdLastPracticeDate,
-                lastPerformanceDate = lastPerformanceDate,
-                secondLastPerformanceDate = secondLastPerformanceDate,
-                thirdLastPerformanceDate = thirdLastPerformanceDate,
-                lastSatisfactoryPractice = lastSatisfactoryPractice,
-                lastSatisfactoryPerformance = lastSatisfactoryPerformance,
-                lastUpdated = System.currentTimeMillis()
-            )
-            
-            pieceOrTechniqueDao.update(updatedPiece)
-            Log.d("PieceStats", "Updated statistics for piece ${piece.name}: practices=$practiceCount, performances=$performanceCount")
-        } catch (e: Exception) {
-            Log.e("PieceStats", "Error updating piece statistics for piece $pieceId", e)
-        }
+        val piece = pieceOrTechniqueDao.getById(pieceId) ?: return
+        pieceOrTechniqueDao.update(piece.copy(lastUpdated = System.currentTimeMillis()))
     }
     
     // Data pruning methods for Phase 3

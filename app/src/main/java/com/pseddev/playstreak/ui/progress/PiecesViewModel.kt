@@ -3,6 +3,7 @@ package com.pseddev.playstreak.ui.progress
 import androidx.lifecycle.*
 import com.pseddev.playstreak.data.entities.Activity
 import com.pseddev.playstreak.data.entities.ItemType
+import com.pseddev.playstreak.data.entities.TaskPriority
 import com.pseddev.playstreak.data.entities.PieceOrTechnique
 import com.pseddev.playstreak.data.repository.PianoRepository
 import com.pseddev.playstreak.utils.ProUserManager
@@ -155,7 +156,7 @@ class PiecesViewModel(
         
         // Proceed with toggle (either removing favorite or adding within limits)
         viewModelScope.launch {
-            val updatedPiece = pieceWithStats.piece.copy(isFavorite = !currentlyFavorite)
+            val updatedPiece = pieceWithStats.piece.copy(priority = if (currentlyFavorite) TaskPriority.LOW else TaskPriority.HIGH)
             repository.updatePieceOrTechnique(updatedPiece)
         }
         
@@ -175,7 +176,6 @@ class PiecesViewModel(
                 currentPiece?.let { piece ->
                     val updatedPiece = piece.copy(
                         name = newName,
-                        type = newType,
                         lastUpdated = System.currentTimeMillis()
                     )
                     repository.updatePieceOrTechnique(updatedPiece)

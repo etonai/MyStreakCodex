@@ -80,12 +80,12 @@ class SelectPieceFragment : Fragment() {
                 val groupedItems = mutableListOf<PieceAdapterItem>()
                 
                 if (favorites.isNotEmpty()) {
-                    groupedItems.add(PieceAdapterItem.Header("Favorites:"))
+                    groupedItems.add(PieceAdapterItem.Header("High Priority:"))
                     groupedItems.addAll(favorites.map { PieceAdapterItem.Item(it) })
                 }
                 
                 if (all.isNotEmpty()) {
-                    groupedItems.add(PieceAdapterItem.Header("All Pieces/Techniques:"))
+                    groupedItems.add(PieceAdapterItem.Header("All Tasks:"))
                     groupedItems.addAll(all.map { PieceAdapterItem.Item(it) })
                 }
                 

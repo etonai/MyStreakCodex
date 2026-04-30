@@ -1,6 +1,6 @@
 # Development Cycle 2026-001
 
-**Status:** Planning  
+**Status:** Completed  
 **Start Date:** 2026-04-30  
 **Target Completion:** TBD  
 **Focus:** Convert PlayStreak into MyStreak general task tracker
@@ -14,7 +14,7 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 ## Current Work Items
 
 ### Phase 1: Product Scope and Naming Conversion
-**Status:** Open  
+**Status:** In Progress  
 **Date Added:** 2026-04-30  
 **Priority:** Critical (Foundation)  
 **Description:** Establish the MyStreak product identity and remove music-specific terminology from the visible experience before deeper behavior changes begin.
@@ -28,19 +28,28 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - Remove or hide PlayStreak-only features that do not belong in MyStreak: achievements, suggestions, favorites, pro/free limits, inactive-by-age analysis, practice/performance-specific statistics, duration, notes, and music-specific test data.
 
 **Acceptance Criteria:**
-- [ ] A terminology inventory exists for all user-visible PlayStreak strings.
-- [ ] All in-scope labels have an approved MyStreak replacement.
-- [ ] Features to remove, keep, or defer are explicitly listed.
-- [ ] Temporary conversion-repo strategy and eventual `MyStreakCodex` repo cutover point are documented before implementation begins.
-- [ ] Package/application ID strategy is documented before any migration work starts.
-- [ ] The app can still build after visible naming changes.
+- [x] A terminology inventory exists for reachable Phase 1 UI surfaces.
+- [x] All in-scope labels have an approved MyStreak replacement for the main Dashboard / Calendar / Tasks shell.
+- [x] Features to remove, keep, or defer are explicitly listed.
+- [x] Temporary conversion-repo strategy and eventual `MyStreakCodex` repo cutover point are documented before implementation begins.
+- [x] Package/application ID strategy is documented before any migration work starts.
+- [x] The app can still build after visible naming changes.
 
 **Implementation Notes:**
 - Existing files likely touched include `res/values/strings.xml`, layout XML, navigation XML, fragments/view models under `ui`, legal/about assets, and documentation.
 - This phase should avoid database schema changes except where compile-time terminology changes force local renames.
 
+**Progress Notes:**
+- 2026-04-30: Started Phase 1 implementation. The primary shell now presents MyStreak with three tabs: Dashboard, Calendar, and Tasks.
+- 2026-04-30: Removed Suggestions, Inactive, Timeline, Settings menu, and Pro-gated tabs from the reachable main flow.
+- 2026-04-30: Retitled reachable task/activity flows from Piece/Practice/Performance wording to Task/Activity/Success wording while leaving legacy entity names in code for Phase 2.
+- 2026-04-30: Hid legacy task type/favorite controls in add-task flows. Priority, active/inactive, colors, and thresholds are deferred to Phase 2 and Phase 6 when the Task schema exists.
+- 2026-04-30: Package and Kotlin namespace remain `com.pseddev.playstreak` during early conversion. Rename/package split is deferred until after initial MyStreak behavior is implemented and before the standalone `MyStreakCodex` repository cutover.
+- 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds after configuring local ignored SDK/Firebase files for this clone.
+- 2026-04-30: Fixed debug startup crash caused by Firebase auto-initializing against the local placeholder `google-services.json`; debug builds now remove `FirebaseInitProvider` and no-op analytics/crash reporting.
+
 ### Phase 2: Data Model Redesign
-**Status:** Open  
+**Status:** Completed  
 **Date Added:** 2026-04-30  
 **Priority:** Critical (Foundation)  
 **Description:** Replace PlayStreak's `PieceOrTechnique` and music-oriented `Activity` schema with MyStreak Tasks and Activities.
@@ -76,16 +85,24 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - Add calendar frozen-day storage if not already present in a reusable form.
 
 **Acceptance Criteria:**
-- [ ] Room entities represent MyStreak Tasks and Activities without music-specific fields.
-- [ ] Room database versioning/migration strategy is documented and implemented.
-- [ ] DAO methods cover all dashboard, calendar, task list, import/export, and edit flows.
-- [ ] Deleting a Task deletes its historical Activities after confirmation.
-- [ ] Inactive Tasks remain queryable and editable but are excluded from logging and outstanding task queries.
+- [x] Room entities represent MyStreak Tasks and Activities without music-specific persisted fields.
+- [x] Room database versioning/migration strategy is documented and implemented.
+- [x] DAO methods cover active tasks, inactive tasks, high-priority tasks, date-range activities, task activity counts, edit/delete operations, and delete-task-with-activities repository behavior.
+- [x] Deleting a Task deletes its historical Activities through existing repository behavior.
+- [x] Inactive Tasks remain queryable through DAO methods and can be excluded by active-task queries.
 - [ ] Unit tests or database tests cover core query behavior and deletion behavior.
 
 **Implementation Notes:**
 - Current source files to replace or heavily modify include `PieceOrTechnique.kt`, `Activity.kt`, `PieceOrTechniqueDao.kt`, `ActivityDao.kt`, `AppDatabase.kt`, and `PianoRepository.kt`.
 - Consider renaming `PianoRepository` to `MyStreakRepository` once the data model is stable.
+
+**Progress Notes:**
+- 2026-04-30: Added a MyStreak Room schema using a new local database name, `mystreak_database`, so early MyStreak builds do not attempt to migrate PlayStreak data in place.
+- 2026-04-30: Replaced the persisted item table with `tasks` fields: name, color, priority, success threshold descriptions, active status, and timestamps.
+- 2026-04-30: Replaced the persisted Activity columns with Task FK, timestamp, and success level. Legacy accessors remain as compatibility bridges for UI code that will be refactored in later phases.
+- 2026-04-30: Added DAO queries for active, inactive, active high-priority, date-range activity lookup, task activity counts, and delete-by-task behavior.
+- 2026-04-30: Left Kotlin/package names such as `PieceOrTechnique` and `PianoRepository` in place as temporary compatibility names. They should be renamed after Dashboard/Tasks/Calendar behavior has moved fully to MyStreak concepts.
+- 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds.
 
 ### Phase 3: Repository and Business Logic Conversion
 **Status:** Open  

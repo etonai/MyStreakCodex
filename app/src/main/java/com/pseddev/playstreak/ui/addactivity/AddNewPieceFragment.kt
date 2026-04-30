@@ -71,14 +71,14 @@ class AddNewPieceFragment : Fragment() {
             val name = binding.editTextName.text.toString().trim()
             
             if (name.isEmpty()) {
-                binding.nameInputLayout.error = "Please enter a name"
+                binding.nameInputLayout.error = "Please enter a task name"
                 return@setOnClickListener
             }
             
             // Clear any previous error
             binding.nameInputLayout.error = null
             
-            val type = if (binding.radioPiece.isChecked) ItemType.PIECE else ItemType.TECHNIQUE
+            val type = ItemType.PIECE
             
             viewModel.insertPieceOrTechnique(name, type) { pieceId ->
                 requireActivity().runOnUiThread {

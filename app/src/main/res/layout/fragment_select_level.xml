@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Select Level:"
+        android:text="Success Level:"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textPieceName" />
@@ -82,7 +82,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Performance Type:"
+            android:text="Activity Type:"
             android:textSize="16sp"
             android:paddingBottom="8dp" />
 
@@ -90,14 +90,14 @@
             android:id="@+id/radioPerformanceOnline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Online Performance"
+            android:text="Activity"
             android:padding="8dp" />
 
         <RadioButton
             android:id="@+id/radioPerformanceLive"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Live Performance"
+            android:text="Activity"
             android:padding="8dp" />
 
     </RadioGroup>

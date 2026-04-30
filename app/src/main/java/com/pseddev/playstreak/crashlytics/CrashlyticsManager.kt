@@ -2,6 +2,7 @@ package com.pseddev.playstreak.crashlytics
 
 import android.content.Context
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.pseddev.playstreak.BuildConfig
 import com.pseddev.playstreak.PlayStreakApplication
 
 /**
@@ -18,6 +19,7 @@ class CrashlyticsManager(private val context: Context) {
      * Record a non-fatal exception for monitoring
      */
     fun recordException(exception: Exception) {
+        if (BuildConfig.DEBUG) return
         firebaseCrashlytics.recordException(exception)
     }
     
@@ -25,6 +27,7 @@ class CrashlyticsManager(private val context: Context) {
      * Log a message for crash context
      */
     fun log(message: String) {
+        if (BuildConfig.DEBUG) return
         firebaseCrashlytics.log(message)
     }
     
@@ -32,6 +35,7 @@ class CrashlyticsManager(private val context: Context) {
      * Set custom key-value pair for crash reporting context
      */
     fun setCustomKey(key: String, value: String) {
+        if (BuildConfig.DEBUG) return
         firebaseCrashlytics.setCustomKey(key, value)
     }
     
@@ -39,6 +43,7 @@ class CrashlyticsManager(private val context: Context) {
      * Set custom key-value pair for crash reporting context (boolean)
      */
     fun setCustomKey(key: String, value: Boolean) {
+        if (BuildConfig.DEBUG) return
         firebaseCrashlytics.setCustomKey(key, value)
     }
     
@@ -46,6 +51,7 @@ class CrashlyticsManager(private val context: Context) {
      * Set custom key-value pair for crash reporting context (int)
      */
     fun setCustomKey(key: String, value: Int) {
+        if (BuildConfig.DEBUG) return
         firebaseCrashlytics.setCustomKey(key, value)
     }
     
@@ -53,6 +59,7 @@ class CrashlyticsManager(private val context: Context) {
      * Set user identifier for crash reporting
      */
     fun setUserId(userId: String) {
+        if (BuildConfig.DEBUG) return
         firebaseCrashlytics.setUserId(userId)
     }
     

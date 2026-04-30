@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.pseddev.playstreak.ui.main.MainFragment"
-        android:label="Settings"
+        android:label="About MyStreak"
         tools:layout="@layout/fragment_main">
 
         <action
@@ -55,7 +55,7 @@
     <fragment
         android:id="@+id/progressFragment"
         android:name="com.pseddev.playstreak.ui.progress.ViewProgressFragment"
-        android:label="PlayStreak 🎵"
+        android:label="MyStreak"
         tools:layout="@layout/fragment_view_progress">
 
         <action
@@ -90,7 +90,7 @@
     <fragment
         android:id="@+id/selectPieceFragment"
         android:name="com.pseddev.playstreak.ui.addactivity.SelectPieceFragment"
-        android:label="Select Piece"
+        android:label="Select Task"
         tools:layout="@layout/fragment_select_piece">
         
         <argument
@@ -156,7 +156,7 @@
     <fragment
         android:id="@+id/timeInputFragment"
         android:name="com.pseddev.playstreak.ui.addactivity.TimeInputFragment"
-        android:label="Practice Time"
+        android:label="Activity Time"
         tools:layout="@layout/fragment_time_input">
         
         <argument
@@ -241,7 +241,7 @@
     <fragment
         android:id="@+id/addPieceFragment"
         android:name="com.pseddev.playstreak.ui.pieces.AddPieceFragment"
-        android:label="Add Piece"
+        android:label="Add Task"
         tools:layout="@layout/fragment_add_piece" />
     
     <fragment

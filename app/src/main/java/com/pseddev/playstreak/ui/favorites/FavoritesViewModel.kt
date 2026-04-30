@@ -2,6 +2,7 @@ package com.pseddev.playstreak.ui.favorites
 
 import androidx.lifecycle.*
 import com.pseddev.playstreak.data.entities.PieceOrTechnique
+import com.pseddev.playstreak.data.entities.TaskPriority
 import com.pseddev.playstreak.data.repository.PianoRepository
 import com.pseddev.playstreak.utils.ProUserManager
 import kotlinx.coroutines.launch
@@ -31,7 +32,7 @@ class FavoritesViewModel(
         
         // Proceed with toggle (either removing favorite or adding within limits)
         viewModelScope.launch {
-            val updatedPiece = piece.copy(isFavorite = !currentlyFavorite)
+            val updatedPiece = piece.copy(priority = if (currentlyFavorite) TaskPriority.LOW else TaskPriority.HIGH)
             repository.updatePieceOrTechnique(updatedPiece)
         }
         

@@ -117,42 +117,42 @@ class PiecesFragment : Fragment() {
         binding.pieceNameText.text = piece.name
         
         // Basic Information Section
-        binding.pieceTypeText.text = "Type: ${piece.type.name.lowercase().replaceFirstChar { it.uppercase() }}"
-        binding.isFavoriteText.text = "Favorite: ${if (piece.isFavorite) "Yes" else "No"}"
+        binding.pieceTypeText.text = "Status: Active"
+        binding.isFavoriteText.text = "Priority: ${if (piece.isFavorite) "High" else "Low"}"
         binding.dateCreatedText.text = "Created: ${DateFormatter.formatDateOnly(piece.dateCreated)}"
         
-        // Practice Statistics Section (from Phase 1 statistics)
-        binding.practiceCountText.text = "Total Practices: ${piece.practiceCount}"
-        binding.lastPracticeText.text = "Last Practice: ${DateFormatter.formatDate(piece.lastPracticeDate)}"
-        binding.secondLastPracticeText.text = "2nd Last Practice: ${DateFormatter.formatDateWithFallback(piece.secondLastPracticeDate)}"
-        binding.thirdLastPracticeText.text = "3rd Last Practice: ${DateFormatter.formatDateWithFallback(piece.thirdLastPracticeDate)}"
-        binding.lastSatisfactoryPracticeText.text = "Last Satisfactory Practice: ${DateFormatter.formatDate(piece.lastSatisfactoryPractice)}"
+        // Activity statistics use legacy fields until the Task schema lands in Phase 2.
+        binding.practiceCountText.text = "Total Activities: ${piece.practiceCount + piece.performanceCount}"
+        binding.lastPracticeText.text = "Last Activity: ${DateFormatter.formatDate(piece.lastPracticeDate ?: piece.lastPerformanceDate)}"
+        binding.secondLastPracticeText.text = "2nd Last Activity: ${DateFormatter.formatDateWithFallback(piece.secondLastPracticeDate ?: piece.secondLastPerformanceDate)}"
+        binding.thirdLastPracticeText.text = "3rd Last Activity: ${DateFormatter.formatDateWithFallback(piece.thirdLastPracticeDate ?: piece.thirdLastPerformanceDate)}"
+        binding.lastSatisfactoryPracticeText.text = "Last High Success: ${DateFormatter.formatDate(piece.lastSatisfactoryPractice ?: piece.lastSatisfactoryPerformance)}"
         
-        // Performance Statistics Section (from Phase 1 statistics)
-        binding.performanceCountText.text = "Total Performances: ${piece.performanceCount}"
-        binding.lastPerformanceText.text = "Last Performance: ${DateFormatter.formatDate(piece.lastPerformanceDate)}"
-        binding.secondLastPerformanceText.text = "2nd Last Performance: ${DateFormatter.formatDateWithFallback(piece.secondLastPerformanceDate)}"
-        binding.thirdLastPerformanceText.text = "3rd Last Performance: ${DateFormatter.formatDateWithFallback(piece.thirdLastPerformanceDate)}"
-        binding.lastSatisfactoryPerformanceText.text = "Last Satisfactory Performance: ${DateFormatter.formatDate(piece.lastSatisfactoryPerformance)}"
+        // Placeholders for MyStreak task fields that arrive with the Phase 2 schema.
+        binding.performanceCountText.text = "Minimum Success: TBD"
+        binding.lastPerformanceText.text = "Medium Success: TBD"
+        binding.secondLastPerformanceText.text = "High Success: TBD"
+        binding.thirdLastPerformanceText.text = "Active Status: Active"
+        binding.lastSatisfactoryPerformanceText.text = "Task Color: TBD"
         
         // Legacy Activity Data Section (calculated from activities for comparison)
         val practiceCountLegacy = details.activities.count { it.activityType == com.pseddev.playstreak.data.entities.ActivityType.PRACTICE }
         val performanceCountLegacy = details.activities.count { it.activityType == com.pseddev.playstreak.data.entities.ActivityType.PERFORMANCE }
-        binding.totalActivitiesText.text = "Total Activities: ${details.activities.size} (P:$practiceCountLegacy, F:$performanceCountLegacy)"
+        binding.totalActivitiesText.text = "Total Activities: ${details.activities.size}"
         
         val totalMinutes = details.activities.filter { it.minutes > 0 }.sumOf { it.minutes }
         if (totalMinutes > 0) {
-            binding.totalTimeText.text = "Total Tracked Time: $totalMinutes minutes"
+            binding.totalTimeText.text = "Legacy tracked time: $totalMinutes minutes"
             binding.totalTimeText.visibility = View.VISIBLE
         } else {
-            binding.totalTimeText.text = "Total Tracked Time: No time data"
+            binding.totalTimeText.text = "Legacy tracked time: No time data"
             binding.totalTimeText.visibility = View.VISIBLE
         }
         
         if (details.lastActivity != null) {
-            binding.lastActivityText.text = "Last Activity (Legacy): ${DateFormatter.formatDate(details.lastActivity.timestamp)}"
+            binding.lastActivityText.text = "Last Activity: ${DateFormatter.formatDate(details.lastActivity.timestamp)}"
         } else {
-            binding.lastActivityText.text = "Last Activity (Legacy): No activities recorded"
+            binding.lastActivityText.text = "Last Activity: No activities recorded"
         }
         
         // System Information Section
@@ -204,7 +204,7 @@ class PiecesFragment : Fragment() {
     private fun showFavoriteLimitPrompt() {
         AlertDialog.Builder(requireContext())
             .setTitle("Favorite Limit")
-            .setMessage("You can have up to ${ProUserManager.FREE_USER_FAVORITE_LIMIT} favorite pieces.")
+            .setMessage("Priority limits will be replaced by MyStreak task priority in a later phase.")
             .setPositiveButton("OK", null)
             .show()
     }
@@ -220,11 +220,11 @@ class PiecesFragment : Fragment() {
                 "This action cannot be undone."
         
         AlertDialog.Builder(requireContext())
-            .setTitle("Delete Piece")
+            .setTitle("Delete Task")
             .setMessage(message)
             .setPositiveButton("Delete") { _, _ ->
                 viewModel.deletePiece(pieceWithStats)
-                Toast.makeText(requireContext(), "Piece deleted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Task deleted", Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton("Cancel", null)
             .show()
