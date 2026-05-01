@@ -180,11 +180,25 @@ class AchievementManager(
     /**
      * Unlock an achievement if it's not already unlocked
      */
-    suspend fun unlockAchievement(type: AchievementType, unlockedAt: Long = System.currentTimeMillis()) {
-        try {
-            val isAlreadyUnlocked = achievementDao.isAchievementUnlocked(type)
-            if (!isAlreadyUnlocked) {
-                achievementDao.unlockAchievement(type, unlockedAt)
+    suspend fun unlockAchievement(type: AchievementType, unlockedAt: Long = System.currentTimeMillis()): Boolean {
+        return try {
+            val existingAchievement = achievementDao.getAchievementByType(type)
+            if (existingAchievement?.isUnlocked == true) {
+                false
+            } else {
+                if (existingAchievement == null) {
+                    val definition = AchievementDefinitions.getAllAchievementDefinitions()
+                        .firstOrNull { it.type == type }
+                    if (definition == null) {
+                        Log.w("AchievementManager", "No achievement definition found for $type")
+                        return false
+                    }
+                    achievementDao.insertAchievement(
+                        definition.copy(isUnlocked = true, unlockedAt = unlockedAt)
+                    )
+                } else {
+                    achievementDao.unlockAchievement(type, unlockedAt)
+                }
                 Log.d("AchievementManager", "Unlocked achievement: $type at $unlockedAt")
 
                 // Track analytics for achievement unlock
@@ -206,9 +220,11 @@ class AchievementManager(
                 }
 
                 analyticsManager.trackAchievementUnlocked(type.name, category)
+                true
             }
         } catch (e: Exception) {
             Log.e("AchievementManager", "Error unlocking achievement $type", e)
+            false
         }
     }
 

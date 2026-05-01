@@ -98,9 +98,7 @@ class AddActivityViewModel(
                     AchievementType.FIRST_TECHNIQUE
                 }
 
-                if (!achievementManager.isAchievementUnlocked(achievementType)) {
-                    achievementManager.unlockAchievement(achievementType)
-
+                if (achievementManager.unlockAchievement(achievementType)) {
                     // Trigger celebration for any achievement unlock
                     _showCelebration.value = achievementType
                 }
@@ -250,28 +248,24 @@ class AddActivityViewModel(
     private suspend fun checkFirstActivityAchievements(activityType: ActivityType, performanceType: String) {
         when (activityType) {
             ActivityType.PRACTICE -> {
-                if (!achievementManager.isAchievementUnlocked(AchievementType.FIRST_PRACTICE)) {
-                    achievementManager.unlockAchievement(AchievementType.FIRST_PRACTICE)
+                if (achievementManager.unlockAchievement(AchievementType.FIRST_PRACTICE)) {
                     _showCelebration.value = AchievementType.FIRST_PRACTICE
                 }
             }
             ActivityType.PERFORMANCE -> {
-                if (!achievementManager.isAchievementUnlocked(AchievementType.FIRST_PERFORMANCE)) {
-                    achievementManager.unlockAchievement(AchievementType.FIRST_PERFORMANCE)
+                if (achievementManager.unlockAchievement(AchievementType.FIRST_PERFORMANCE)) {
                     _showCelebration.value = AchievementType.FIRST_PERFORMANCE
                 }
 
                 // Check for specific performance type achievements
                 when (performanceType.lowercase()) {
                     "online" -> {
-                        if (!achievementManager.isAchievementUnlocked(AchievementType.FIRST_ONLINE_PERFORMANCE)) {
-                            achievementManager.unlockAchievement(AchievementType.FIRST_ONLINE_PERFORMANCE)
+                        if (achievementManager.unlockAchievement(AchievementType.FIRST_ONLINE_PERFORMANCE)) {
                             _showCelebration.value = AchievementType.FIRST_ONLINE_PERFORMANCE
                         }
                     }
                     "live" -> {
-                        if (!achievementManager.isAchievementUnlocked(AchievementType.FIRST_LIVE_PERFORMANCE)) {
-                            achievementManager.unlockAchievement(AchievementType.FIRST_LIVE_PERFORMANCE)
+                        if (achievementManager.unlockAchievement(AchievementType.FIRST_LIVE_PERFORMANCE)) {
                             _showCelebration.value = AchievementType.FIRST_LIVE_PERFORMANCE
                         }
                     }
@@ -298,8 +292,7 @@ class AddActivityViewModel(
 
         // Only track milestones at specific levels and unlock achievement
         achievementType?.let { type ->
-            if (!achievementManager.isAchievementUnlocked(type)) {
-                achievementManager.unlockAchievement(type)
+            if (achievementManager.unlockAchievement(type)) {
                 _showCelebration.value = type
             }
         }

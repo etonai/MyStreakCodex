@@ -121,9 +121,7 @@ class AddPieceViewModel(
                 // Check for first piece/technique achievements
                 val achievementType = AchievementType.FIRST_PIECE
 
-                if (!achievementManager.isAchievementUnlocked(achievementType)) {
-                    achievementManager.unlockAchievement(achievementType)
-
+                if (achievementManager.unlockAchievement(achievementType)) {
                     // Trigger celebration for any achievement unlock
                     _showCelebration.value = achievementType
                 }

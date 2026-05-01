@@ -300,7 +300,7 @@ class PianoRepository(
             return CalendarColorLevel.ALL_HIGH_PRIORITY
         }
 
-        val halfThreshold = highPriorityTaskIds.size / 2
+        val halfThreshold = (highPriorityTaskIds.size + 1) / 2
         if (halfThreshold > 0 && performedHighPriorityTaskIds.size >= halfThreshold) {
             return CalendarColorLevel.HALF_HIGH_PRIORITY
         }

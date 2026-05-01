@@ -11,6 +11,7 @@ import com.pseddev.mystreak.data.entities.AchievementType
  */
 class AchievementCelebrationManager(private val context: Context) {
 
+    private val celebrationsTemporarilyDisabled = true
     private val configurationManager = ConfigurationManager.getInstance(context)
 
     /**
@@ -19,6 +20,10 @@ class AchievementCelebrationManager(private val context: Context) {
      * @param achievement The achievement that was unlocked
      */
     fun showCelebration(view: View, achievement: Achievement) {
+        if (celebrationsTemporarilyDisabled) {
+            return
+        }
+
         // Check if celebrations are enabled in configuration
         if (!configurationManager.isAchievementCelebrationEnabled()) {
             return
@@ -47,6 +52,10 @@ class AchievementCelebrationManager(private val context: Context) {
      * @return true if celebrations should be shown
      */
     fun areCelebrationsEnabled(): Boolean {
+        if (celebrationsTemporarilyDisabled) {
+            return false
+        }
+
         return configurationManager.isAchievementCelebrationEnabled()
     }
 }

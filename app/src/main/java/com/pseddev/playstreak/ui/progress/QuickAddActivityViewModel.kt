@@ -83,26 +83,18 @@ class QuickAddActivityViewModel(
     private suspend fun checkFirstActivityAchievements(activityType: ActivityType, performanceType: String) {
         when (activityType) {
             ActivityType.PRACTICE -> {
-                if (!achievementManager.isAchievementUnlocked(AchievementType.FIRST_PRACTICE)) {
-                    achievementManager.unlockAchievement(AchievementType.FIRST_PRACTICE)
-                }
+                achievementManager.unlockAchievement(AchievementType.FIRST_PRACTICE)
             }
             ActivityType.PERFORMANCE -> {
-                if (!achievementManager.isAchievementUnlocked(AchievementType.FIRST_PERFORMANCE)) {
-                    achievementManager.unlockAchievement(AchievementType.FIRST_PERFORMANCE)
-                }
+                achievementManager.unlockAchievement(AchievementType.FIRST_PERFORMANCE)
 
                 // Check for specific performance type achievements
                 when (performanceType.lowercase()) {
                     "online" -> {
-                        if (!achievementManager.isAchievementUnlocked(AchievementType.FIRST_ONLINE_PERFORMANCE)) {
-                            achievementManager.unlockAchievement(AchievementType.FIRST_ONLINE_PERFORMANCE)
-                        }
+                        achievementManager.unlockAchievement(AchievementType.FIRST_ONLINE_PERFORMANCE)
                     }
                     "live" -> {
-                        if (!achievementManager.isAchievementUnlocked(AchievementType.FIRST_LIVE_PERFORMANCE)) {
-                            achievementManager.unlockAchievement(AchievementType.FIRST_LIVE_PERFORMANCE)
-                        }
+                        achievementManager.unlockAchievement(AchievementType.FIRST_LIVE_PERFORMANCE)
                     }
                 }
             }
@@ -127,9 +119,7 @@ class QuickAddActivityViewModel(
 
         // Only track milestones at specific levels and unlock achievement
         achievementType?.let { type ->
-            if (!achievementManager.isAchievementUnlocked(type)) {
-                achievementManager.unlockAchievement(type)
-            }
+            achievementManager.unlockAchievement(type)
         }
     }
 }
