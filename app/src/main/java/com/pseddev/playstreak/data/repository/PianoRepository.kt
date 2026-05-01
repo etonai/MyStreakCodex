@@ -235,10 +235,15 @@ class PianoRepository(
 
             dayStarts.associateWith { dayStart ->
                 val dayEnd = dayStart + DAY_MILLIS
+                val dayActivities = activities.filter { it.timestamp >= dayStart && it.timestamp < dayEnd }
                 if (dayStart < todayStart) {
-                    frozenByDay[dayStart]?.colorLevel ?: CalendarColorLevel.NONE
+                    val frozenLevel = frozenByDay[dayStart]?.colorLevel
+                    if (frozenLevel == null || (frozenLevel == CalendarColorLevel.NONE && dayActivities.isNotEmpty())) {
+                        calculateCalendarColorLevel(dayActivities, tasks.filter { it.isActive })
+                    } else {
+                        frozenLevel
+                    }
                 } else {
-                    val dayActivities = activities.filter { it.timestamp >= dayStart && it.timestamp < dayEnd }
                     calculateCalendarColorLevel(dayActivities, tasks.filter { it.isActive })
                 }
             }
@@ -256,16 +261,17 @@ class PianoRepository(
 
         activityDays.forEach { dayStart ->
             val existing = dailyCalendarStateDao.getStateForDay(dayStart)
+            val dayActivities = allActivities.filter {
+                it.timestamp >= dayStart && it.timestamp < dayStart + DAY_MILLIS
+            }
+            val level = calculateCalendarColorLevel(dayActivities, allTasks.filter { it.isActive })
             if (existing == null) {
-                val dayActivities = allActivities.filter {
-                    it.timestamp >= dayStart && it.timestamp < dayStart + DAY_MILLIS
-                }
-                val level = calculateCalendarColorLevel(dayActivities, allTasks.filter { it.isActive })
                 dailyCalendarStateDao.insertIfAbsent(
-                    DailyCalendarState(
-                        dayStartMillis = dayStart,
-                        colorLevel = level
-                    )
+                    DailyCalendarState(dayStartMillis = dayStart, colorLevel = level)
+                )
+            } else if (existing.colorLevel == CalendarColorLevel.NONE && dayActivities.isNotEmpty()) {
+                dailyCalendarStateDao.insertOrReplace(
+                    existing.copy(colorLevel = level)
                 )
             }
         }

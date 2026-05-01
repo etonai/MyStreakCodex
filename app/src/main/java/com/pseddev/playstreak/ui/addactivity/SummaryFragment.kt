@@ -10,9 +10,11 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.pseddev.mystreak.MyStreakApplication
+import com.pseddev.mystreak.R
 import com.pseddev.mystreak.databinding.FragmentSummaryBinding
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -34,6 +36,7 @@ class SummaryFragment : Fragment() {
     }
 
     private var currentTimestamp: Long = System.currentTimeMillis()
+    private var saveInProgress = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,7 +64,7 @@ class SummaryFragment : Fragment() {
             val callback = object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     // In edit mode, go back to Timeline (progressFragment)
-                    findNavController().popBackStack(com.pseddev.mystreak.R.id.progressFragment, false)
+                    finishActivityFlow()
                 }
             }
             requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
@@ -71,10 +74,17 @@ class SummaryFragment : Fragment() {
         setupDateTimeEditing()
 
         binding.buttonSave.setOnClickListener {
+            if (saveInProgress) {
+                return@setOnClickListener
+            }
             if (currentTimestamp > System.currentTimeMillis()) {
                 Toast.makeText(requireContext(), "Activities cannot be dated in the future.", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
+
+            saveInProgress = true
+            binding.buttonSave.isEnabled = false
+            binding.buttonCancel.isEnabled = false
 
             val editActivity = viewModel.editActivity.value
             if (editActivity != null) {
@@ -104,32 +114,23 @@ class SummaryFragment : Fragment() {
         }
 
         binding.buttonCancel.setOnClickListener {
-            val editActivity = viewModel.editActivity.value
-            if (editActivity != null) {
-                // In edit mode, go back to Timeline (progressFragment)
-                findNavController().popBackStack(com.pseddev.mystreak.R.id.progressFragment, false)
-            } else {
-                // In add mode, navigate back to the screen that started the add activity flow
-                findNavController().popBackStack(com.pseddev.mystreak.R.id.addActivityFragment, true)
-            }
+            binding.buttonSave.isEnabled = false
+            binding.buttonCancel.isEnabled = false
+            finishActivityFlow()
         }
 
         viewModel.navigateToMain.observe(viewLifecycleOwner) { shouldNavigate ->
             if (shouldNavigate) {
-                val editActivity = viewModel.editActivity.value
-                if (editActivity != null) {
-                    // In edit mode, go back to Timeline (progressFragment)
-                    findNavController().popBackStack(com.pseddev.mystreak.R.id.progressFragment, false)
-                } else {
-                    // In add mode, navigate back to the screen that started the add activity flow
-                    findNavController().popBackStack(com.pseddev.mystreak.R.id.addActivityFragment, true)
-                }
                 viewModel.doneNavigating()
+                finishActivityFlow()
             }
         }
 
         viewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
             errorMessage?.let {
+                saveInProgress = false
+                binding.buttonSave.isEnabled = true
+                binding.buttonCancel.isEnabled = true
                 Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
                 viewModel.clearErrorMessage()
             }
@@ -248,6 +249,18 @@ class SummaryFragment : Fragment() {
     private fun updateDateDisplay() {
         val dateFormat = SimpleDateFormat("MMM dd, yyyy h:mm a", Locale.US)
         binding.textDate.text = "Date: ${dateFormat.format(Date(currentTimestamp))}"
+    }
+
+    private fun finishActivityFlow() {
+        val navController = findNavController()
+        if (navController.popBackStack(R.id.progressFragment, false)) {
+            return
+        }
+
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.nav_graph, true)
+            .build()
+        navController.navigate(R.id.progressFragment, null, navOptions)
     }
 
     override fun onDestroyView() {
