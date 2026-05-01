@@ -11,15 +11,15 @@ plugins {
 }
 
 android {
-    namespace = "com.pseddev.playstreak"
+    namespace = "com.pseddev.mystreak"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.pseddev.playstreak"
+        applicationId = "com.pseddev.mystreak"
         minSdk = 24
         targetSdk = 36
         versionCode = 23
-        versionName = "1.0.2"
+        versionName = "0.0.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -30,7 +30,7 @@ android {
             if (keystorePropertiesFile.exists()) {
                 val keystoreProperties = Properties()
                 keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-                
+
                 storeFile = file(keystoreProperties["storeFile"] as String)
                 storePassword = keystoreProperties["storePassword"] as String
                 keyAlias = keystoreProperties["keyAlias"] as String
@@ -80,14 +80,14 @@ android {
             }
         }
     }
-    
+
     // Disable baseline profiles and art profiles completely
     androidComponents {
         onVariants { variant ->
             variant.packaging.dex.useLegacyPackaging = true
         }
     }
-    
+
     // Disable ART profile compilation
     aaptOptions {
         noCompress += listOf("tflite", "lite")
@@ -103,8 +103,8 @@ android {
         viewBinding = true
         buildConfig = true
     }
-    
-    
+
+
     packaging {
         resources {
             excludes += setOf(
@@ -130,12 +130,12 @@ android {
             )
         }
     }
-    
+
     // Custom APK naming
     applicationVariants.all {
         outputs.all {
             if (this is com.android.build.gradle.internal.api.BaseVariantOutputImpl) {
-                outputFileName = "PlayStreak_${defaultConfig.versionName}.apk"
+                outputFileName = "MyStreak_${defaultConfig.versionName}.apk"
             }
         }
     }
@@ -148,7 +148,7 @@ dependencies {
 
     // Firebase Analytics with Kotlin extensions
     implementation("com.google.firebase:firebase-analytics-ktx")
-    
+
     // Firebase Crashlytics with Kotlin extensions
     implementation("com.google.firebase:firebase-crashlytics-ktx")
 
@@ -159,41 +159,41 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)
-    
+
     // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    
+
     // Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
-    
+
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
-    
+
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
-    
+
     // CSV handling
     implementation(libs.opencsv)
-    
+
     // ViewPager2
     implementation(libs.androidx.viewpager2)
-    
+
     // Google Drive API
     implementation(libs.play.services.auth)
     implementation(libs.google.api.client.android)
     implementation(libs.google.http.client.android)
     implementation(libs.google.api.services.drive)
-    
+
     // JSON serialization
     implementation(libs.gson)
-    
+
     // Modern calendar view with date coloring support
     implementation("com.github.kizitonwose:CalendarView:2.4.1")
-    
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

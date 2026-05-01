@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.pseddev.playstreak.ui.main.MainFragment"
+        android:name="com.pseddev.mystreak.ui.main.MainFragment"
         android:label="About MyStreak"
         tools:layout="@layout/fragment_main">
 
@@ -26,27 +26,27 @@
         <action
             android:id="@+id/action_mainFragment_to_syncFragment"
             app:destination="@id/syncFragment" />
-            
+
         <action
             android:id="@+id/action_mainFragment_to_addPieceFragment"
             app:destination="@id/addPieceFragment" />
-            
+
         <action
             android:id="@+id/action_mainFragment_to_configurationFragment"
             app:destination="@id/configurationFragment" />
-            
+
         <action
             android:id="@+id/action_mainFragment_to_pruneDataFragment"
             app:destination="@id/pruneDataFragment" />
-            
+
         <action
             android:id="@+id/action_mainFragment_to_achievementsFragment"
             app:destination="@id/achievementsFragment" />
-            
+
         <action
             android:id="@+id/action_mainFragment_to_privacyPolicyFragment"
             app:destination="@id/privacyPolicyFragment" />
-            
+
         <action
             android:id="@+id/action_mainFragment_to_termsOfServiceFragment"
             app:destination="@id/termsOfServiceFragment" />
@@ -54,7 +54,7 @@
 
     <fragment
         android:id="@+id/progressFragment"
-        android:name="com.pseddev.playstreak.ui.progress.ViewProgressFragment"
+        android:name="com.pseddev.mystreak.ui.progress.ViewProgressFragment"
         android:label="MyStreak"
         tools:layout="@layout/fragment_view_progress">
 
@@ -68,65 +68,65 @@
             android:id="@+id/action_viewProgressFragment_to_selectLevelFragment"
             app:destination="@id/selectLevelFragment" />
     </fragment>
-        
+
     <fragment
         android:id="@+id/addActivityFragment"
-        android:name="com.pseddev.playstreak.ui.addactivity.AddActivityFragment"
+        android:name="com.pseddev.mystreak.ui.addactivity.AddActivityFragment"
         android:label="Add Activity"
         tools:layout="@layout/fragment_add_activity">
-        
+
         <action
             android:id="@+id/action_addActivityFragment_to_selectPieceFragment"
             app:destination="@id/selectPieceFragment" />
-            
+
         <action
             android:id="@+id/action_addActivityFragment_to_selectLevelFragment"
             app:destination="@id/selectLevelFragment" />
     </fragment>
-    
+
     <fragment
         android:id="@+id/selectPieceFragment"
-        android:name="com.pseddev.playstreak.ui.addactivity.SelectPieceFragment"
+        android:name="com.pseddev.mystreak.ui.addactivity.SelectPieceFragment"
         android:label="Select Task"
         tools:layout="@layout/fragment_select_piece">
-        
+
         <argument
             android:name="activityType"
-            app:argType="com.pseddev.playstreak.data.entities.ActivityType" />
-            
+            app:argType="com.pseddev.mystreak.data.entities.ActivityType" />
+
         <action
             android:id="@+id/action_selectPieceFragment_to_addNewPieceFragment"
             app:destination="@id/addNewPieceFragment" />
-            
+
         <action
             android:id="@+id/action_selectPieceFragment_to_selectLevelFragment"
             app:destination="@id/selectLevelFragment" />
     </fragment>
-    
+
     <fragment
         android:id="@+id/addNewPieceFragment"
-        android:name="com.pseddev.playstreak.ui.addactivity.AddNewPieceFragment"
+        android:name="com.pseddev.mystreak.ui.addactivity.AddNewPieceFragment"
         android:label="Add New"
         tools:layout="@layout/fragment_add_new_piece">
-        
+
         <argument
             android:name="activityType"
-            app:argType="com.pseddev.playstreak.data.entities.ActivityType" />
-            
+            app:argType="com.pseddev.mystreak.data.entities.ActivityType" />
+
         <action
             android:id="@+id/action_addNewPieceFragment_to_selectLevelFragment"
             app:destination="@id/selectLevelFragment" />
     </fragment>
-    
+
     <fragment
         android:id="@+id/selectLevelFragment"
-        android:name="com.pseddev.playstreak.ui.addactivity.SelectLevelFragment"
+        android:name="com.pseddev.mystreak.ui.addactivity.SelectLevelFragment"
         android:label="Select Level"
         tools:layout="@layout/fragment_select_level">
-        
+
         <argument
             android:name="activityType"
-            app:argType="com.pseddev.playstreak.data.entities.ActivityType" />
+            app:argType="com.pseddev.mystreak.data.entities.ActivityType" />
         <argument
             android:name="pieceId"
             app:argType="long" />
@@ -135,30 +135,30 @@
             app:argType="string" />
         <argument
             android:name="itemType"
-            app:argType="com.pseddev.playstreak.data.entities.ItemType" />
-            
+            app:argType="com.pseddev.mystreak.data.entities.ItemType" />
+
         <action
             android:id="@+id/action_selectLevelFragment_to_timeInputFragment"
             app:destination="@id/timeInputFragment" />
-            
+
         <action
             android:id="@+id/action_selectLevelFragment_to_notesInputFragment"
             app:destination="@id/notesInputFragment" />
-            
+
         <action
             android:id="@+id/action_selectLevelFragment_to_summaryFragment"
             app:destination="@id/summaryFragment" />
     </fragment>
-    
+
     <fragment
         android:id="@+id/timeInputFragment"
-        android:name="com.pseddev.playstreak.ui.addactivity.TimeInputFragment"
+        android:name="com.pseddev.mystreak.ui.addactivity.TimeInputFragment"
         android:label="Activity Time"
         tools:layout="@layout/fragment_time_input">
-        
+
         <argument
             android:name="activityType"
-            app:argType="com.pseddev.playstreak.data.entities.ActivityType" />
+            app:argType="com.pseddev.mystreak.data.entities.ActivityType" />
         <argument
             android:name="pieceId"
             app:argType="long" />
@@ -171,21 +171,21 @@
         <argument
             android:name="performanceType"
             app:argType="string" />
-            
+
         <action
             android:id="@+id/action_timeInputFragment_to_summaryFragment"
             app:destination="@id/summaryFragment" />
     </fragment>
-    
+
     <fragment
         android:id="@+id/notesInputFragment"
-        android:name="com.pseddev.playstreak.ui.addactivity.NotesInputFragment"
+        android:name="com.pseddev.mystreak.ui.addactivity.NotesInputFragment"
         android:label="Add Notes"
         tools:layout="@layout/fragment_notes_input">
-        
+
         <argument
             android:name="activityType"
-            app:argType="com.pseddev.playstreak.data.entities.ActivityType" />
+            app:argType="com.pseddev.mystreak.data.entities.ActivityType" />
         <argument
             android:name="pieceId"
             app:argType="long" />
@@ -198,21 +198,21 @@
         <argument
             android:name="performanceType"
             app:argType="string" />
-            
+
         <action
             android:id="@+id/action_notesInputFragment_to_summaryFragment"
             app:destination="@id/summaryFragment" />
     </fragment>
-    
+
     <fragment
         android:id="@+id/summaryFragment"
-        android:name="com.pseddev.playstreak.ui.addactivity.SummaryFragment"
+        android:name="com.pseddev.mystreak.ui.addactivity.SummaryFragment"
         android:label="Summary"
         tools:layout="@layout/fragment_summary">
-        
+
         <argument
             android:name="activityType"
-            app:argType="com.pseddev.playstreak.data.entities.ActivityType" />
+            app:argType="com.pseddev.mystreak.data.entities.ActivityType" />
         <argument
             android:name="pieceId"
             app:argType="long" />
@@ -234,72 +234,72 @@
             app:argType="string"
             android:defaultValue="" />
     </fragment>
-    
+
     <fragment
         android:id="@+id/addPieceFragment"
-        android:name="com.pseddev.playstreak.ui.pieces.AddPieceFragment"
+        android:name="com.pseddev.mystreak.ui.pieces.AddPieceFragment"
         android:label="Add Task"
         tools:layout="@layout/fragment_add_piece" />
-    
+
     <fragment
         android:id="@+id/favoritesFragment"
-        android:name="com.pseddev.playstreak.ui.favorites.FavoritesFragment"
+        android:name="com.pseddev.mystreak.ui.favorites.FavoritesFragment"
         android:label="Manage Favorites"
         tools:layout="@layout/fragment_favorites" />
-        
+
     <fragment
         android:id="@+id/syncFragment"
-        android:name="com.pseddev.playstreak.ui.importexport.ImportExportFragment"
+        android:name="com.pseddev.mystreak.ui.importexport.ImportExportFragment"
         android:label="Import/Export Data"
         tools:layout="@layout/fragment_import_export" />
-        
+
     <fragment
         android:id="@+id/configurationFragment"
-        android:name="com.pseddev.playstreak.ui.configuration.ConfigurationFragment"
+        android:name="com.pseddev.mystreak.ui.configuration.ConfigurationFragment"
         android:label="Configuration"
         tools:layout="@layout/fragment_configuration">
-        
+
         <action
             android:id="@+id/action_configurationFragment_to_achievementsFragment"
             app:destination="@id/achievementsFragment" />
     </fragment>
-    
+
     <fragment
         android:id="@+id/achievementsFragment"
-        android:name="com.pseddev.playstreak.ui.achievements.AchievementsFragment"
+        android:name="com.pseddev.mystreak.ui.achievements.AchievementsFragment"
         android:label="Achievements"
         tools:layout="@layout/fragment_achievements" />
-        
+
     <fragment
         android:id="@+id/pruneDataFragment"
-        android:name="com.pseddev.playstreak.ui.prunedata.PruneDataFragment"
+        android:name="com.pseddev.mystreak.ui.prunedata.PruneDataFragment"
         android:label="Data Pruning Options"
         tools:layout="@layout/fragment_prune_data">
-        
+
         <action
             android:id="@+id/action_pruneDataFragment_to_importExportFragment"
             app:destination="@id/syncFragment" />
     </fragment>
-        
+
     <dialog
         android:id="@+id/syncDialogFragment"
-        android:name="com.pseddev.playstreak.ui.sync.SyncDialogFragment"
+        android:name="com.pseddev.mystreak.ui.sync.SyncDialogFragment"
         android:label="Sync Dialog">
-        
+
         <action
             android:id="@+id/action_syncDialog_to_importExport"
             app:destination="@id/syncFragment" />
     </dialog>
-    
+
     <fragment
         android:id="@+id/privacyPolicyFragment"
-        android:name="com.pseddev.playstreak.ui.legal.PrivacyPolicyFragment"
+        android:name="com.pseddev.mystreak.ui.legal.PrivacyPolicyFragment"
         android:label="Privacy Policy"
         tools:layout="@layout/fragment_privacy_policy" />
-        
+
     <fragment
         android:id="@+id/termsOfServiceFragment"
-        android:name="com.pseddev.playstreak.ui.legal.TermsOfServiceFragment"
+        android:name="com.pseddev.mystreak.ui.legal.TermsOfServiceFragment"
         android:label="Terms of Service"
         tools:layout="@layout/fragment_terms_of_service" />
 

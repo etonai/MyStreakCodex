@@ -1,9 +1,9 @@
-package com.pseddev.playstreak.ui.progress
+package com.pseddev.mystreak.ui.progress
 
 import androidx.lifecycle.*
-import com.pseddev.playstreak.data.entities.Activity
-import com.pseddev.playstreak.data.entities.CalendarColorLevel
-import com.pseddev.playstreak.data.repository.PianoRepository
+import com.pseddev.mystreak.data.entities.Activity
+import com.pseddev.mystreak.data.entities.CalendarColorLevel
+import com.pseddev.mystreak.data.repository.PianoRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -24,11 +24,11 @@ data class MonthlyActivitySummary(
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CalendarViewModel(private val repository: PianoRepository) : ViewModel() {
-    
+
     private val selectedDate = MutableStateFlow(System.currentTimeMillis())
     private val currentMonth = MutableStateFlow(getCurrentMonthRange())
-    
-    val selectedDateActivities: LiveData<List<ActivityWithPiece>> = 
+
+    val selectedDateActivities: LiveData<List<ActivityWithPiece>> =
         selectedDate.flatMapLatest { date ->
             val calendar = Calendar.getInstance().apply {
                 timeInMillis = date
@@ -39,7 +39,7 @@ class CalendarViewModel(private val repository: PianoRepository) : ViewModel() {
             }
             val startTime = calendar.timeInMillis
             val endTime = calendar.apply { add(Calendar.DAY_OF_YEAR, 1) }.timeInMillis
-            
+
             repository.getActivitiesForDateRange(startTime, endTime)
                 .combine(repository.getAllPiecesAndTechniques()) { activities, pieces ->
                     activities.mapNotNull { activity ->
@@ -49,8 +49,8 @@ class CalendarViewModel(private val repository: PianoRepository) : ViewModel() {
                 }
         }
         .asLiveData()
-    
-    val monthlyActivitySummary: LiveData<MonthlyActivitySummary> = 
+
+    val monthlyActivitySummary: LiveData<MonthlyActivitySummary> =
         currentMonth.flatMapLatest { (startTime, endTime) ->
             combine(
                 repository.getActivitiesForDateRange(startTime, endTime),
@@ -61,7 +61,7 @@ class CalendarViewModel(private val repository: PianoRepository) : ViewModel() {
                         val piece = pieces.find { it.id == activity.pieceOrTechniqueId }
                         piece?.let { ActivityWithPiece(activity, it) }
                     }
-                    
+
                     // Group activities by date
                     val activitiesByDate = activitiesWithPieces.groupBy { activityWithPiece ->
                         val calendar = Calendar.getInstance().apply {
@@ -73,7 +73,7 @@ class CalendarViewModel(private val repository: PianoRepository) : ViewModel() {
                         }
                         calendar.timeInMillis
                     }
-                    
+
                     MonthlyActivitySummary(
                         activeDays = activitiesByDate.keys.size,
                         totalActivities = activitiesWithPieces.size,
@@ -83,21 +83,21 @@ class CalendarViewModel(private val repository: PianoRepository) : ViewModel() {
                 }
         }
         .asLiveData()
-    
+
     fun selectDate(dateMillis: Long) {
         selectedDate.value = dateMillis
-        
+
         // Update current month if date changed to different month
         val newMonthRange = getMonthRangeForDate(dateMillis)
         if (newMonthRange != currentMonth.value) {
             currentMonth.value = newMonthRange
         }
     }
-    
+
     private fun getCurrentMonthRange(): Pair<Long, Long> {
         return getMonthRangeForDate(System.currentTimeMillis())
     }
-    
+
     private fun getMonthRangeForDate(dateMillis: Long): Pair<Long, Long> {
         val calendar = Calendar.getInstance().apply {
             timeInMillis = dateMillis
@@ -111,7 +111,7 @@ class CalendarViewModel(private val repository: PianoRepository) : ViewModel() {
         val endTime = calendar.apply { add(Calendar.MONTH, 1) }.timeInMillis
         return Pair(startTime, endTime)
     }
-    
+
     fun deleteActivity(activityWithPiece: ActivityWithPiece) {
         viewModelScope.launch {
             repository.deleteActivity(activityWithPiece.activity)

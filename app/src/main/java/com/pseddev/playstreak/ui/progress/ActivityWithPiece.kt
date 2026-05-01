@@ -1,7 +1,7 @@
-package com.pseddev.playstreak.ui.progress
+package com.pseddev.mystreak.ui.progress
 
-import com.pseddev.playstreak.data.entities.Activity
-import com.pseddev.playstreak.data.entities.PieceOrTechnique
+import com.pseddev.mystreak.data.entities.Activity
+import com.pseddev.mystreak.data.entities.PieceOrTechnique
 
 data class ActivityWithPiece(
     val activity: Activity,

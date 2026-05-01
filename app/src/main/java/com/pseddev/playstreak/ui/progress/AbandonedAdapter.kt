@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.ui.progress
+package com.pseddev.mystreak.ui.progress
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.pseddev.playstreak.R
-import com.pseddev.playstreak.utils.ProUserManager
+import com.pseddev.mystreak.R
+import com.pseddev.mystreak.utils.ProUserManager
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,9 +38,9 @@ class AbandonedAdapter(
         private val daysSinceText: TextView = itemView.findViewById(R.id.daysSinceText)
         private val lastPracticedText: TextView = itemView.findViewById(R.id.lastPracticedText)
         private val addActivityIcon: ImageView = itemView.findViewById(R.id.addActivityIcon)
-        
+
         private var currentItem: AbandonedItem? = null
-        
+
         init {
             addActivityIcon.setOnClickListener {
                 currentItem?.let { onAddActivityClick(it) }
@@ -49,27 +49,27 @@ class AbandonedAdapter(
 
         fun bind(item: AbandonedItem) {
             currentItem = item
-            
+
             // Show technique emoji indicator for techniques
-            val displayName = if (item.piece.type == com.pseddev.playstreak.data.entities.ItemType.TECHNIQUE) {
+            val displayName = if (item.piece.type == com.pseddev.mystreak.data.entities.ItemType.TECHNIQUE) {
                 "🎼 ${item.piece.name}"
             } else {
                 item.piece.name
             }
             pieceNameText.text = displayName
-            
+
             // Show + icon only for Pro users
             if (proUserManager.isProUser()) {
                 addActivityIcon.visibility = View.VISIBLE
             } else {
                 addActivityIcon.visibility = View.GONE
             }
-            
+
             if (item.lastActivityDate != null) {
                 val dateFormat = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
                 val dateString = dateFormat.format(Date(item.lastActivityDate))
                 lastPracticedText.text = "Last practiced: $dateString"
-                
+
                 val daysText = when {
                     item.daysSinceLastActivity == 1 -> "1 day ago"
                     item.daysSinceLastActivity < 365 -> "${item.daysSinceLastActivity} days ago"

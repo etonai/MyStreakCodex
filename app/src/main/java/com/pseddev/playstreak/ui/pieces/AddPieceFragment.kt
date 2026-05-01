@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.ui.pieces
+package com.pseddev.mystreak.ui.pieces
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -9,22 +9,22 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.pseddev.playstreak.PlayStreakApplication
-import com.pseddev.playstreak.data.entities.TaskPriority
-import com.pseddev.playstreak.databinding.FragmentAddPieceBinding
+import com.pseddev.mystreak.MyStreakApplication
+import com.pseddev.mystreak.data.entities.TaskPriority
+import com.pseddev.mystreak.databinding.FragmentAddPieceBinding
 
 class AddPieceFragment : Fragment() {
-    
+
     private var _binding: FragmentAddPieceBinding? = null
     private val binding get() = _binding!!
-    
+
     private val viewModel: AddPieceViewModel by viewModels {
         AddPieceViewModelFactory(
-            (requireActivity().application as PlayStreakApplication).repository,
+            (requireActivity().application as MyStreakApplication).repository,
             requireContext()
         )
     }
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,25 +33,25 @@ class AddPieceFragment : Fragment() {
         _binding = FragmentAddPieceBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         setupClickListeners()
         observeViewModel()
     }
-    
+
     private fun setupClickListeners() {
         binding.saveButton.setOnClickListener {
             val name = binding.pieceNameEditText.text?.toString()?.trim()
-            
+
             if (name.isNullOrBlank()) {
                 binding.pieceNameInputLayout.error = "Please enter a task name"
                 return@setOnClickListener
             }
-            
+
             binding.pieceNameInputLayout.error = null
-            
+
             viewModel.saveTask(
                 name = name,
                 color = selectedTaskColor(),
@@ -62,12 +62,12 @@ class AddPieceFragment : Fragment() {
                 isActive = binding.activeSwitch.isChecked
             )
         }
-        
+
         binding.cancelButton.setOnClickListener {
             findNavController().navigateUp()
         }
     }
-    
+
     private fun observeViewModel() {
         viewModel.saveResult.observe(viewLifecycleOwner) { result ->
             when (result) {
@@ -86,14 +86,14 @@ class AddPieceFragment : Fragment() {
                 }
             }
         }
-        
+
         viewModel.canAddFavorites.observe(viewLifecycleOwner) {
             binding.favoriteSwitch.visibility = View.GONE
         }
-        
+
         viewModel.showCelebration.observe(viewLifecycleOwner) { achievementType ->
             if (achievementType != null) {
-                val achievement = com.pseddev.playstreak.utils.AchievementDefinitions.getAllAchievementDefinitions()
+                val achievement = com.pseddev.mystreak.utils.AchievementDefinitions.getAllAchievementDefinitions()
                     .find { it.type == achievementType }
                 if (achievement != null) {
                     viewModel.getCelebrationManager().showCelebration(binding.root, achievement)
@@ -102,7 +102,7 @@ class AddPieceFragment : Fragment() {
             }
         }
     }
-    
+
     private fun showPieceLimitDialog(currentCount: Int, limit: Int, isProUser: Boolean) {
         val message = "Task Limit Reached\n\n" +
                 "You currently have $currentCount tasks. " +
@@ -117,7 +117,7 @@ class AddPieceFragment : Fragment() {
             }
             .show()
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

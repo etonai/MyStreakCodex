@@ -1,7 +1,7 @@
-package com.pseddev.playstreak.utils
+package com.pseddev.mystreak.utils
 
 object TextNormalizer {
-    
+
     /**
      * Normalizes text by standardizing apostrophes, quotes, and whitespace.
      * This ensures consistent piece names across import, export, and manual entry.
@@ -9,7 +9,7 @@ object TextNormalizer {
     fun normalizePieceName(text: String): String {
         // First apply Unicode normalization to decompose any composite characters
         val unicodeNormalized = java.text.Normalizer.normalize(text, java.text.Normalizer.Form.NFKD)
-        
+
         val normalized = unicodeNormalized
             .trim()
             .replace("\\s+".toRegex(), " ") // Collapse multiple spaces to single space
@@ -30,35 +30,35 @@ object TextNormalizer {
             .replace("\u201E", "\"") // DOUBLE LOW-9 QUOTATION MARK (U+201E)
             .replace("\u201A", "'") // SINGLE LOW-9 QUOTATION MARK (U+201A)
             // Apply final Unicode composition normalization
-            
+
         val finalNormalized = java.text.Normalizer.normalize(normalized, java.text.Normalizer.Form.NFC)
-        
+
         if (text != finalNormalized) {
             android.util.Log.d("TextNormalizer", "Normalized '$text' -> '$finalNormalized'")
             android.util.Log.d("TextNormalizer", "Original bytes: ${text.toByteArray().joinToString { it.toString() }}")
             android.util.Log.d("TextNormalizer", "Final bytes: ${finalNormalized.toByteArray().joinToString { it.toString() }}")
         }
-        
+
         return finalNormalized
     }
-    
+
     /**
      * Normalizes any user input text (for piece names, notes, etc.)
      */
     fun normalizeUserInput(text: String): String {
         return normalizePieceName(text)
     }
-    
+
     /**
      * Test function to verify normalization is working correctly
      */
     fun testNormalization(): String {
         val regular = "Somewhere That's Green"  // Regular apostrophe
         val curly = "Somewhere That's Green"    // Curly apostrophe (U+2019)
-        
+
         val normalizedRegular = normalizePieceName(regular)
         val normalizedCurly = normalizePieceName(curly)
-        
+
         return "Regular: '$regular' -> '$normalizedRegular'\n" +
                "Curly: '$curly' -> '$normalizedCurly'\n" +
                "Equal after normalization: ${normalizedRegular == normalizedCurly}"

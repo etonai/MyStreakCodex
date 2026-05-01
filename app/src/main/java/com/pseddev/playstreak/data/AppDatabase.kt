@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.data
+package com.pseddev.mystreak.data
 
 import android.content.Context
 import androidx.room.Database
@@ -6,20 +6,20 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import com.pseddev.playstreak.data.daos.AchievementDao
-import com.pseddev.playstreak.data.daos.ActivityDao
-import com.pseddev.playstreak.data.daos.DailyCalendarStateDao
-import com.pseddev.playstreak.data.daos.PieceOrTechniqueDao
-import com.pseddev.playstreak.data.entities.Achievement
-import com.pseddev.playstreak.data.entities.AchievementType
-import com.pseddev.playstreak.data.entities.Activity
-import com.pseddev.playstreak.data.entities.ActivityType
-import com.pseddev.playstreak.data.entities.CalendarColorLevel
-import com.pseddev.playstreak.data.entities.DailyCalendarState
-import com.pseddev.playstreak.data.entities.ItemType
-import com.pseddev.playstreak.data.entities.PieceOrTechnique
-import com.pseddev.playstreak.data.entities.SuccessLevel
-import com.pseddev.playstreak.data.entities.TaskPriority
+import com.pseddev.mystreak.data.daos.AchievementDao
+import com.pseddev.mystreak.data.daos.ActivityDao
+import com.pseddev.mystreak.data.daos.DailyCalendarStateDao
+import com.pseddev.mystreak.data.daos.PieceOrTechniqueDao
+import com.pseddev.mystreak.data.entities.Achievement
+import com.pseddev.mystreak.data.entities.AchievementType
+import com.pseddev.mystreak.data.entities.Activity
+import com.pseddev.mystreak.data.entities.ActivityType
+import com.pseddev.mystreak.data.entities.CalendarColorLevel
+import com.pseddev.mystreak.data.entities.DailyCalendarState
+import com.pseddev.mystreak.data.entities.ItemType
+import com.pseddev.mystreak.data.entities.PieceOrTechnique
+import com.pseddev.mystreak.data.entities.SuccessLevel
+import com.pseddev.mystreak.data.entities.TaskPriority
 
 @Database(
     entities = [PieceOrTechnique::class, Activity::class, DailyCalendarState::class, Achievement::class],

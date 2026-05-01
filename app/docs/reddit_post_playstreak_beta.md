@@ -95,7 +95,7 @@ Here's how I use it:
 - I go do another song
 
 Calendar:
-- Keeps track of streaks, allows me to see what I've practiced on a day 
+- Keeps track of streaks, allows me to see what I've practiced on a day
 
 - Keeps track of what songs I've played the most, and when
 
@@ -177,12 +177,12 @@ Get gentle nudges about neglected pieces
 
 Join the beta:
 
-Android users: 
+Android users:
 1. Join the Google Group (required to activate the download)
    https://groups.google.com/u/1/g/playstreak
 2. Install:
-   Android https://play.google.com/store/apps/details?id=com.pseddev.playstreak
-   Web https://play.google.com/apps/testing/com.pseddev.playstreak
+   Android https://play.google.com/store/apps/details?id=com.pseddev.mystreak
+   Web https://play.google.com/apps/testing/com.pseddev.mystreak
 
 iOS users: Message me to get notified when the iPhone version drops
 All instruments welcome - while I'm a uke/piano player, this works for any instrument
@@ -209,7 +209,7 @@ Quick demo video: https://youtube.com/shorts/_nynODrn4m4
 What it does:
 
 • Simple logging: Add covers after practice with a personal rating
-• Helpful insights: Track streaks, see your most/least practiced songs, and view practice history  
+• Helpful insights: Track streaks, see your most/least practiced songs, and view practice history
 • Data export: Full backup functionality so your data stays yours
 • Suggestions: Once you have enough data, the app suggests which covers to practice based on songs you haven't touched in a while
 • Clean management: Archive old sessions while preserving play counts and recent history
@@ -224,12 +224,12 @@ Perfect for guitarists who want to:
 
 Join the beta:
 
-Android users: 
+Android users:
 1. Join the Google Group (required to access the download)
    https://groups.google.com/u/1/g/playstreak
 2. Install:
-   Install with Android link https://play.google.com/store/apps/details?id=com.pseddev.playstreak
-   Install with Web link https://play.google.com/apps/testing/com.pseddev.playstreak
+   Install with Android link https://play.google.com/store/apps/details?id=com.pseddev.mystreak
+   Install with Web link https://play.google.com/apps/testing/com.pseddev.mystreak
 
 iOS users: Message me to get notified when the iPhone version drops
 
@@ -245,10 +245,10 @@ Also posting in other instrument communities - hope that's cool with the mods!
 ## Additional information:
 
 https://groups.google.com/u/1/g/playstreak
-https://play.google.com/store/apps/details?id=com.pseddev.playstreak
-https://play.google.com/apps/testing/com.pseddev.playstreak
+https://play.google.com/store/apps/details?id=com.pseddev.mystreak
+https://play.google.com/apps/testing/com.pseddev.mystreak
 
 My new app helps people track their music practice sessions.
 https://groups.google.com/u/1/g/playstreak
-https://play.google.com/store/apps/details?id=com.pseddev.playstreak
-https://play.google.com/apps/testing/com.pseddev.playstreak
+https://play.google.com/store/apps/details?id=com.pseddev.mystreak
+https://play.google.com/apps/testing/com.pseddev.mystreak

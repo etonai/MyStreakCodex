@@ -1,25 +1,25 @@
-package com.pseddev.playstreak.ui.importexport
+package com.pseddev.mystreak.ui.importexport
 
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.LiveData
-import com.pseddev.playstreak.BuildConfig
+import com.pseddev.mystreak.BuildConfig
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.pseddev.playstreak.analytics.AnalyticsManager
-import com.pseddev.playstreak.crashlytics.CrashlyticsManager
-import com.pseddev.playstreak.data.models.SyncOperationResult
-import com.pseddev.playstreak.data.repository.PianoRepository
-import com.pseddev.playstreak.utils.AchievementManager
-import com.pseddev.playstreak.utils.CsvHandler
-import com.pseddev.playstreak.utils.GoogleDriveHelper
-import com.pseddev.playstreak.utils.ProUserManager
-import com.pseddev.playstreak.utils.SyncManager
-import com.pseddev.playstreak.data.models.JsonImportResult
-import com.pseddev.playstreak.data.models.JsonValidationResult
+import com.pseddev.mystreak.analytics.AnalyticsManager
+import com.pseddev.mystreak.crashlytics.CrashlyticsManager
+import com.pseddev.mystreak.data.models.SyncOperationResult
+import com.pseddev.mystreak.data.repository.PianoRepository
+import com.pseddev.mystreak.utils.AchievementManager
+import com.pseddev.mystreak.utils.CsvHandler
+import com.pseddev.mystreak.utils.GoogleDriveHelper
+import com.pseddev.mystreak.utils.ProUserManager
+import com.pseddev.mystreak.utils.SyncManager
+import com.pseddev.mystreak.data.models.JsonImportResult
+import com.pseddev.mystreak.data.models.JsonValidationResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import kotlinx.coroutines.Dispatchers
@@ -32,46 +32,46 @@ class ImportExportViewModel(
     private val repository: PianoRepository,
     private val context: Context
 ) : ViewModel() {
-    
+
     private val driveHelper = GoogleDriveHelper(context)
     private val syncManager = SyncManager(context, repository, driveHelper)
     private val proUserManager = ProUserManager.getInstance(context)
     private val crashlyticsManager = CrashlyticsManager(context)
     private val analyticsManager = AnalyticsManager(context)
     private val sharedPrefs = context.getSharedPreferences("play_streak_export_prefs", Context.MODE_PRIVATE)
-    
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
-    
+
     private val _exportResult = MutableLiveData<Event<Result<String>>>()
     val exportResult: LiveData<Event<Result<String>>> = _exportResult
-    
+
     private val _importResult = MutableLiveData<Event<Result<CsvHandler.ImportResult>>>()
     val importResult: LiveData<Event<Result<CsvHandler.ImportResult>>> = _importResult
-    
+
     private val _validationResult = MutableLiveData<Event<CsvHandler.CsvValidationResult>>()
     val validationResult: LiveData<Event<CsvHandler.CsvValidationResult>> = _validationResult
-    
+
     private val _jsonImportResult = MutableLiveData<Event<Result<JsonImportResult>>>()
     val jsonImportResult: LiveData<Event<Result<JsonImportResult>>> = _jsonImportResult
-    
+
     private val _jsonValidationResult = MutableLiveData<Event<JsonValidationResult>>()
     val jsonValidationResult: LiveData<Event<JsonValidationResult>> = _jsonValidationResult
-    
+
     private val _purgeResult = MutableLiveData<Event<Result<String>>>()
     val purgeResult: LiveData<Event<Result<String>>> = _purgeResult
-    
+
     private val _syncResult = MutableLiveData<Event<SyncOperationResult>>()
     val syncResult: LiveData<Event<SyncOperationResult>> = _syncResult
-    
+
     private val _driveConnectionState = MutableLiveData<Boolean>()
     val driveConnectionState: LiveData<Boolean> = _driveConnectionState
-    
+
     init {
         // Check initial sign-in state
         _driveConnectionState.value = isSignedIn()
     }
-    
+
     suspend fun exportToCsv(writer: Writer) {
         if (BuildConfig.DEBUG) {
             Log.d("ExportDebug", "Starting CSV export")
@@ -95,7 +95,7 @@ class ImportExportViewModel(
             _isLoading.value = false
         }
     }
-    
+
     suspend fun exportToJson(writer: Writer) {
         if (BuildConfig.DEBUG) {
             Log.d("JsonExport", "Starting JSON export")
@@ -108,7 +108,7 @@ class ImportExportViewModel(
             }
             // Update last export time
             sharedPrefs.edit().putLong("last_export_time", System.currentTimeMillis()).apply()
-            
+
             // Track analytics for JSON export
             analyticsManager.trackDataOperation(
                 operationType = "export",
@@ -116,13 +116,13 @@ class ImportExportViewModel(
                 activityCount = activityCount,
                 success = true
             )
-            
+
             _exportResult.value = Event(Result.success("JSON export successful!"))
         } catch (e: Exception) {
             Log.e("JsonExport", "Exception in ViewModel: ${e.javaClass.simpleName} - ${e.message}", e)
             // Record crash context for JSON export error
             crashlyticsManager.recordCsvError("json_export", 0, e) // Reuse CSV error tracking for JSON
-            
+
             // Track failed JSON export
             analyticsManager.trackDataOperation(
                 operationType = "export",
@@ -130,14 +130,14 @@ class ImportExportViewModel(
                 activityCount = 0,
                 success = false
             )
-            
+
             val errorMessage = "JSON export failed: ${e.javaClass.simpleName} - ${e.message}"
             _exportResult.value = Event(Result.failure(Exception(errorMessage, e)))
         } finally {
             _isLoading.value = false
         }
     }
-    
+
     fun importFromCsv(csvContent: String) {
         _isLoading.value = true
         viewModelScope.launch {
@@ -145,11 +145,11 @@ class ImportExportViewModel(
                 // First validate the CSV against user limits
                 val pieceLimit = proUserManager.getPieceLimit()
                 val activityLimit = proUserManager.getActivityLimit()
-                
+
                 val validationResult = withContext(Dispatchers.IO) {
                     CsvHandler.validateCsv(csvContent.reader(), pieceLimit, activityLimit)
                 }
-                
+
                 if (!validationResult.isValid) {
                     // Validation failed - show error dialog
                     _validationResult.value = Event(validationResult)
@@ -158,10 +158,10 @@ class ImportExportViewModel(
                     val importResult = withContext(Dispatchers.IO) {
                         repository.importFromCsv(csvContent.reader())
                     }
-                    
+
                     _importResult.value = Event(Result.success(importResult))
                 }
-                
+
             } catch (e: Exception) {
                 // Record crash context for CSV import error
                 crashlyticsManager.recordCsvError("import", 0, e) // Activity count not available at this level
@@ -178,7 +178,7 @@ class ImportExportViewModel(
             }
         }
     }
-    
+
     fun importFromJson(jsonContent: String) {
         _isLoading.value = true
         viewModelScope.launch {
@@ -186,15 +186,15 @@ class ImportExportViewModel(
                 // First validate the JSON against user limits
                 val pieceLimit = proUserManager.getPieceLimit()
                 val activityLimit = proUserManager.getActivityLimit()
-                
+
                 val validationResult = withContext(Dispatchers.IO) {
                     repository.validateJsonForImport(jsonContent.reader(), pieceLimit, activityLimit)
                 }
-                
+
                 if (!validationResult.isValid) {
                     // Validation failed - show error dialog
                     _jsonValidationResult.value = Event(validationResult)
-                    
+
                     // Track failed JSON import (validation failed)
                     analyticsManager.trackDataOperation(
                         operationType = "import",
@@ -207,7 +207,7 @@ class ImportExportViewModel(
                     val importResult = withContext(Dispatchers.IO) {
                         repository.importFromJson(jsonContent.reader())
                     }
-                    
+
                     // Track successful JSON import
                     analyticsManager.trackDataOperation(
                         operationType = "import",
@@ -215,14 +215,14 @@ class ImportExportViewModel(
                         activityCount = importResult.activitiesImported,
                         success = importResult.success
                     )
-                    
+
                     _jsonImportResult.value = Event(Result.success(importResult))
                 }
-                
+
             } catch (e: Exception) {
                 // Record crash context for JSON import error
                 crashlyticsManager.recordCsvError("json_import", 0, e) // Reuse CSV error tracking for JSON
-                
+
                 // Track failed JSON import (exception occurred)
                 analyticsManager.trackDataOperation(
                     operationType = "import",
@@ -245,7 +245,7 @@ class ImportExportViewModel(
             }
         }
     }
-    
+
     fun purgeAllData() {
         _isLoading.value = true
         viewModelScope.launch {
@@ -254,7 +254,7 @@ class ImportExportViewModel(
                     repository.deleteAllActivities()
                     repository.deleteAllPiecesAndTechniques()
                     repository.deleteAllAchievements()
-                    
+
                     // Reinitialize achievements after purging
                     val achievementManager = AchievementManager(context, repository)
                     achievementManager.initializeAchievements()
@@ -269,34 +269,34 @@ class ImportExportViewModel(
             }
         }
     }
-    
-    
+
+
     fun isSignedIn(): Boolean {
         return GoogleSignIn.getLastSignedInAccount(context) != null
     }
-    
+
     fun getSignedInAccount(): GoogleSignInAccount? {
         return GoogleSignIn.getLastSignedInAccount(context)
     }
-    
+
     fun getLastSyncTime(): Long {
         return syncManager.getLastSyncTime()
     }
-    
+
     fun getLastExportTime(): Long {
         return sharedPrefs.getLong("last_export_time", 0L)
     }
-    
+
     fun getSignInIntent(): Intent {
         return driveHelper.getSignInIntent()
     }
-    
+
     fun handleSignInSuccess(account: GoogleSignInAccount) {
         syncManager.setGoogleEmail(account.email)
         syncManager.setSyncEnabled(true)
         _driveConnectionState.value = true
     }
-    
+
     fun syncToDrive() {
         _isLoading.value = true
         viewModelScope.launch {
@@ -317,7 +317,7 @@ class ImportExportViewModel(
             }
         }
     }
-    
+
     fun restoreFromDrive() {
         _isLoading.value = true
         viewModelScope.launch {
@@ -338,7 +338,7 @@ class ImportExportViewModel(
             }
         }
     }
-    
+
     fun disconnectDrive() {
         viewModelScope.launch {
             try {
@@ -357,7 +357,7 @@ class ImportExportViewModel(
 // Event wrapper to handle one-time events
 class Event<out T>(private val content: T) {
     private var hasBeenHandled = false
-    
+
     fun getContentIfNotHandled(): T? {
         return if (hasBeenHandled) {
             null

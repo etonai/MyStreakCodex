@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.ui.addactivity
+package com.pseddev.mystreak.ui.addactivity
 
 import android.content.Context
 import androidx.lifecycle.LiveData
@@ -7,20 +7,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.pseddev.playstreak.analytics.AnalyticsManager
-import com.pseddev.playstreak.crashlytics.CrashlyticsManager
-import com.pseddev.playstreak.data.entities.Activity
-import com.pseddev.playstreak.data.entities.ActivityType
-import com.pseddev.playstreak.data.entities.ItemType
-import com.pseddev.playstreak.data.entities.PieceOrTechnique
-import com.pseddev.playstreak.data.repository.PianoRepository
-import com.pseddev.playstreak.ui.progress.EditActivityStorage
-import com.pseddev.playstreak.utils.ProUserManager
-import com.pseddev.playstreak.utils.TextNormalizer
-import com.pseddev.playstreak.utils.AchievementManager
-import com.pseddev.playstreak.utils.AchievementCelebrationManager
-import com.pseddev.playstreak.data.entities.AchievementType
-import com.pseddev.playstreak.utils.AchievementDefinitions
+import com.pseddev.mystreak.analytics.AnalyticsManager
+import com.pseddev.mystreak.crashlytics.CrashlyticsManager
+import com.pseddev.mystreak.data.entities.Activity
+import com.pseddev.mystreak.data.entities.ActivityType
+import com.pseddev.mystreak.data.entities.ItemType
+import com.pseddev.mystreak.data.entities.PieceOrTechnique
+import com.pseddev.mystreak.data.repository.PianoRepository
+import com.pseddev.mystreak.ui.progress.EditActivityStorage
+import com.pseddev.mystreak.utils.ProUserManager
+import com.pseddev.mystreak.utils.TextNormalizer
+import com.pseddev.mystreak.utils.AchievementManager
+import com.pseddev.mystreak.utils.AchievementCelebrationManager
+import com.pseddev.mystreak.data.entities.AchievementType
+import com.pseddev.mystreak.utils.AchievementDefinitions
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -29,32 +29,32 @@ class AddActivityViewModel(
     private val repository: PianoRepository,
     private val context: Context
 ) : ViewModel() {
-    
+
     private val analyticsManager = AnalyticsManager(context)
     private val crashlyticsManager = CrashlyticsManager(context)
     private val proUserManager = ProUserManager.getInstance(context)
     private val achievementManager = AchievementManager(context, repository)
     private val achievementCelebrationManager = AchievementCelebrationManager(context)
-    
+
     private val _navigateToMain = MutableLiveData<Boolean>()
     val navigateToMain: LiveData<Boolean> = _navigateToMain
-    
+
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
-    
+
     private val _editMode = MutableLiveData<Boolean>(false)
     val editMode: LiveData<Boolean> = _editMode
-    
+
     private val _editActivity = MutableLiveData<Activity?>()
     val editActivity: LiveData<Activity?> = _editActivity
-    
+
     private val _showCelebration = MutableLiveData<AchievementType?>()
     val showCelebration: LiveData<AchievementType?> = _showCelebration
-    
+
     fun getPiecesAndTechniques(activityType: ActivityType): LiveData<List<PieceOrTechnique>> {
         return repository.getActiveTasks().asLiveData()
     }
-    
+
     fun getFavorites(): LiveData<List<PieceOrTechnique>> {
         return repository.getActiveHighPriorityTasks().asLiveData()
     }
@@ -64,7 +64,7 @@ class AddActivityViewModel(
             .map { tasks -> tasks.find { it.id == taskId } }
             .asLiveData()
     }
-    
+
     fun insertPieceOrTechnique(name: String, type: ItemType, onComplete: (Long) -> Unit) {
         viewModelScope.launch {
             try {
@@ -74,7 +74,7 @@ class AddActivityViewModel(
                     _errorMessage.value = "This task already exists"
                     return@launch
                 }
-                
+
                 // Check piece limit before adding
                 val currentPieceCount = repository.getAllPiecesAndTechniques().first().size
                 if (!proUserManager.canAddMorePieces(currentPieceCount)) {
@@ -82,7 +82,7 @@ class AddActivityViewModel(
                     _errorMessage.value = "You have reached the task limit of $limit tasks. Cannot add more tasks."
                     return@launch
                 }
-                
+
                 val id = repository.insertPieceOrTechnique(
                     PieceOrTechnique(
                         name = normalizedName,
@@ -90,21 +90,21 @@ class AddActivityViewModel(
                         isFavorite = false
                     )
                 )
-                
+
                 // Check for first piece/technique achievements
                 val achievementType = if (type == ItemType.PIECE) {
                     AchievementType.FIRST_PIECE
                 } else {
                     AchievementType.FIRST_TECHNIQUE
                 }
-                
+
                 if (!achievementManager.isAchievementUnlocked(achievementType)) {
                     achievementManager.unlockAchievement(achievementType)
-                    
+
                     // Trigger celebration for any achievement unlock
                     _showCelebration.value = achievementType
                 }
-                
+
                 // Track analytics for piece addition during activity creation
                 val newPieceCount = repository.getAllPiecesAndTechniques().first().size
                 analyticsManager.trackPieceAdded(
@@ -112,14 +112,14 @@ class AddActivityViewModel(
                     totalPieceCount = newPieceCount,
                     source = "during_activity_creation"
                 )
-                
+
                 onComplete(id)
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to add task: ${e.message}"
             }
         }
     }
-    
+
     fun saveActivity(
         pieceId: Long,
         activityType: ActivityType,
@@ -134,7 +134,7 @@ class AddActivityViewModel(
         EditActivityStorage.clearPrePopulatedDate()
         saveActivity(pieceId, activityType, level, performanceType, minutes, notes, timestamp)
     }
-    
+
     fun saveActivity(
         pieceId: Long,
         activityType: ActivityType,
@@ -149,15 +149,15 @@ class AddActivityViewModel(
                 // Check activity limit before adding
                 val currentActivityCount = repository.getActivityCount()
                 val activityLimit = proUserManager.getActivityLimit()
-                
+
                 if (currentActivityCount >= activityLimit) {
                     _errorMessage.value = "You have reached the activity limit of $activityLimit activities. Cannot add more activities."
                     return@launch
                 }
-                
+
                 // Get piece information for analytics
                 val piece = repository.getPieceOrTechniqueById(pieceId)
-                
+
                 repository.insertActivity(
                     Activity(
                         timestamp = timestamp,
@@ -169,10 +169,10 @@ class AddActivityViewModel(
                         notes = TextNormalizer.normalizeUserInput(notes)
                     )
                 )
-                
+
                 // Check for first activity achievements
                 checkFirstActivityAchievements(activityType, performanceType)
-                
+
                 // Track analytics event for activity logged
                 piece?.let {
                     analyticsManager.trackActivityLogged(
@@ -182,11 +182,11 @@ class AddActivityViewModel(
                         source = "main_flow"
                     )
                 }
-                
+
                 // Check for streak achievements after activity is added
                 val newStreak = repository.calculateCurrentStreak()
                 trackStreakAchievement(newStreak)
-                
+
                 _navigateToMain.value = true
             } catch (e: Exception) {
                 // Record crash context for activity creation error
@@ -200,12 +200,12 @@ class AddActivityViewModel(
             }
         }
     }
-    
+
     fun setEditMode(activity: Activity) {
         _editMode.value = true
         _editActivity.value = activity
     }
-    
+
     fun updateActivity(
         activityId: Long,
         pieceId: Long,
@@ -232,18 +232,18 @@ class AddActivityViewModel(
             _navigateToMain.value = true
         }
     }
-    
+
     fun doneNavigating() {
         _navigateToMain.value = false
         clearEditMode()
         EditActivityStorage.clearEditActivity()
     }
-    
+
     fun clearEditMode() {
         _editMode.value = false
         _editActivity.value = null
     }
-    
+
     /**
      * Check for first activity achievements
      */
@@ -260,7 +260,7 @@ class AddActivityViewModel(
                     achievementManager.unlockAchievement(AchievementType.FIRST_PERFORMANCE)
                     _showCelebration.value = AchievementType.FIRST_PERFORMANCE
                 }
-                
+
                 // Check for specific performance type achievements
                 when (performanceType.lowercase()) {
                     "online" -> {
@@ -295,7 +295,7 @@ class AddActivityViewModel(
             100 -> AchievementType.STREAK_100_DAYS
             else -> null
         }
-        
+
         // Only track milestones at specific levels and unlock achievement
         achievementType?.let { type ->
             if (!achievementManager.isAchievementUnlocked(type)) {
@@ -304,18 +304,18 @@ class AddActivityViewModel(
             }
         }
     }
-    
+
     fun clearErrorMessage() {
         _errorMessage.value = null
     }
-    
+
     /**
      * Get the celebration manager for showing achievement celebrations
      */
     fun getCelebrationManager(): AchievementCelebrationManager {
         return achievementCelebrationManager
     }
-    
+
     /**
      * Reset celebration event after it's been handled
      */

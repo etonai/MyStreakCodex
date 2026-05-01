@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.ui.progress
+package com.pseddev.mystreak.ui.progress
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -12,12 +12,12 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.pseddev.playstreak.PlayStreakApplication
-import com.pseddev.playstreak.R
-import com.pseddev.playstreak.data.entities.ActivityType
-import com.pseddev.playstreak.data.entities.SuccessLevel
-import com.pseddev.playstreak.databinding.FragmentDashboardBinding
-import com.pseddev.playstreak.databinding.ItemDashboardActivityBinding
+import com.pseddev.mystreak.MyStreakApplication
+import com.pseddev.mystreak.R
+import com.pseddev.mystreak.data.entities.ActivityType
+import com.pseddev.mystreak.data.entities.SuccessLevel
+import com.pseddev.mystreak.databinding.FragmentDashboardBinding
+import com.pseddev.mystreak.databinding.ItemDashboardActivityBinding
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -29,7 +29,7 @@ class DashboardFragment : Fragment() {
 
     private val viewModel: DashboardViewModel by viewModels {
         DashboardViewModelFactory(
-            (requireActivity().application as PlayStreakApplication).repository,
+            (requireActivity().application as MyStreakApplication).repository,
             requireContext()
         )
     }

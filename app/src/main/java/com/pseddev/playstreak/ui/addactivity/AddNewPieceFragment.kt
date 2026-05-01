@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.ui.addactivity
+package com.pseddev.mystreak.ui.addactivity
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,25 +9,25 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.pseddev.playstreak.PlayStreakApplication
-import com.pseddev.playstreak.data.entities.ActivityType
-import com.pseddev.playstreak.data.entities.ItemType
-import com.pseddev.playstreak.databinding.FragmentAddNewPieceBinding
+import com.pseddev.mystreak.MyStreakApplication
+import com.pseddev.mystreak.data.entities.ActivityType
+import com.pseddev.mystreak.data.entities.ItemType
+import com.pseddev.mystreak.databinding.FragmentAddNewPieceBinding
 
 class AddNewPieceFragment : Fragment() {
-    
+
     private var _binding: FragmentAddNewPieceBinding? = null
     private val binding get() = _binding!!
-    
+
     private val args: AddNewPieceFragmentArgs by navArgs()
-    
+
     private val viewModel: AddActivityViewModel by activityViewModels {
         AddActivityViewModelFactory(
-            (requireActivity().application as PlayStreakApplication).repository,
+            (requireActivity().application as MyStreakApplication).repository,
             requireContext()
         )
     }
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,16 +36,16 @@ class AddNewPieceFragment : Fragment() {
         _binding = FragmentAddNewPieceBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         // Set default based on activity type
         if (args.activityType == ActivityType.PERFORMANCE) {
             binding.radioPiece.isChecked = true
             binding.radioTechnique.isEnabled = false
         }
-        
+
         // Observe error messages
         viewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
             if (errorMessage != null) {
@@ -54,11 +54,11 @@ class AddNewPieceFragment : Fragment() {
                 binding.nameInputLayout.error = null
             }
         }
-        
+
         // Observe celebration events
         viewModel.showCelebration.observe(viewLifecycleOwner) { achievementType ->
             if (achievementType != null) {
-                val achievement = com.pseddev.playstreak.utils.AchievementDefinitions.getAllAchievementDefinitions()
+                val achievement = com.pseddev.mystreak.utils.AchievementDefinitions.getAllAchievementDefinitions()
                     .find { it.type == achievementType }
                 if (achievement != null) {
                     viewModel.getCelebrationManager().showCelebration(binding.root, achievement)
@@ -66,20 +66,20 @@ class AddNewPieceFragment : Fragment() {
                 viewModel.onCelebrationHandled()
             }
         }
-        
+
         binding.buttonOk.setOnClickListener {
             val name = binding.editTextName.text.toString().trim()
-            
+
             if (name.isEmpty()) {
                 binding.nameInputLayout.error = "Please enter a task name"
                 return@setOnClickListener
             }
-            
+
             // Clear any previous error
             binding.nameInputLayout.error = null
-            
+
             val type = ItemType.PIECE
-            
+
             viewModel.insertPieceOrTechnique(name, type) { pieceId ->
                 requireActivity().runOnUiThread {
                     val action = AddNewPieceFragmentDirections
@@ -94,7 +94,7 @@ class AddNewPieceFragment : Fragment() {
             }
         }
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

@@ -1,14 +1,14 @@
-package com.pseddev.playstreak.ui.addactivity
+package com.pseddev.mystreak.ui.addactivity
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.pseddev.playstreak.data.entities.ItemType
-import com.pseddev.playstreak.data.entities.PieceOrTechnique
-import com.pseddev.playstreak.databinding.ItemHeaderBinding
-import com.pseddev.playstreak.databinding.ItemPieceBinding
+import com.pseddev.mystreak.data.entities.ItemType
+import com.pseddev.mystreak.data.entities.PieceOrTechnique
+import com.pseddev.mystreak.databinding.ItemHeaderBinding
+import com.pseddev.mystreak.databinding.ItemPieceBinding
 
 sealed class PieceAdapterItem {
     data class Header(val title: String) : PieceAdapterItem()
@@ -18,14 +18,14 @@ sealed class PieceAdapterItem {
 class PieceAdapter(
     private val onItemClick: (PieceOrTechnique) -> Unit
 ) : ListAdapter<PieceAdapterItem, RecyclerView.ViewHolder>(PieceDiffCallback()) {
-    
+
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is PieceAdapterItem.Header -> VIEW_TYPE_HEADER
             is PieceAdapterItem.Item -> VIEW_TYPE_ITEM
         }
     }
-    
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TYPE_HEADER -> {
@@ -43,14 +43,14 @@ class PieceAdapter(
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
-    
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = getItem(position)) {
             is PieceAdapterItem.Header -> (holder as HeaderViewHolder).bind(item.title)
             is PieceAdapterItem.Item -> (holder as PieceViewHolder).bind(item.piece)
         }
     }
-    
+
     class HeaderViewHolder(
         private val binding: ItemHeaderBinding
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -58,7 +58,7 @@ class PieceAdapter(
             binding.textHeader.text = title
         }
     }
-    
+
     class PieceViewHolder(
         private val binding: ItemPieceBinding,
         private val onItemClick: (PieceOrTechnique) -> Unit
@@ -70,7 +70,7 @@ class PieceAdapter(
             binding.root.setOnClickListener { onItemClick(piece) }
         }
     }
-    
+
     companion object {
         private const val VIEW_TYPE_HEADER = 0
         private const val VIEW_TYPE_ITEM = 1
@@ -80,14 +80,14 @@ class PieceAdapter(
 class PieceDiffCallback : DiffUtil.ItemCallback<PieceAdapterItem>() {
     override fun areItemsTheSame(oldItem: PieceAdapterItem, newItem: PieceAdapterItem): Boolean {
         return when {
-            oldItem is PieceAdapterItem.Header && newItem is PieceAdapterItem.Header -> 
+            oldItem is PieceAdapterItem.Header && newItem is PieceAdapterItem.Header ->
                 oldItem.title == newItem.title
-            oldItem is PieceAdapterItem.Item && newItem is PieceAdapterItem.Item -> 
+            oldItem is PieceAdapterItem.Item && newItem is PieceAdapterItem.Item ->
                 oldItem.piece.id == newItem.piece.id
             else -> false
         }
     }
-    
+
     override fun areContentsTheSame(oldItem: PieceAdapterItem, newItem: PieceAdapterItem): Boolean {
         return oldItem == newItem
     }

@@ -1,9 +1,9 @@
 # Ticket #10: Toggle Verbose Calendar Mode
 
-**Status:** 🎫 Open  
-**Date Created:** 2025-07-26  
-**Priority:** Medium  
-**Type:** Feature Enhancement  
+**Status:** 🎫 Open
+**Date Created:** 2025-07-26
+**Priority:** Medium
+**Type:** Feature Enhancement
 
 ## Problem Statement
 
@@ -71,12 +71,12 @@ data class VerboseCalendarDay(
 ### Key Implementation Areas
 
 **Files to Modify:**
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/CalendarFragment.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/CalendarViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/CalendarFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/CalendarViewModel.kt`
 - `app/src/main/res/layout/fragment_calendar.xml`
 - `app/src/main/res/layout/calendar_day_verbose.xml` (new)
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/CalendarDayAdapter.kt` (new)
-- `app/src/main/java/com/pseddev/playstreak/utils/PreferencesManager.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/CalendarDayAdapter.kt` (new)
+- `app/src/main/java/com/pseddev/mystreak/utils/PreferencesManager.kt`
 
 **Integration Points:**
 - Activity editing logic from Timeline (reuse existing components)

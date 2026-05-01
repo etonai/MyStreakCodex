@@ -1,37 +1,37 @@
-package com.pseddev.playstreak.analytics
+package com.pseddev.mystreak.analytics
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.pseddev.playstreak.BuildConfig
+import com.pseddev.mystreak.BuildConfig
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.logEvent
-import com.pseddev.playstreak.PlayStreakApplication
-import com.pseddev.playstreak.data.entities.ActivityType
-import com.pseddev.playstreak.data.entities.ItemType
+import com.pseddev.mystreak.MyStreakApplication
+import com.pseddev.mystreak.data.entities.ActivityType
+import com.pseddev.mystreak.data.entities.ItemType
 import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * Centralized analytics manager for tracking user events in PlayStreak
+ * Centralized analytics manager for tracking user events in MyStreak
  * Following Feature #36 implementation requirements
  */
 class AnalyticsManager(private val context: Context) {
-    
+
     // Firebase Analytics enabled (performance issue was emulator-related)
     private val analyticsEnabled = !BuildConfig.DEBUG
-    
+
     private val firebaseAnalytics: FirebaseAnalytics by lazy {
-        (context.applicationContext as PlayStreakApplication).firebaseAnalytics
+        (context.applicationContext as MyStreakApplication).firebaseAnalytics
     }
-    
+
     // SharedPreferences for streak milestone deduplication
     private val streakPrefs: SharedPreferences by lazy {
         context.getSharedPreferences("streak_milestones", Context.MODE_PRIVATE)
     }
-    
+
     // Date format for daily tracking keys
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    
+
     companion object {
         // Event names - following Firebase naming conventions
         private const val EVENT_ACTIVITY_LOGGED = "activity_logged"
@@ -40,7 +40,7 @@ class AnalyticsManager(private val context: Context) {
         private const val EVENT_DATA_OPERATION = "data_operation"
         private const val EVENT_DATA_PRUNING = "data_pruning"
         private const val EVENT_ACHIEVEMENT_UNLOCKED = "achievement_unlocked"
-        
+
         // Parameter names
         private const val PARAM_ACTIVITY_TYPE = "activity_type"
         private const val PARAM_PIECE_TYPE = "piece_type"
@@ -57,7 +57,7 @@ class AnalyticsManager(private val context: Context) {
         private const val PARAM_DELETED_COUNT = "deleted_count"
         private const val PARAM_SUCCESS = "success"
     }
-    
+
     /**
      * Track when user logs a practice or performance activity
      * @param source the entry point: "main_flow", "dashboard_quick", "calendar_quick", "suggestion"
@@ -76,42 +76,42 @@ class AnalyticsManager(private val context: Context) {
             param(PARAM_SOURCE, source)
         }
     }
-    
+
     /**
      * Track when user achieves a practice streak milestone
      * Implements deduplication to ensure each milestone is only sent once per day
      */
     fun trackStreakAchieved(streakLength: Int, emojiLevel: String) {
         if (!analyticsEnabled) return
-        
+
         // Check if this milestone event was already sent today
         val today = dateFormat.format(Date())
         val milestoneKey = "milestone_${streakLength}_$today"
-        
+
         if (streakPrefs.getBoolean(milestoneKey, false)) {
             // Already sent this milestone today, skip
             return
         }
-        
+
         // Send the analytics event
         firebaseAnalytics.logEvent(EVENT_STREAK_ACHIEVED) {
             param(PARAM_STREAK_LENGTH, streakLength.toLong())
             param(PARAM_EMOJI_LEVEL, emojiLevel)
         }
-        
+
         // Mark this milestone as sent for today
         streakPrefs.edit().putBoolean(milestoneKey, true).apply()
-        
+
         // Clean up old milestone tracking data (keep only last 7 days)
         cleanupOldMilestoneData()
     }
-    
+
     /**
      * Track when user adds a new piece or technique
      * @param source the entry point: "pieces_tab", "during_activity_creation"
      */
     fun trackPieceAdded(
-        pieceType: ItemType, 
+        pieceType: ItemType,
         totalPieceCount: Int,
         source: String = "unknown"
     ) {
@@ -122,7 +122,7 @@ class AnalyticsManager(private val context: Context) {
             param(PARAM_SOURCE, source)
         }
     }
-    
+
     /**
      * Track achievement unlocked events
      * @param achievementType the type of achievement unlocked
@@ -138,7 +138,7 @@ class AnalyticsManager(private val context: Context) {
             param(PARAM_ACHIEVEMENT_CATEGORY, category)
         }
     }
-    
+
     /**
      * Track data import/export operations (JSON, CSV)
      */
@@ -182,7 +182,7 @@ class AnalyticsManager(private val context: Context) {
             param(PARAM_SUCCESS, if (success) 1L else 0L)
         }
     }
-    
+
     /**
      * Helper function to determine emoji level from streak length
      * Based on emoji progression: 🎵 (3-4) → 🎶 (5-7) → 🔥 (8-13) → 🔥🔥🔥 (14-29) → ⭐⭐⭐ (30-60) → 💎💎💎 (61-99) → 🚀🚀🚀 (100+)
@@ -199,7 +199,7 @@ class AnalyticsManager(private val context: Context) {
             else -> "none"
         }
     }
-    
+
     /**
      * Clean up old milestone tracking data to prevent SharedPreferences from growing indefinitely
      * Keeps only the last 7 days of milestone tracking data
@@ -209,7 +209,7 @@ class AnalyticsManager(private val context: Context) {
         val allKeys = streakPrefs.all.keys
         val sevenDaysAgo = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -7) }.time
         val cutoffDate = dateFormat.format(sevenDaysAgo)
-        
+
         allKeys.forEach { key ->
             // Extract date from key format: "milestone_{number}_{date}"
             if (key.startsWith("milestone_")) {
@@ -223,10 +223,10 @@ class AnalyticsManager(private val context: Context) {
                 }
             }
         }
-        
+
         editor.apply()
     }
-    
+
     /**
      * Force Analytics to sync immediately for testing purposes (DEBUG ONLY)
      * This should only be used during development testing

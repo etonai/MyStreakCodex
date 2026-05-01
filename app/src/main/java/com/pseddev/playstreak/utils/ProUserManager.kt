@@ -1,8 +1,8 @@
-package com.pseddev.playstreak.utils
+package com.pseddev.mystreak.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.pseddev.playstreak.BuildConfig
+import com.pseddev.mystreak.BuildConfig
 
 /**
  * Manages Pro user status using SharedPreferences for local storage.
@@ -10,11 +10,11 @@ import com.pseddev.playstreak.BuildConfig
  * In production, this would integrate with Google Play Billing or similar service.
  */
 class ProUserManager private constructor(context: Context) {
-    
-    
-    private val sharedPreferences: SharedPreferences = 
+
+
+    private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-    
+
     /**
      * Check if the current user is a Pro subscriber
      * @return true if user has Pro status, false for free user
@@ -22,7 +22,7 @@ class ProUserManager private constructor(context: Context) {
     fun isProUser(): Boolean {
         return BuildConfig.IS_PRO_VERSION || sharedPreferences.getBoolean(KEY_IS_PRO_USER, false)
     }
-    
+
     /**
      * Set the Pro user status
      * @param isPro true to grant Pro status, false for free user
@@ -32,7 +32,7 @@ class ProUserManager private constructor(context: Context) {
             .putBoolean(KEY_IS_PRO_USER, isPro)
             .apply()
     }
-    
+
     /**
      * Toggle Pro user status (useful for testing)
      * @return the new Pro status after toggling
@@ -42,14 +42,14 @@ class ProUserManager private constructor(context: Context) {
         setProUser(newStatus)
         return newStatus
     }
-    
+
     /**
      * Reset Pro status to free user (useful for testing)
      */
     fun resetToFreeUser() {
         setProUser(false)
     }
-    
+
     /**
      * Check if user can add more favorites based on Pro status and current count
      * @param currentFavoriteCount the current number of favorites the user has
@@ -62,7 +62,7 @@ class ProUserManager private constructor(context: Context) {
             currentFavoriteCount < FREE_USER_FAVORITE_LIMIT // Free users: only if under 4
         }
     }
-    
+
     /**
      * Check if user can add more pieces/techniques based on Pro status and current count
      * @param currentPieceCount the current total number of pieces and techniques the user has
@@ -72,7 +72,7 @@ class ProUserManager private constructor(context: Context) {
         val limit = getPieceLimit()
         return currentPieceCount < limit
     }
-    
+
     /**
      * Get the piece limit for the current user type
      * @return the maximum number of pieces allowed for this user
@@ -84,7 +84,7 @@ class ProUserManager private constructor(context: Context) {
             FREE_USER_PIECE_LIMIT
         }
     }
-    
+
     /**
      * Get the activity limit for the current user type
      * @return the maximum number of activities allowed for this user
@@ -96,9 +96,9 @@ class ProUserManager private constructor(context: Context) {
             FREE_USER_ACTIVITY_LIMIT
         }
     }
-    
+
     companion object {
-        private const val PREFS_NAME = "playstreak_pro_prefs"
+        private const val PREFS_NAME = "mystreak_pro_prefs"
         private const val KEY_IS_PRO_USER = "is_pro_user"
         const val FREE_USER_FAVORITE_LIMIT = 4
         // Update activity and piece limits
@@ -106,17 +106,17 @@ class ProUserManager private constructor(context: Context) {
         private const val PRO_USER_ACTIVITY_LIMIT = 4000
         private const val FREE_USER_PIECE_LIMIT = 500
         private const val PRO_USER_PIECE_LIMIT = 550
-        
+
         // Practice Suggestions Limits
         const val FREE_USER_PRACTICE_FAVORITE_SUGGESTIONS = 2
         const val PRO_USER_PRACTICE_FAVORITE_SUGGESTIONS = 4
         const val FREE_USER_PRACTICE_NON_FAVORITE_SUGGESTIONS = 2
         const val PRO_USER_PRACTICE_NON_FAVORITE_SUGGESTIONS = 4
         const val PRO_USER_PERFORMANCE_SUGGESTIONS = 5  // Free users get 0
-        
+
         @Volatile
         private var INSTANCE: ProUserManager? = null
-        
+
         fun getInstance(context: Context): ProUserManager {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: ProUserManager(context.applicationContext).also { INSTANCE = it }

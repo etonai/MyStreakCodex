@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.ui.favorites
+package com.pseddev.mystreak.ui.favorites
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,25 +10,25 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.appcompat.app.AlertDialog
 import android.widget.Toast
-import com.pseddev.playstreak.PlayStreakApplication
-import com.pseddev.playstreak.databinding.FragmentFavoritesBinding
-import com.pseddev.playstreak.utils.ProUserManager
+import com.pseddev.mystreak.MyStreakApplication
+import com.pseddev.mystreak.databinding.FragmentFavoritesBinding
+import com.pseddev.mystreak.utils.ProUserManager
 import com.google.android.material.snackbar.Snackbar
 
 class FavoritesFragment : Fragment() {
-    
+
     private var _binding: FragmentFavoritesBinding? = null
     private val binding get() = _binding!!
-    
+
     private val viewModel: FavoritesViewModel by viewModels {
         FavoritesViewModelFactory(
-            (requireActivity().application as PlayStreakApplication).repository,
+            (requireActivity().application as MyStreakApplication).repository,
             requireContext()
         )
     }
-    
+
     private lateinit var adapter: FavoritesAdapter
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -37,14 +37,14 @@ class FavoritesFragment : Fragment() {
         _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         setupRecyclerView()
         observeViewModel()
     }
-    
+
     private fun setupRecyclerView() {
         adapter = FavoritesAdapter(
             onFavoriteToggle = { pieceOrTechnique ->
@@ -61,13 +61,13 @@ class FavoritesFragment : Fragment() {
                 }
             }
         )
-        
+
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             this.adapter = this@FavoritesFragment.adapter
         }
     }
-    
+
     private fun observeViewModel() {
         viewModel.allPiecesAndTechniques.observe(viewLifecycleOwner) { items ->
             if (items.isEmpty()) {
@@ -80,7 +80,7 @@ class FavoritesFragment : Fragment() {
             }
         }
     }
-    
+
     private fun showFavoriteLimitPrompt() {
         AlertDialog.Builder(requireContext())
             .setTitle("Favorite Limit")
@@ -88,7 +88,7 @@ class FavoritesFragment : Fragment() {
             .setPositiveButton("OK", null)
             .show()
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

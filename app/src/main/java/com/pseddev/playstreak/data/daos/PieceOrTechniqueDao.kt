@@ -1,12 +1,12 @@
-package com.pseddev.playstreak.data.daos
+package com.pseddev.mystreak.data.daos
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.pseddev.playstreak.data.entities.ItemType
-import com.pseddev.playstreak.data.entities.PieceOrTechnique
+import com.pseddev.mystreak.data.entities.ItemType
+import com.pseddev.mystreak.data.entities.PieceOrTechnique
 import kotlinx.coroutines.flow.Flow
 
 @Dao

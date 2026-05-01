@@ -1,11 +1,11 @@
-package com.pseddev.playstreak.ui.progress
+package com.pseddev.mystreak.ui.progress
 
 import androidx.lifecycle.*
-import com.pseddev.playstreak.data.entities.ActivityType
-import com.pseddev.playstreak.data.entities.ItemType
-import com.pseddev.playstreak.data.entities.PieceOrTechnique
-import com.pseddev.playstreak.data.repository.PianoRepository
-import com.pseddev.playstreak.utils.ProUserManager
+import com.pseddev.mystreak.data.entities.ActivityType
+import com.pseddev.mystreak.data.entities.ItemType
+import com.pseddev.mystreak.data.entities.PieceOrTechnique
+import com.pseddev.mystreak.data.repository.PianoRepository
+import com.pseddev.mystreak.utils.ProUserManager
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.combine
 import java.util.*
@@ -28,18 +28,18 @@ class SuggestionsViewModel(
     private val repository: PianoRepository,
     private val context: android.content.Context
 ) : ViewModel() {
-    
+
     private val proUserManager = ProUserManager.getInstance(context)
     private val suggestionsService = SuggestionsService(proUserManager)
-    
-    val practiceSuggestions: LiveData<List<SuggestionItem>> = 
+
+    val practiceSuggestions: LiveData<List<SuggestionItem>> =
         repository.getAllPiecesAndTechniques()
             .combine(repository.getAllActivities()) { pieces, activities ->
                 suggestionsService.generatePracticeSuggestions(pieces, activities)
             }
             .asLiveData()
-    
-    val performanceSuggestions: LiveData<List<SuggestionItem>> = 
+
+    val performanceSuggestions: LiveData<List<SuggestionItem>> =
         repository.getAllPiecesAndTechniques()
             .combine(repository.getAllActivities()) { pieces, activities ->
                 suggestionsService.generatePerformanceSuggestions(pieces, activities)

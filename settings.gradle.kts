@@ -20,5 +20,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PlayStreak"
+rootProject.name = "MyStreak"
 include(":app")

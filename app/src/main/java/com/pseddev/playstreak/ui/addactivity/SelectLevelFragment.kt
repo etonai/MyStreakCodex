@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.ui.addactivity
+package com.pseddev.mystreak.ui.addactivity
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,23 +9,23 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.pseddev.playstreak.PlayStreakApplication
-import com.pseddev.playstreak.databinding.FragmentSelectLevelBinding
+import com.pseddev.mystreak.MyStreakApplication
+import com.pseddev.mystreak.databinding.FragmentSelectLevelBinding
 
 class SelectLevelFragment : Fragment() {
-    
+
     private var _binding: FragmentSelectLevelBinding? = null
     private val binding get() = _binding!!
-    
+
     private val args: SelectLevelFragmentArgs by navArgs()
-    
+
     private val viewModel: AddActivityViewModel by activityViewModels {
         AddActivityViewModelFactory(
-            (requireActivity().application as PlayStreakApplication).repository,
+            (requireActivity().application as MyStreakApplication).repository,
             requireContext()
         )
     }
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,22 +34,22 @@ class SelectLevelFragment : Fragment() {
         _binding = FragmentSelectLevelBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         binding.textPieceName.text = args.pieceName
-        
+
         setupLevelOptions()
         setupTaskDescriptions()
-        
+
         // Check if we're in edit mode and set up the ViewModel
-        val editActivity = com.pseddev.playstreak.ui.progress.EditActivityStorage.getEditActivity()
+        val editActivity = com.pseddev.mystreak.ui.progress.EditActivityStorage.getEditActivity()
         if (editActivity != null) {
             // Set edit mode in ViewModel
             viewModel.setEditMode(editActivity)
         }
-        
+
         // Pre-populate fields in edit mode
         viewModel.editActivity.observe(viewLifecycleOwner) { editActivity ->
             if (editActivity != null) {
@@ -60,10 +60,10 @@ class SelectLevelFragment : Fragment() {
                     3 -> binding.radioLevel3.isChecked = true
                     4 -> binding.radioLevel4.isChecked = true
                 }
-                
+
             }
         }
-        
+
         binding.buttonContinue.setOnClickListener {
             val selectedLevel = when {
                 binding.radioLevel1.isChecked -> 1
@@ -72,7 +72,7 @@ class SelectLevelFragment : Fragment() {
                 binding.radioLevel4.isChecked -> 4
                 else -> return@setOnClickListener
             }
-            
+
             val action = SelectLevelFragmentDirections
                 .actionSelectLevelFragmentToSummaryFragment(
                     activityType = args.activityType,
@@ -84,7 +84,7 @@ class SelectLevelFragment : Fragment() {
             findNavController().navigate(action)
         }
     }
-    
+
     private fun setupLevelOptions() {
         binding.textLevelLabel.text = "Success Level:"
         binding.radioLevel1.text = "Minimum"
@@ -103,7 +103,7 @@ class SelectLevelFragment : Fragment() {
             }
         }
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

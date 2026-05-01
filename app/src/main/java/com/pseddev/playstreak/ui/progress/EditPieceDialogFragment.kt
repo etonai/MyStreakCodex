@@ -1,28 +1,29 @@
-package com.pseddev.playstreak.ui.progress
+package com.pseddev.mystreak.ui.progress
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
-import com.pseddev.playstreak.PlayStreakApplication
-import com.pseddev.playstreak.data.entities.ItemType
-import com.pseddev.playstreak.data.entities.TaskPriority
-import com.pseddev.playstreak.databinding.DialogEditPieceBinding
+import com.pseddev.mystreak.MyStreakApplication
+import com.pseddev.mystreak.data.entities.ItemType
+import com.pseddev.mystreak.data.entities.TaskPriority
+import com.pseddev.mystreak.databinding.DialogEditPieceBinding
 
 class EditPieceDialogFragment : DialogFragment() {
-    
+
     private var _binding: DialogEditPieceBinding? = null
     private val binding get() = _binding!!
-    
+
     private val viewModel: PiecesViewModel by viewModels({requireParentFragment()}) {
         PiecesViewModelFactory(
-            (requireActivity().application as PlayStreakApplication).repository,
+            (requireActivity().application as MyStreakApplication).repository,
             requireContext()
         )
     }
-    
+
     private var pieceId: Long = -1
     private var currentName: String = ""
     private var currentColor: String = "#66B2FF"
@@ -31,10 +32,10 @@ class EditPieceDialogFragment : DialogFragment() {
     private var currentMediumSuccess: String = "Medium"
     private var currentHighSuccess: String = "High"
     private var currentIsActive: Boolean = true
-    
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DialogEditPieceBinding.inflate(layoutInflater)
-        
+
         // Get arguments
         arguments?.let {
             pieceId = it.getLong(ARG_PIECE_ID, -1)
@@ -46,7 +47,7 @@ class EditPieceDialogFragment : DialogFragment() {
             currentHighSuccess = it.getString(ARG_HIGH_SUCCESS, "High")
             currentIsActive = it.getBoolean(ARG_IS_ACTIVE, true)
         }
-        
+
         // Pre-populate fields
         binding.pieceNameEditText.setText(currentName)
         checkCurrentColor()
@@ -56,29 +57,34 @@ class EditPieceDialogFragment : DialogFragment() {
         binding.mediumSuccessEditText.setText(currentMediumSuccess)
         binding.highSuccessEditText.setText(currentHighSuccess)
         binding.activeSwitch.isChecked = currentIsActive
-        
+
         // Set up button listeners
         binding.saveButton.setOnClickListener {
             saveChanges()
         }
-        
+
         binding.cancelButton.setOnClickListener {
             dismiss()
         }
-        
+
         return AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .create()
     }
 
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+    }
+
     private fun saveChanges() {
         val newName = binding.pieceNameEditText.text.toString().trim()
-        
+
         if (newName.isEmpty()) {
             Toast.makeText(requireContext(), "Please enter a task name", Toast.LENGTH_SHORT).show()
             return
         }
-        
+
         viewModel.updateTask(
             pieceId = pieceId,
             newName = newName,
@@ -90,7 +96,7 @@ class EditPieceDialogFragment : DialogFragment() {
             isActive = binding.activeSwitch.isChecked
         )
         Toast.makeText(requireContext(), "Task updated", Toast.LENGTH_SHORT).show()
-        
+
         dismiss()
     }
 
@@ -120,12 +126,12 @@ class EditPieceDialogFragment : DialogFragment() {
             else -> "#66B2FF"
         }
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    
+
     companion object {
         private const val ARG_PIECE_ID = "piece_id"
         private const val ARG_PIECE_NAME = "piece_name"
@@ -136,7 +142,7 @@ class EditPieceDialogFragment : DialogFragment() {
         private const val ARG_MEDIUM_SUCCESS = "medium_success"
         private const val ARG_HIGH_SUCCESS = "high_success"
         private const val ARG_IS_ACTIVE = "is_active"
-        
+
         fun newInstance(
             pieceId: Long,
             pieceName: String,

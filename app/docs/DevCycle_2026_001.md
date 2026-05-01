@@ -24,7 +24,7 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - Replace "Piece", "Technique", "Practice", "Performance", "Favorite", and related copy with "Task", "Activity", "Success Level", "Priority", and active/inactive status where appropriate.
 - Update app labels, navigation labels, dashboard titles, empty states, dialogs, import/export copy, legal/about copy, and documentation references.
 - Keep the current PlayStreak Git history/workspace during early conversion, then create a separate `MyStreakCodex` GitHub repository after enough of DevCycle 2026-001 has been implemented to make the project meaningfully MyStreak.
-- Decide whether package names remain `com.pseddev.playstreak` during the early conversion or move to a new MyStreak namespace before creating the new repository.
+- Decide whether package names remain `com.pseddev.mystreak` during the early conversion or move to a new MyStreak namespace before creating the new repository.
 - Remove or hide PlayStreak-only features that do not belong in MyStreak: achievements, suggestions, favorites, pro/free limits, inactive-by-age analysis, practice/performance-specific statistics, duration, notes, and music-specific test data.
 
 **Acceptance Criteria:**
@@ -44,7 +44,7 @@ The source product specification for this cycle is `C:\dev\MyStreakCodex\MyStrea
 - 2026-04-30: Removed Suggestions, Inactive, Timeline, Settings menu, and Pro-gated tabs from the reachable main flow.
 - 2026-04-30: Retitled reachable task/activity flows from Piece/Practice/Performance wording to Task/Activity/Success wording while leaving legacy entity names in code for Phase 2.
 - 2026-04-30: Hid legacy task type/favorite controls in add-task flows. Priority, active/inactive, colors, and thresholds are deferred to Phase 2 and Phase 6 when the Task schema exists.
-- 2026-04-30: Package and Kotlin namespace remain `com.pseddev.playstreak` during early conversion. Rename/package split is deferred until after initial MyStreak behavior is implemented and before the standalone `MyStreakCodex` repository cutover.
+- 2026-04-30: Package and Kotlin namespace remain `com.pseddev.mystreak` during early conversion. Rename/package split is deferred until after initial MyStreak behavior is implemented and before the standalone `MyStreakCodex` repository cutover.
 - 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds after configuring local ignored SDK/Firebase files for this clone.
 - 2026-04-30: Fixed debug startup crash caused by Firebase auto-initializing against the local placeholder `google-services.json`; debug builds now remove `FirebaseInitProvider` and no-op analytics/crash reporting.
 

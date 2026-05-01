@@ -1,41 +1,41 @@
-package com.pseddev.playstreak.ui.favorites
+package com.pseddev.mystreak.ui.favorites
 
 import androidx.lifecycle.*
-import com.pseddev.playstreak.data.entities.PieceOrTechnique
-import com.pseddev.playstreak.data.entities.TaskPriority
-import com.pseddev.playstreak.data.repository.PianoRepository
-import com.pseddev.playstreak.utils.ProUserManager
+import com.pseddev.mystreak.data.entities.PieceOrTechnique
+import com.pseddev.mystreak.data.entities.TaskPriority
+import com.pseddev.mystreak.data.repository.PianoRepository
+import com.pseddev.mystreak.utils.ProUserManager
 import kotlinx.coroutines.launch
 
 class FavoritesViewModel(
     private val repository: PianoRepository,
     private val context: android.content.Context
 ) : ViewModel() {
-    
+
     private val proUserManager = ProUserManager.getInstance(context)
-    
-    val allPiecesAndTechniques: LiveData<List<PieceOrTechnique>> = 
+
+    val allPiecesAndTechniques: LiveData<List<PieceOrTechnique>> =
         repository.getAllPiecesAndTechniques().asLiveData()
-    
+
     fun toggleFavorite(piece: PieceOrTechnique): Boolean {
         val currentlyFavorite = piece.isFavorite
-        
+
         // If trying to add a favorite (not currently favorite), check limits for Free users
         if (!currentlyFavorite) {
             // Get current favorite count from the live data
             val currentFavoriteCount = allPiecesAndTechniques.value?.count { it.isFavorite } ?: 0
-            
+
             if (!proUserManager.canAddMoreFavorites(currentFavoriteCount)) {
                 return false // Cannot add more favorites - caller should show upgrade prompt
             }
         }
-        
+
         // Proceed with toggle (either removing favorite or adding within limits)
         viewModelScope.launch {
             val updatedPiece = piece.copy(priority = if (currentlyFavorite) TaskPriority.LOW else TaskPriority.HIGH)
             repository.updatePieceOrTechnique(updatedPiece)
         }
-        
+
         return true // Toggle was allowed and performed
     }
 }

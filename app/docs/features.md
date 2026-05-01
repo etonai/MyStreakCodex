@@ -13,19 +13,19 @@ This document tracks feature requests, their status, and implementation details 
 ## Feature Requests
 
 ### Feature #1: ✅ Pro Mode - Premium Feature Differentiation
-**Status:** Implemented  
-**Date Requested:** 2025-07-21  
-**Date Implemented:** 2025-07-21  
-**Priority:** High  
-**Requested By:** Business Development  
+**Status:** Implemented
+**Date Requested:** 2025-07-21
+**Date Implemented:** 2025-07-21
+**Priority:** High
+**Requested By:** Business Development
 
-**Description:**  
+**Description:**
 Implement a Pro Mode system that differentiates between Free and Pro users, with Pro users having access to enhanced features and capabilities. This will include a global setting mechanism to track user subscription status and conditionally enable premium features throughout the app.
 
-**User Story:**  
+**User Story:**
 As a business, we want to offer premium features to Pro subscribers so that we can generate revenue while still providing value to free users, and as a Pro user, I want access to enhanced features that justify my subscription cost.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Global `isProUser` setting/preference system
 - [x] Pro user status detection and persistence across app sessions
 - [ ] UI indicators showing Pro-only features (with upgrade prompts for free users)
@@ -35,7 +35,7 @@ As a business, we want to offer premium features to Pro subscribers so that we c
 - [x] Feature gate system that can be easily extended for new Pro features
 - [ ] Upgrade prompt system for free users attempting to access Pro features
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Implement global user preference system (`SharedPreferences` or Room database)
 - Create `ProUserManager` or similar class to handle Pro status checks
 - Design feature gate annotations or utility methods for easy Pro feature implementation
@@ -44,7 +44,7 @@ As a business, we want to offer premium features to Pro subscribers so that we c
 - Ensure backwards compatibility and graceful degradation for free users
 - Create consistent upgrade prompt UI patterns
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority as this establishes the foundation for monetization strategy and must be implemented before rolling out premium features. This system will enable future revenue generation while maintaining a good free user experience.
 
 **Implementation Details:**
@@ -55,11 +55,11 @@ High priority as this establishes the foundation for monetization strategy and m
 - **Future Migration**: Architecture supports easy integration with Google Play Billing later
 
 **Files Modified:**
-- `app/src/main/java/com/pseddev/playstreak/utils/ProUserManager.kt` (new)
-- `app/src/main/java/com/pseddev/playstreak/ui/main/MainFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/utils/ProUserManager.kt` (new)
+- `app/src/main/java/com/pseddev/mystreak/ui/main/MainFragment.kt`
 - `app/src/main/res/layout/fragment_main.xml`
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - Start with simple boolean flag system that can be extended later
 - Design UI patterns that clearly communicate value of Pro features
 - Ensure all existing features remain available to free users initially
@@ -68,31 +68,31 @@ High priority as this establishes the foundation for monetization strategy and m
 ---
 
 ### Feature #2: ✅ Pro Badge in Settings Title
-**Status:** Implemented  
-**Date Requested:** 2025-07-21  
-**Date Implemented:** 2025-07-21  
-**Priority:** High  
-**Requested By:** Development Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-21
+**Date Implemented:** 2025-07-21
+**Priority:** High
+**Requested By:** Development Team
 
-**Description:**  
+**Description:**
 Display "Pro" after "PlayStreak" in the Settings page title when the user is a Pro subscriber. This serves as a simple visual indicator of Pro status and will be the first feature to test the Pro/Free user differentiation system.
 
-**User Story:**  
+**User Story:**
 As a Pro user, I want to see visual confirmation of my Pro status in the Settings page so that I know my subscription is recognized by the app.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Settings page title shows "PlayStreak" for free users
 - [x] Settings page title shows "PlayStreak Pro" for Pro users
 - [x] Title updates dynamically when Pro status changes
 - [x] Consistent styling and formatting for both title variants
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Integrate with the global `isProUser` setting system from Feature #1
 - Update Settings fragment to check Pro status and modify title accordingly
 - Ensure title updates if Pro status changes during the session
 - Consider using string resources for easy localization
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority as this is the first implementation to test the Pro Mode infrastructure. It's simple, low-risk, and provides immediate visual feedback to validate the Pro user detection system works correctly.
 
 **Implementation Details:**
@@ -102,9 +102,9 @@ High priority as this is the first implementation to test the Pro Mode infrastru
 - **Testing Integration**: Works seamlessly with Pro status toggle button for testing
 
 **Files Modified:**
-- `app/src/main/java/com/pseddev/playstreak/ui/main/MainFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/main/MainFragment.kt`
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - This feature depends on Feature #1 (Pro Mode infrastructure) being implemented first
 - Serves as a proof-of-concept for the Pro user differentiation system
 - Can be used to test Pro status toggling during development
@@ -112,19 +112,19 @@ High priority as this is the first implementation to test the Pro Mode infrastru
 ---
 
 ### Feature #3: ✅ Limited Heat Map for Free Users
-**Status:** Implemented  
-**Date Requested:** 2025-07-21  
-**Date Implemented:** 2025-07-21  
-**Priority:** High  
-**Requested By:** Product Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-21
+**Date Implemented:** 2025-07-21
+**Priority:** High
+**Requested By:** Product Team
 
-**Description:**  
+**Description:**
 Implement a limited heat map feature for the calendar that differentiates between Free and Pro users. Free users will see a simplified heat map where days with any activities show as light blue, while Pro users will see the full heat map with multiple color intensities based on activity levels.
 
-**User Story:**  
+**User Story:**
 As a Free user, I want to see which days I practiced (light blue) so that I can track my practice consistency, and as a Pro user, I want to see detailed activity intensity levels so that I can better understand my practice patterns and volume.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Free users see binary heat map: no color for days with no activities, light blue for days with any activities
 - [x] Pro users see full heat map with multiple color intensities based on activity count/duration
 - [x] Heat map updates immediately when Pro status changes
@@ -132,14 +132,14 @@ As a Free user, I want to see which days I practiced (light blue) so that I can 
 - [x] Clear visual differentiation between Free and Pro heat map experiences
 - [x] Activity Level Color Guide hidden for free users, visible for pro users
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Integrate with existing calendar heat map logic
 - Use ProUserManager to determine which heat map to display
 - Modify color calculation logic based on user tier
 - Ensure heat map updates when toggling between Pro/Free modes
 - Consider performance implications of heat map calculations
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority as this provides a clear value proposition for Pro users while still giving Free users basic visual feedback about their practice consistency.
 
 **Implementation Details:**
@@ -147,7 +147,7 @@ High priority as this provides a clear value proposition for Pro users while sti
 - **Pro User Heat Map**: Full heat map with intensity levels:
   - Practice days: Light blue → Medium blue → Dark blue (based on activity count)
   - Performance days: Light green → Medium green → Dark green (based on activity count)
-- **Activity Level Color Guide**: 
+- **Activity Level Color Guide**:
   - Hidden (`View.GONE`) for free users - no need to show complex legend for simple heat map
   - Visible (`View.VISIBLE`) for Pro users - shows detailed legend for 6 different color/intensity levels
 - **Pro Status Detection**: Uses `ProUserManager.isProUser()` to determine which heat map to display
@@ -155,10 +155,10 @@ High priority as this provides a clear value proposition for Pro users while sti
 - **Preserved Logic**: All existing Pro heat map logic maintained for Pro users
 
 **Files Modified:**
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/CalendarFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/CalendarFragment.kt`
 - `app/src/main/res/layout/fragment_calendar.xml`
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - This feature depends on Feature #1 (Pro Mode infrastructure) being implemented first
 - Provides tangible differentiation between Free and Pro user experiences
 - Can serve as a model for other Pro/Free feature implementations
@@ -166,19 +166,19 @@ High priority as this provides a clear value proposition for Pro users while sti
 ---
 
 ### Feature #4: ✅ Disable Import from CSV for Free Users
-**Status:** Implemented  
-**Date Requested:** 2025-07-21  
-**Date Implemented:** 2025-07-21  
-**Priority:** High  
-**Requested By:** Product Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-21
+**Date Implemented:** 2025-07-21
+**Priority:** High
+**Requested By:** Product Team
 
-**Description:**  
+**Description:**
 Restrict CSV import functionality to Pro users only. Free users will see the Import/Export Data page but the import functionality will be disabled with an upgrade prompt. Export functionality will remain available to all users to ensure they can always access their data.
 
-**User Story:**  
+**User Story:**
 As a business, we want to limit advanced data management features like CSV import to Pro users so that we can provide additional value for Pro subscriptions, while as a Free user, I can still export my data but need to upgrade to Pro to import external data.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Free users can access Import/Export Data page
 - [x] Free users can still export their data to CSV (data portability)
 - [x] Free users cannot import CSV files - import functionality disabled
@@ -187,7 +187,7 @@ As a business, we want to limit advanced data management features like CSV impor
 - [x] Clear messaging about Pro-only import feature
 - [x] Import functionality updates immediately when Pro status changes
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Integrate with ProUserManager to check user status
 - Disable/enable import UI elements based on Pro status
 - Add upgrade prompt UI for import functionality
@@ -195,11 +195,11 @@ As a business, we want to limit advanced data management features like CSV impor
 - Update import screens to check Pro status before allowing import
 - Handle Pro status changes during import workflow
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority as this provides a valuable Pro feature that encourages upgrades while maintaining ethical data portability (users can always export their data).
 
 **Implementation Details:**
-- **Import Button State**: 
+- **Import Button State**:
   - Free users: Button text shows "Import from CSV (Pro Only)" with 0.6 alpha transparency
   - Pro users: Button text shows "Import from CSV" with full opacity
 - **Import Functionality**:
@@ -211,9 +211,9 @@ High priority as this provides a valuable Pro feature that encourages upgrades w
 - **Pro Status Detection**: Uses `ProUserManager.isProUser()` throughout import workflow
 
 **Files Modified:**
-- `app/src/main/java/com/pseddev/playstreak/ui/importexport/ImportExportFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/importexport/ImportExportFragment.kt`
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - This feature depends on Feature #1 (Pro Mode infrastructure) being implemented first
 - Maintains user data portability by keeping export functionality free
 - Creates clear incentive for Pro upgrade with advanced data management features
@@ -221,19 +221,19 @@ High priority as this provides a valuable Pro feature that encourages upgrades w
 ---
 
 ### Feature #5: ✅ Limit Free Users to 4 Favorites
-**Status:** Implemented  
-**Date Requested:** 2025-07-21  
-**Date Implemented:** 2025-07-22  
-**Priority:** High  
-**Requested By:** Product Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-21
+**Date Implemented:** 2025-07-22
+**Priority:** High
+**Requested By:** Product Team
 
-**Description:**  
+**Description:**
 Implement a simple restriction where Free users cannot add new favorites if they already have 4 or more favorites. Pro users have unlimited favorites. The restriction only applies to adding new favorites - removing favorites is always allowed for all users.
 
-**User Story:**  
+**User Story:**
 As a business, we want to provide a simple incentive for Pro upgrades by limiting Free users to 4 favorites, while as a Pro user, I want unlimited favorites to organize my extensive repertoire without restrictions.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Free users cannot add new favorites if they already have 4 or more favorites
 - [x] Pro users have unlimited favorites (no restrictions)
 - [x] When Free user with 4+ favorites tries to add another, show upgrade prompt instead of adding
@@ -243,20 +243,20 @@ As a business, we want to provide a simple incentive for Pro upgrades by limitin
 - [x] Simple favorite count check before allowing new additions
 - [x] No changes to existing toggle behavior for removing favorites
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Simple count check before allowing new favorite additions
 - Minimal impact on existing data flow and suggestion systems
 - Only affects the "add favorite" action, not remove
 - Use straightforward favorite count from repository data
 - Avoid complex UI state management or return value changes to toggle methods
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority as this provides a clear but non-intrusive Pro upgrade incentive. The simplified approach minimizes technical complexity while still providing business value.
 
 **Implementation Details:**
 - **Favorite Limit Logic**: Added `canAddMoreFavorites()` method to ProUserManager with FREE_USER_FAVORITE_LIMIT constant (4)
 - **Pro User Behavior**: Unlimited favorites, no restrictions or changes to existing workflow
-- **Free User Logic**: 
+- **Free User Logic**:
   - Can always remove favorites (no restrictions on unfavoriting)
   - Can add favorites only if current count is < 4
   - If attempting to add when already at 4+, show upgrade prompt instead
@@ -265,13 +265,13 @@ High priority as this provides a clear but non-intrusive Pro upgrade incentive. 
 - **UI Feedback**: Snackbar confirmation for successful toggles, upgrade prompt for limit reached
 
 **Files Modified:**
-- `app/src/main/java/com/pseddev/playstreak/utils/ProUserManager.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/PiecesViewModel.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/PiecesFragment.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/favorites/FavoritesViewModel.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/favorites/FavoritesFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/utils/ProUserManager.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/PiecesViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/PiecesFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/favorites/FavoritesViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/favorites/FavoritesFragment.kt`
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - This feature depends on Feature #1 (Pro Mode infrastructure) being implemented first
 - Simplified implementation avoids complex data synchronization issues
 - Only affects adding favorites, not removing them
@@ -280,19 +280,19 @@ High priority as this provides a clear but non-intrusive Pro upgrade incentive. 
 ---
 
 ### Feature #6: ✅ Hide Inactive Tab for Free Users
-**Status:** Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** High  
-**Requested By:** Product Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** High
+**Requested By:** Product Team
 
-**Description:**  
+**Description:**
 Hide the "Inactive" tab from Free users while keeping it visible for Pro users. This provides another Pro-only feature that encourages upgrades while simplifying the interface for Free users.
 
-**User Story:**  
+**User Story:**
 As a business, we want to limit advanced features like the Inactive tab to Pro users so that we can provide additional value for Pro subscriptions, while as a Free user, I have a simpler interface focused on core functionality.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Free users cannot see the "Inactive" tab
 - [x] Pro users can see and use the "Inactive" tab normally
 - [x] Tab visibility updates immediately when Pro status changes
@@ -300,32 +300,32 @@ As a business, we want to limit advanced features like the Inactive tab to Pro u
 - [x] Free users still have access to all other tabs and core functionality
 - [x] Clear Pro-only feature differentiation
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Identify where the Inactive tab is implemented
 - Use ProUserManager to determine tab visibility
 - Handle dynamic tab showing/hiding based on Pro status changes
 - Ensure proper UI layout when tab is hidden
 - Maintain existing functionality for Pro users
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority as this provides a clear Pro feature differentiation that encourages upgrades while keeping the core app functionality available to Free users.
 
 **Implementation Details:**
 - **Tab Visibility Logic**: Inactive tab only shown when `proUserManager.isProUser()` returns true
 - **Adapter Count**: ViewPager adapter returns 6 items for Pro users, 5 items for Free users
 - **Dynamic Updates**: Tab setup refreshed in `onResume()` to handle Pro status changes
-- **Free User Experience**: 
+- **Free User Experience**:
   - Shows 5 tabs: Dashboard, Calendar, Suggestions, Pieces, Timeline
   - No access to Inactive tab or AbandonedFragment
-- **Pro User Experience**: 
+- **Pro User Experience**:
   - Shows all 6 tabs including Inactive tab
   - Full access to all functionality unchanged
 - **Error Handling**: Proper position validation prevents crashes when tab is hidden
 
 **Files Modified:**
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/ViewProgressFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/ViewProgressFragment.kt`
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - This feature depends on Feature #1 (Pro Mode infrastructure) being implemented first
 - Simple implementation that cleanly hides the tab without affecting other functionality
 - Tab refreshes automatically when Pro status changes during app usage
@@ -333,19 +333,19 @@ High priority as this provides a clear Pro feature differentiation that encourag
 ---
 
 ### Feature #7: ✅ Limit Suggestions for Free Users
-**Status:** Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** High  
-**Requested By:** Product Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** High
+**Requested By:** Product Team
 
-**Description:**  
+**Description:**
 Limit Free users to only 2 favorite suggestions and 2 non-favorite suggestions in both the Dashboard and Suggestions tab. Pro users continue to see the full suggestion lists (up to 4 favorites and 4 non-favorites each).
 
-**User Story:**  
+**User Story:**
 As a business, we want to limit the number of practice suggestions for Free users so that we can provide additional value for Pro subscriptions, while as a Pro user, I want access to comprehensive practice suggestions to optimize my practice routine.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Free users see maximum 1 favorite suggestion (updated from 2 by Feature #8)
 - [x] Free users see maximum 2 non-favorite suggestions (instead of up to 4)
 - [x] Pro users continue to see full suggestion lists (up to 4 each)
@@ -354,7 +354,7 @@ As a business, we want to limit the number of practice suggestions for Free user
 - [x] Suggestion limits update immediately when Pro status changes
 - [x] No crashes or UI issues when suggestions are limited
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Modify DashboardViewModel suggestions logic to limit results for Free users
 - Modify SuggestionsViewModel to apply same limits for Free users
 - Use ProUserManager to determine suggestion limits
@@ -362,11 +362,11 @@ As a business, we want to limit the number of practice suggestions for Free user
 - Apply limits after suggestions are calculated but before returning to UI
 - Ensure consistent behavior across both Dashboard and Suggestions tab
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority as this provides valuable Pro differentiation while maintaining core suggestion functionality for Free users. Practice suggestions are a key feature that serious practitioners will want unlimited access to.
 
 **Implementation Details:**
-- **Suggestion Limits**: 
+- **Suggestion Limits**:
   - Free users: Maximum 1 favorite suggestion + 2 non-favorite suggestions (favorite limit updated by Feature #8)
   - Pro users: Up to 4 favorite suggestions + 4 non-favorite suggestions (unchanged)
 - **Dynamic Limits**: Both ViewModels check `proUserManager.isProUser()` to determine limits
@@ -376,12 +376,12 @@ High priority as this provides valuable Pro differentiation while maintaining co
 - **UI Impact**: Dashboard shows fewer suggestions for Free users (3 total vs up to 8), Suggestions tab shows fewer items
 
 **Files Modified:**
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/DashboardViewModel.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/DashboardFragment.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/SuggestionsViewModel.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/SuggestionsFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/DashboardViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/DashboardFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/SuggestionsViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/SuggestionsFragment.kt`
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - This feature depends on Feature #1 (Pro Mode infrastructure) being implemented first
 - Maintains all existing suggestion algorithm logic and quality
 - Provides clear value proposition for Pro upgrade
@@ -391,34 +391,34 @@ High priority as this provides valuable Pro differentiation while maintaining co
 ---
 
 ### Feature #8: ✅ Single Favorite Suggestion for Free Users
-**Status:** Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** High  
-**Requested By:** Product Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** High
+**Requested By:** Product Team
 
-**Description:**  
+**Description:**
 Limit Free users to only 1 favorite suggestion (instead of 2) in both the Dashboard and Suggestions tab. Free users will always see their least recently practiced/performed favorite piece as the single suggestion. If they have no favorite pieces, no favorite suggestions are shown. Pro users continue to see up to 4 favorite suggestions.
 
-**User Story:**  
+**User Story:**
 As a business, we want to further limit favorite suggestions for Free users to provide even stronger Pro upgrade incentive, while as a Free user, I still get the most important favorite suggestion (my most neglected favorite piece) to maintain practice value.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Free users see exactly 1 favorite suggestion (instead of 2)
-- [x] Free users with no favorites see 0 favorite suggestions  
+- [x] Free users with no favorites see 0 favorite suggestions
 - [x] The single favorite suggestion is always the least recently practiced/performed favorite piece
 - [x] Pro users continue to see up to 4 favorite suggestions (unchanged)
 - [x] Limitation applies to both Dashboard and Suggestions tab
 - [x] Non-favorite suggestions remain at 2 for Free users
 - [x] Suggestion limits update immediately when Pro status changes
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Modify DashboardViewModel and SuggestionsViewModel favorite limits from 2 to 1 for Free users
 - Maintain existing "least recently practiced" algorithm for the single suggestion
 - Ensure proper handling when user has no favorites (empty list)
 - Keep non-favorite suggestion limits unchanged (2 for Free, 4 for Pro)
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority as this creates a stronger Pro upgrade incentive while still providing valuable practice guidance to Free users with their most neglected favorite piece.
 
 **Implementation Details:**
@@ -430,10 +430,10 @@ High priority as this creates a stronger Pro upgrade incentive while still provi
 - **Total Suggestions**: Free users now see maximum 3 suggestions total (1 favorite + 2 non-favorite)
 
 **Files Modified:**
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/DashboardViewModel.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/SuggestionsViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/DashboardViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/SuggestionsViewModel.kt`
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - Simple change from `4 else 2` to `4 else 1` in favorite limit logic
 - Leverages existing suggestion algorithms - no complex changes needed
 - Provides stronger Pro upgrade incentive while maintaining core value for Free users
@@ -442,19 +442,19 @@ High priority as this creates a stronger Pro upgrade incentive while still provi
 ---
 
 ### Feature #9: 🔄 Remove Pro Upgrade Prompts for Free-Only Release
-**Status:** ✅ Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** High  
-**Requested By:** Product Team  
+**Status:** ✅ Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** High
+**Requested By:** Product Team
 
-**Description:**  
+**Description:**
 Remove all Pro upgrade prompts and monetization messaging for the initial Free-only release of PlayStreak. Users will experience Free tier limitations without upgrade pressure, creating a clean user experience focused on core functionality.
 
-**User Story:**  
+**User Story:**
 As a user downloading the Free version of PlayStreak, I want to understand the app's limitations without being pressured to upgrade, so that I can focus on using the core features and providing authentic feedback about the app's value.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Import CSV prompt changed from Pro upgrade to "Coming Soon" message
 - [ ] Favorites limit prompt changed from Pro upgrade to simple limitation explanation
 - [ ] No "Learn More" or "Upgrade" buttons in limitation messages
@@ -463,14 +463,14 @@ As a user downloading the Free version of PlayStreak, I want to understand the a
 - [ ] Clean, professional messaging about current app capabilities
 - [ ] Pro/Free logic remains intact for future Pro launch
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Modify ImportExportFragment upgrade prompt to show "Coming Soon" message
 - Update favorites limit prompts in PiecesFragment and FavoritesFragment
 - Remove upgrade action buttons but keep informative dialogs
 - Preserve underlying Pro/Free differentiation logic for future use
 - Maintain current limitation behaviors without monetization pressure
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority for initial app release strategy. Allows focus on core app quality and user feedback without monetization complexity, while preserving architecture for future Pro launch.
 
 **Implementation Approach:**
@@ -481,32 +481,32 @@ High priority for initial app release strategy. Allows focus on core app quality
 ---
 
 ### Feature #10: 💡 Google Drive Functionality Coming Soon Message
-**Status:** ✅ Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** Medium  
-**Requested By:** Product Team  
+**Status:** ✅ Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** Medium
+**Requested By:** Product Team
 
-**Description:**  
+**Description:**
 Add "Google Drive functionality coming soon" messaging to the Import/Export Data page to inform users about planned cloud storage integration for data backup and sync capabilities.
 
-**User Story:**  
+**User Story:**
 As a user of PlayStreak, I want to know that Google Drive integration is planned so that I can look forward to cloud backup and sync capabilities for my practice data in future updates.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Import/Export Data page shows "Google Drive functionality coming soon" message
 - [ ] Message is clearly visible and professionally presented
 - [ ] Message doesn't interfere with existing export functionality
 - [ ] Gives users expectation of future cloud storage features
 - [ ] Consistent with overall app messaging style
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Add informational message/section to ImportExportFragment
 - Place message prominently but not intrusively on the Import/Export screen
 - Consider adding icon or visual element to make message more noticeable
 - Ensure message fits well with existing UI layout
 
-**Priority Justification:**  
+**Priority Justification:**
 Medium priority feature that helps set user expectations about upcoming cloud functionality while building anticipation for future updates. Supports user retention by showing ongoing development.
 
 **Implementation Approach:**
@@ -518,19 +518,19 @@ Medium priority feature that helps set user expectations about upcoming cloud fu
 ---
 
 ### Feature #11: 💡 Purge All Data Button Testing Mode
-**Status:** ✅ Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** Medium  
-**Requested By:** Development Team  
+**Status:** ✅ Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** Medium
+**Requested By:** Development Team
 
-**Description:**  
+**Description:**
 Add "(Testing)" label to the Purge All Data button and implement functionality to hide/show this button for production vs testing builds using BuildConfig.DEBUG. The button should be visible during development and testing but hidden in production releases, with ability to reveal it when needed for testing purposes.
 
-**User Story:**  
+**User Story:**
 As a developer, I want to be able to easily reset all app data during testing while ensuring production users don't accidentally access this destructive functionality, and as a tester, I want to be able to reveal the purge button when needed for test scenarios.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Purge All Data button shows "(Testing)" label in the text
 - [ ] Button is hidden by default in production builds
 - [ ] Button can be revealed through a testing mechanism (debug menu, build flag, etc.)
@@ -539,7 +539,7 @@ As a developer, I want to be able to easily reset all app data during testing wh
 - [ ] No accidental access by regular users in production
 - [ ] Easy to enable for QA testing scenarios
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Add "(Testing)" text to the button label
 - Implement build variant or debug flag to control button visibility
 - Consider adding to existing debug/testing menu if available
@@ -547,11 +547,11 @@ As a developer, I want to be able to easily reset all app data during testing wh
 - Use BuildConfig.DEBUG or similar mechanism for production detection
 - Alternative reveal methods: long press, secret gesture, or settings toggle
 
-**Priority Justification:**  
+**Priority Justification:**
 Medium priority development tool that improves testing workflow while protecting production users from accidental data loss. Important for QA processes and development efficiency.
 
 **Implementation Approach:**
-- **Button Label**: Change to "Purge All Data (Testing)" 
+- **Button Label**: Change to "Purge All Data (Testing)"
 - **Visibility Control**: Hide in production builds using `if (BuildConfig.DEBUG)` or similar
 - **Testing Access**: Provide mechanism to reveal button when needed (debug menu, long press, etc.)
 - **Safety**: Maintain existing confirmation dialogs when button is used
@@ -560,19 +560,19 @@ Medium priority development tool that improves testing workflow while protecting
 ---
 
 ### Feature #12: 💡 Remove MIT License
-**Status:** ✅ Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** High  
-**Requested By:** Legal/Business Team  
+**Status:** ✅ Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** High
+**Requested By:** Legal/Business Team
 
-**Description:**  
+**Description:**
 Remove the MIT License from the PlayStreak app and replace it with a commercial "All Rights Reserved" license to prepare for commercial release. This includes removing MIT license files, replacing with commercial copyright, and updating any license references in the app or documentation.
 
-**User Story:**  
+**User Story:**
 As a business preparing for commercial app release, I want to replace the open-source MIT License with a commercial "All Rights Reserved" license so that the app can be properly licensed as a commercial product with full ownership protection.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Remove MIT LICENSE file from project root
 - [ ] Add new COPYRIGHT file with "All Rights Reserved" commercial license
 - [ ] Remove MIT license headers from all source files
@@ -582,7 +582,7 @@ As a business preparing for commercial app release, I want to replace the open-s
 - [ ] Update any build scripts or configuration that reference the license
 - [ ] Professional commercial licensing presentation
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Search entire codebase for "MIT", "License", or license headers
 - Remove or update LICENSE files in project root
 - Check app's About/Settings screens for license display
@@ -590,7 +590,7 @@ As a business preparing for commercial app release, I want to replace the open-s
 - Ensure third-party library licenses are handled separately
 - Update README or other documentation that references licensing
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority for commercial release preparation. MIT License removal is essential before app store publication to avoid legal complications and establish proper commercial licensing.
 
 **Implementation Approach:**
@@ -604,18 +604,18 @@ High priority for commercial release preparation. MIT License removal is essenti
 ---
 
 ### Feature #13: 💡 Hide Switch to Pro/Free Button Using BuildConfig.DEBUG
-**Status:** 🔍 Verifying  
-**Date Requested:** 2025-07-22  
-**Priority:** High  
-**Requested By:** Development Team  
+**Status:** 🔍 Verifying
+**Date Requested:** 2025-07-22
+**Priority:** High
+**Requested By:** Development Team
 
-**Description:**  
+**Description:**
 Hide the Switch to Pro/Free button in production builds using BuildConfig.DEBUG while keeping it visible in debug builds for testing. This ensures production users don't see testing functionality while maintaining developer/tester access to Pro status switching.
 
-**User Story:**  
+**User Story:**
 As a production user, I should not see testing buttons that allow switching between Pro and Free modes, while as a developer or tester, I want access to the Pro/Free switch button in debug builds to test different user experiences.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Switch to Pro/Free button hidden in production/release builds
 - [ ] Switch to Pro/Free button visible in debug builds
 - [ ] Uses BuildConfig.DEBUG to control visibility
@@ -624,7 +624,7 @@ As a production user, I should not see testing buttons that allow switching betw
 - [ ] Clean production UI without testing artifacts
 - [ ] Easy testing access in debug builds
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Locate Switch to Pro/Free button in Settings or main interface
 - Wrap button visibility with `if (BuildConfig.DEBUG)` condition
 - Ensure button container/layout adjusts properly when hidden
@@ -632,7 +632,7 @@ As a production user, I should not see testing buttons that allow switching betw
 - Consider using `View.GONE` vs `View.INVISIBLE` for clean layout
 - Test both debug and release build variants
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority for production release cleanliness. Testing buttons should not be visible to production users as they create confusion and expose internal functionality not intended for end users.
 
 **Implementation Approach:**
@@ -645,19 +645,19 @@ High priority for production release cleanliness. Testing buttons should not be 
 ---
 
 ### Feature #14: 💡 Build Variant Default Pro Status
-**Status:** ✅ Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** Critical  
-**Requested By:** Business Team  
+**Status:** ✅ Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** Critical
+**Requested By:** Business Team
 
-**Description:**  
+**Description:**
 Set different default Pro status based on build variant: Free mode default for release builds (production users), Pro mode default for debug builds (developers/testers). This ensures production users get the intended Free experience while developers can easily test Pro features.
 
-**User Story:**  
+**User Story:**
 As a production user installing PlayStreak, I should automatically start with the Free experience, while as a developer or tester using debug builds, I should start with Pro access to easily test all features without manual switching.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Release builds: New installations default to Free mode (isProUser = false)
 - [ ] Debug builds: New installations default to Pro mode (isProUser = true)
 - [ ] ProUserManager initializes with different defaults based on BuildConfig.DEBUG
@@ -667,7 +667,7 @@ As a production user installing PlayStreak, I should automatically start with th
 - [ ] Fresh installs show appropriate UI based on build variant (release=5 tabs, debug=6 tabs)
 - [ ] Existing users maintain their current Pro/Free status regardless of build variant
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Update ProUserManager initialization to use BuildConfig.DEBUG for default value
 - Modify SharedPreferences default behavior to return build-variant-specific defaults
 - Verify that all Pro/Free checks handle both debug and release defaults correctly
@@ -675,10 +675,10 @@ As a production user installing PlayStreak, I should automatically start with th
 - Ensure existing user data is not affected by changes (only impacts new installs)
 - Consider that debug users may need to manually switch to Free for testing
 
-**Priority Justification:**  
+**Priority Justification:**
 Critical priority for both production release and development efficiency. Production users must start with Free experience for proper evaluation and monetization, while developers need immediate Pro access for efficient feature testing.
 
-**Implementation Approach:**  
+**Implementation Approach:**
 - **Default Logic**: Use `BuildConfig.DEBUG ? true : false` as default Pro status for new users
 - **Location**: Update ProUserManager.isProUser() method to return build-variant-specific defaults
 - **Existing Users**: Preserve current Pro/Free status in SharedPreferences
@@ -692,19 +692,19 @@ Critical priority for both production release and development efficiency. Produc
 ---
 
 ### Feature #15: 💡 Add "Add Piece (#)" Button to Settings Page
-**Status:** ✅ Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** Medium  
-**Requested By:** UI/UX Team  
+**Status:** ✅ Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** Medium
+**Requested By:** UI/UX Team
 
-**Description:**  
+**Description:**
 Add an "Add Piece" button to the Settings page positioned right after the "Add Activity" button. The button should display the current count of pieces in parentheses (e.g., "Add Piece (12)") to provide users with quick access to piece management and visibility into their repertoire size.
 
-**User Story:**  
+**User Story:**
 As a user, I want quick access to add new pieces from the Settings page and see at a glance how many pieces are in my repertoire, so that I can easily manage my practice library and understand the scope of my collection.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] "Add Piece" button added to Settings page after "Add Activity" button
 - [ ] Button shows current piece count in parentheses format: "Add Piece (12)"
 - [ ] Piece count updates dynamically when pieces are added/removed
@@ -713,7 +713,7 @@ As a user, I want quick access to add new pieces from the Settings page and see 
 - [ ] Count reflects actual number of pieces in user's library
 - [ ] Real-time count updates when returning to Settings page
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Add button to Settings page layout after Add Activity button
 - Query repository to get current piece count
 - Use LiveData or similar to observe piece count changes
@@ -722,7 +722,7 @@ As a user, I want quick access to add new pieces from the Settings page and see 
 - Consider performance impact of frequent count queries
 - Handle zero pieces case gracefully ("Add Piece (0)")
 
-**Priority Justification:**  
+**Priority Justification:**
 Medium priority UI enhancement that improves user experience by providing quick access to piece management and useful repertoire size information. Helps users understand and manage their practice library more effectively.
 
 **Implementation Approach:**
@@ -736,18 +736,18 @@ Medium priority UI enhancement that improves user experience by providing quick 
 ---
 
 ### Feature #16: 💡 Set Application Limits for Activities and Pieces
-**Status:** Requested  
-**Date Requested:** 2025-07-22  
-**Priority:** High  
-**Requested By:** Engineering/QA Team  
+**Status:** Requested
+**Date Requested:** 2025-07-22
+**Priority:** High
+**Requested By:** Engineering/QA Team
 
-**Description:**  
+**Description:**
 Investigate and establish reasonable limits for the number of activities that can be created per day and the total number of pieces the app can hold. Implement these limits with proper validation and user feedback to ensure stable app performance and prevent edge cases that could cause crashes or poor performance.
 
-**User Story:**  
+**User Story:**
 As a user, I want the app to function reliably even with extensive use, and as a developer, I want to ensure the app has tested, guaranteed performance limits rather than unknown breaking points that could cause crashes or poor user experience.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Research and determine reasonable daily activity limits (e.g., 50-100 activities per day)
 - [ ] Research and determine reasonable total piece limits (e.g., 500-1000 pieces)
 - [ ] Test app performance at determined limits to ensure stability
@@ -757,7 +757,7 @@ As a user, I want the app to function reliably even with extensive use, and as a
 - [ ] Document limits for user support, troubleshooting, and testing documentation
 - [ ] Consider different limits for Free vs Pro users if applicable
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Performance testing with large datasets (database queries, UI rendering, memory usage)
 - Database performance with thousands of activities and hundreds of pieces
 - UI responsiveness with large lists (RecyclerView performance, pagination)
@@ -766,7 +766,7 @@ As a user, I want the app to function reliably even with extensive use, and as a
 - Search and filtering performance with large datasets
 - Calendar rendering with many activities per day
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority for app stability and user trust. Having undefined limits creates risk of crashes, poor performance, and bad user experience. Professional apps should have tested, documented limits to ensure reliability.
 
 **Implementation Approach:**
@@ -788,19 +788,19 @@ High priority for app stability and user trust. Having undefined limits creates 
 ---
 
 ### Feature #17: 💡 Disable Import From CSV Button for Free Users
-**Status:** ✅ Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** High  
-**Requested By:** Business Team  
+**Status:** ✅ Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** High
+**Requested By:** Business Team
 
-**Description:**  
+**Description:**
 Disable the Import From CSV button functionality for Free users while keeping it enabled for Pro users. This creates a clear Pro/Free differentiation for advanced data management features while maintaining export functionality for all users to ensure data portability.
 
-**User Story:**  
+**User Story:**
 As a Free user, I should not have access to CSV import functionality, while as a Pro user, I want full data import capabilities so that I can manage my practice data comprehensively.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Free users: Import From CSV button disabled/grayed out
 - [ ] Pro users: Import From CSV button fully functional
 - [ ] Button visual state reflects availability (enabled/disabled styling)
@@ -809,7 +809,7 @@ As a Free user, I should not have access to CSV import functionality, while as a
 - [ ] Pro/Free status changes update button state immediately
 - [ ] Consistent with other Pro/Free feature differentiations
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Update ImportExportFragment to check Pro status for import button state
 - Modify button click behavior based on Pro/Free status
 - Ensure button styling reflects enabled/disabled state (alpha, colors)
@@ -817,7 +817,7 @@ As a Free user, I should not have access to CSV import functionality, while as a
 - Test button state changes when Pro status toggles
 - Maintain export functionality for all users (data portability)
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority for establishing clear Pro/Free feature boundaries. Import functionality is an advanced data management feature that should be restricted to Pro users while ensuring all users can export their data.
 
 **Implementation Approach:**
@@ -830,19 +830,19 @@ High priority for establishing clear Pro/Free feature boundaries. Import functio
 ---
 
 ### Feature #18: ✅ Add Activity from Suggestions or Pieces Tab
-**Status:** Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** Medium  
-**Requested By:** UX Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** Medium
+**Requested By:** UX Team
 
-**Description:**  
+**Description:**
 Add a quick "Add Activity" feature directly from the Suggestions and Pieces tabs. Each piece listed should have a small "+" icon that allows users to quickly log an activity for that piece without navigating through the full Add Activity flow and without needing to select the piece name again.
 
-**User Story:**  
+**User Story:**
 As a user viewing my suggestions or pieces list, I want to quickly add an activity for a specific piece by tapping a "+" icon, so that I can efficiently log practice sessions without navigating through multiple screens to select the piece name.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Add "+" icon to each piece in Suggestions tab (Pro users only)
 - [x] Add "+" icon to each piece in Pieces tab (Pro users only)
 - [x] Clicking "+" opens simplified Add Activity dialog
@@ -850,7 +850,7 @@ As a user viewing my suggestions or pieces list, I want to quickly add an activi
 - [x] Dialog allows selection of Practice vs Performance
 - [x] Dialog shows proper level options matching regular Add Activity flow
 - [x] Performance activities show only 3 levels with performance-specific descriptions
-- [x] Practice activities show 4 levels with practice-specific descriptions  
+- [x] Practice activities show 4 levels with practice-specific descriptions
 - [x] Performance activities include performance type selection (Online/Live)
 - [x] Dialog has Add Activity and Cancel buttons
 - [x] Successful save closes dialog and returns to original tab
@@ -858,7 +858,7 @@ As a user viewing my suggestions or pieces list, I want to quickly add an activi
 - [x] Icon is visually clear but doesn't dominate the list item
 - [x] Feature restricted to Pro users only
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Add "+" button/icon to suggestion item layout and pieces item layout
 - Create simplified Add Activity dialog fragment or modal
 - Pre-populate piece ID and name in the dialog
@@ -867,7 +867,7 @@ As a user viewing my suggestions or pieces list, I want to quickly add an activi
 - Ensure icon styling is consistent and accessible
 - Consider icon placement (end of row, overlay, etc.)
 
-**Priority Justification:**  
+**Priority Justification:**
 Medium priority UX enhancement that significantly improves workflow efficiency. Reduces friction for the most common user action (logging practice) by eliminating navigation overhead when users already know which piece they want to practice.
 
 **Implementation Details:**
@@ -903,16 +903,16 @@ Medium priority UX enhancement that significantly improves workflow efficiency. 
 - **Pro User Restriction**: + icons only visible to Pro users
 
 **Files Modified:**
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/SuggestionsFragment.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/SuggestionsAdapter.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/PiecesFragment.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/PiecesAdapter.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/SuggestionsFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/SuggestionsAdapter.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/PiecesFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/PiecesAdapter.kt`
 - `app/src/main/res/layout/item_suggestion.xml`
 - `app/src/main/res/layout/item_piece_stats.xml`
 
 **Files Created:**
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/QuickAddActivityDialogFragment.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/QuickAddActivityViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/QuickAddActivityDialogFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/QuickAddActivityViewModel.kt`
 - `app/src/main/res/layout/dialog_quick_add_activity.xml`
 - `app/src/main/res/drawable/ic_add.xml`
 
@@ -921,13 +921,13 @@ Medium priority UX enhancement that significantly improves workflow efficiency. 
 **Version 2 Updates (Based on User Feedback):**
 - **Pro User Restriction Added**: + icons are now only visible to Pro users, providing additional Pro feature differentiation
 - **Level System Corrected**: Updated from generic 1-10 levels to match exact level descriptions from regular Add Activity flow:
-  - Practice: 4 levels with meaningful descriptions (Essentials, Incomplete, Complete with Review, Perfect Complete)  
+  - Practice: 4 levels with meaningful descriptions (Essentials, Incomplete, Complete with Review, Perfect Complete)
   - Performance: 3 levels with performance-specific descriptions (Failed, Unsatisfactory, Satisfactory)
 - **Performance Type Integration**: Added performance type selection (Online/Live) that appears only for Performance activities
 - **Data Consistency**: Ensures QuickAddActivityDialog creates activities with identical structure to regular Add Activity flow
 
 **Implementation Approach:**
-- **UI Design**: Add small "+" icon (24dp) to right side of each list item  
+- **UI Design**: Add small "+" icon (24dp) to right side of each list item
 - **Pro Restriction**: Use ProUserManager to control + icon visibility
 - **Dialog Creation**: Create simplified AddActivityDialog with pre-filled piece info and dynamic level options
 - **Navigation Flow**: Dialog → Activity Type → Dynamic Level Options → Performance Type (if needed) → Save → Return to original tab
@@ -939,26 +939,26 @@ Medium priority UX enhancement that significantly improves workflow efficiency. 
 ---
 
 ### Feature #19: ✅ Add Activity from Inactive Tab
-**Status:** Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** Medium  
-**Requested By:** User Feedback  
+**Status:** Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** Medium
+**Requested By:** User Feedback
 
-**Description:**  
+**Description:**
 Add a quick "Add Activity" feature to the Inactive tab that works like the existing quick add functionality in Suggestions and Pieces tabs. Each piece listed in the Inactive tab should have a small "+" icon that allows users to quickly log an activity for that piece.
 
-**User Story:**  
+**User Story:**
 As a Pro user viewing my inactive pieces, I want to quickly add an activity for a specific piece by tapping a "+" icon, so that I can efficiently resume practice on neglected pieces without navigating through multiple screens to select the piece name.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Add "+" icon to each piece in Inactive tab (Pro users only)
 - [ ] Clicking "+" opens the same QuickAddActivityDialog used in Suggestions/Pieces tabs
 - [ ] Dialog pre-fills piece name (user cannot change it)
 - [ ] Dialog allows selection of Practice vs Performance
 - [ ] Dialog shows proper level options matching regular Add Activity flow
 - [ ] Performance activities show only 3 levels with performance-specific descriptions
-- [ ] Practice activities show 4 levels with practice-specific descriptions  
+- [ ] Practice activities show 4 levels with practice-specific descriptions
 - [ ] Performance activities include performance type selection (Online/Live)
 - [ ] Dialog has Add Activity and Cancel buttons
 - [ ] Successful save closes dialog and returns to Inactive tab
@@ -967,7 +967,7 @@ As a Pro user viewing my inactive pieces, I want to quickly add an activity for 
 - [ ] Icon is visually clear but doesn't dominate the list item
 - [ ] Feature restricted to Pro users only (consistent with Inactive tab access)
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Add "+" button/icon to inactive piece item layout
 - Reuse existing QuickAddActivityDialogFragment from Feature #18
 - Add onAddActivityClick callback to InactiveAdapter
@@ -976,7 +976,7 @@ As a Pro user viewing my inactive pieces, I want to quickly add an activity for 
 - Consider that pieces may disappear from Inactive list after activity is added
 - Test that Inactive tab refreshes properly after activity creation
 
-**Priority Justification:**  
+**Priority Justification:**
 Medium priority UX enhancement that extends the successful quick-add pattern from Feature #18 to the Inactive tab. Provides consistent user experience across all piece-viewing tabs and makes it easier to resume practice on neglected pieces, which directly supports the app's core goal of consistent practice habits.
 
 **Implementation Approach:**
@@ -1018,11 +1018,11 @@ Medium priority UX enhancement that extends the successful quick-add pattern fro
 - After activity creation, piece may naturally move out of Inactive tab on next data refresh
 
 **Files Modified:**
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/AbandonedFragment.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/AbandonedAdapter.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/AbandonedFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/AbandonedAdapter.kt`
 - `app/src/main/res/layout/item_abandoned.xml`
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - Feature extends successful quick-add pattern from Feature #18 to Inactive/Abandoned tab
 - Reuses existing QuickAddActivityDialogFragment for consistency and maintainability
 - Maintains Pro-only restriction consistent with Inactive tab visibility
@@ -1032,21 +1032,21 @@ Medium priority UX enhancement that extends the successful quick-add pattern fro
 ---
 
 ### Feature #20: ✅ Exclude Today's Practiced Favorites from Suggestions
-**Status:** Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** Medium  
-**Requested By:** User Feedback  
+**Status:** Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** Medium
+**Requested By:** User Feedback
 
-**Description:**  
+**Description:**
 Modify the favorite suggestions logic to exclude any favorite piece that has already been practiced or performed today. Currently, favorites are suggested if they haven't been practiced in 2+ days, but this should be enhanced to never suggest favorites that have been practiced today, regardless of the 2-day rule.
 
-**User Story:**  
+**User Story:**
 As a user who has already practiced a favorite piece today, I don't want to see that piece in my suggestions list, so that my suggestions focus on pieces that still need attention today and don't show me redundant recommendations.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Favorite pieces practiced or performed today are excluded from suggestions
-- [ ] Applies to both primary suggestions (2+ days rule) and fallback suggestions 
+- [ ] Applies to both primary suggestions (2+ days rule) and fallback suggestions
 - [ ] "Today" is defined as current calendar day (midnight to midnight)
 - [ ] Both PRACTICE and PERFORMANCE activities count as "practiced today"
 - [ ] Suggestion logic still follows existing 2+ days rule, but adds today exclusion
@@ -1055,7 +1055,7 @@ As a user who has already practiced a favorite piece today, I don't want to see 
 - [ ] Pro and Free user limits remain unchanged
 - [ ] Clear suggestion reasons still displayed for remaining suggestions
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Update SuggestionsViewModel favorite suggestion logic
 - Add today timestamp calculation (start of current day)
 - Filter out pieces with activities >= today timestamp in both primary and fallback logic
@@ -1064,14 +1064,14 @@ As a user who has already practiced a favorite piece today, I don't want to see 
 - Consider edge case where user has practiced all favorites today (empty favorites list)
 - Maintain existing sorting and limiting logic for remaining favorites
 
-**Priority Justification:**  
+**Priority Justification:**
 Medium priority UX enhancement that prevents redundant suggestions and helps users focus on pieces that actually need attention. Improves suggestion quality by avoiding pieces already practiced today, making the suggestion system more intelligent and user-friendly.
 
 **Implementation Approach:**
 - **Today Calculation**: Add `startOfToday` timestamp calculation using current date at 00:00:00
-- **Primary Filter**: Update favorite selection to exclude pieces with `lastActivityDate >= startOfToday`  
+- **Primary Filter**: Update favorite selection to exclude pieces with `lastActivityDate >= startOfToday`
 - **Fallback Filter**: Apply same filter to fallback favorites selection
-- **Logic Flow**: 
+- **Logic Flow**:
   1. Calculate `startOfToday = todayMidnight timestamp`
   2. For each favorite: if `lastActivityDate >= startOfToday` → exclude
   3. Apply existing 2+ days rule to remaining favorites
@@ -1086,7 +1086,7 @@ Medium priority UX enhancement that prevents redundant suggestions and helps use
 - Consistent implementation across both ViewModels using same calendar logic
 
 **Primary Suggestion Filter Enhancement:**
-- **SuggestionsViewModel**: Updated favorite condition from `(lastActivityDate == null || lastActivityDate < twoDaysAgo)` 
+- **SuggestionsViewModel**: Updated favorite condition from `(lastActivityDate == null || lastActivityDate < twoDaysAgo)`
 - **Enhanced to**: `(lastActivityDate == null || lastActivityDate < twoDaysAgo) && (lastActivityDate == null || lastActivityDate < startOfToday)`
 - Same logic applied to DashboardViewModel for consistency
 
@@ -1098,7 +1098,7 @@ Medium priority UX enhancement that prevents redundant suggestions and helps use
 **Logic Flow:**
 1. Calculate `startOfToday` as current date at 00:00:00 timestamp
 2. For each favorite piece: if practiced today (`lastActivityDate >= startOfToday`) → exclude from suggestions
-3. Apply existing 2+ day rule to remaining (non-today) favorites  
+3. Apply existing 2+ day rule to remaining (non-today) favorites
 4. Apply same today exclusion to fallback favorites if primary suggestions insufficient
 5. Maintain existing Pro/Free limits and sorting logic
 
@@ -1108,10 +1108,10 @@ Medium priority UX enhancement that prevents redundant suggestions and helps use
 - Maintains existing suggestion reasons and display logic
 
 **Files Modified:**
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/SuggestionsViewModel.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/DashboardViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/SuggestionsViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/DashboardViewModel.kt`
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - Feature enhances suggestion intelligence by preventing redundant recommendations
 - Maintains all existing 2+ day logic while adding today exclusion as prerequisite filter
 - Both primary and fallback suggestion paths now exclude today's practiced favorites
@@ -1122,19 +1122,19 @@ Medium priority UX enhancement that prevents redundant suggestions and helps use
 ---
 
 ### Feature #21: ✅ Enhanced Streak Emoji Progression
-**Status:** Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** Medium  
-**Requested By:** User Experience Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** Medium
+**Requested By:** User Experience Team
 
-**Description:**  
+**Description:**
 Enhance the streak display emoji system to provide better visual progression and motivation for different milestone achievements. Currently, the fire emoji (🔥) appears at 6+ days. This should be changed to a more graduated system with multiple emoji stages that align with PlayStreak's musical theme.
 
-**User Story:**  
+**User Story:**
 As a user building my practice streak, I want to see visual progress indicators that celebrate different milestone achievements, so that I feel motivated to continue practicing and can see my progress through meaningful emoji rewards that connect to PlayStreak's musical theme.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] 0-2 days: No emoji (same as current)
 - [ ] 3-4 days: Single music note emoji 🎵 (same emoji used elsewhere in PlayStreak)
 - [ ] 5-6 days: Double music note emoji 🎵🎵 (progression within musical theme)
@@ -1145,7 +1145,7 @@ As a user building my practice streak, I want to see visual progress indicators 
 - [ ] No other display logic changes (singular/plural "day"/"days" remains the same)
 - [ ] Emoji progression creates sense of achievement and motivation
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Update DashboardFragment.kt streak display logic
 - Modify the conditional emoji logic from single threshold (6+ days) to multiple thresholds
 - Ensure music note emoji 🎵 matches the same emoji used elsewhere in the app
@@ -1153,7 +1153,7 @@ As a user building my practice streak, I want to see visual progress indicators 
 - Consider emoji rendering consistency across different font systems
 - Maintain existing streak calculation logic (only change display)
 
-**Priority Justification:**  
+**Priority Justification:**
 Medium priority UX enhancement that improves user motivation and engagement through better visual feedback. The graduated emoji system provides more frequent positive reinforcement and creates stronger psychological incentive to maintain practice streaks.
 
 **Implementation Approach:**
@@ -1161,7 +1161,7 @@ Medium priority UX enhancement that improves user motivation and engagement thro
   ```kotlin
   val emojiSuffix = when {
       streak >= 14 -> " 🔥🔥🔥"
-      streak >= 7 -> " 🔥" 
+      streak >= 7 -> " 🔥"
       streak >= 5 -> " 🎵🎵"
       streak >= 3 -> " 🎵"
       else -> ""
@@ -1184,7 +1184,7 @@ Medium priority UX enhancement that improves user motivation and engagement thro
 ```kotlin
 val emojiSuffix = when {
     streak >= 14 -> " 🔥🔥🔥"  // Triple fire for elite 14+ day streaks
-    streak >= 7 -> " 🔥"        // Single fire for solid 7+ day streaks  
+    streak >= 7 -> " 🔥"        // Single fire for solid 7+ day streaks
     streak >= 5 -> " 🎵🎵"      // Double music note for 5+ day momentum
     streak >= 3 -> " 🎵"        // Single music note for 3+ day achievement
     else -> ""                  // No emoji for 0-2 days
@@ -1206,9 +1206,9 @@ binding.currentStreakText.text = "$streak day${if (streak != 1) "s" else ""}$emo
 - **Elite Recognition**: Triple fire emoji provides spectacular reward for 14+ day dedication
 
 **Files Modified:**
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/DashboardFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/DashboardFragment.kt`
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - Feature enhances existing streak display without changing underlying calculation logic
 - Music note emoji (🎵) reinforces PlayStreak's musical identity and branding throughout early stages
 - Four-tier system provides balanced progression: early achievement (3 days), building momentum (5 days), solid streak (7 days), impressive dedication (14+ days)
@@ -1220,19 +1220,19 @@ binding.currentStreakText.text = "$streak day${if (streak != 1) "s" else ""}$emo
 ---
 
 ### Feature #22: ✅ Add PieceType to CSV Export/Import
-**Status:** Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** High  
-**Requested By:** Data Integrity Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** High
+**Requested By:** Data Integrity Team
 
-**Description:**  
+**Description:**
 Add the PieceType field (PIECE or TECHNIQUE) to CSV export and import functionality to preserve complete piece information during data transfers. Currently, piece type information is lost during export/import cycles, requiring the system to guess whether items like "C Major Scale" should be classified as PIECE or TECHNIQUE during import.
 
-**User Story:**  
+**User Story:**
 As a user who exports and imports my practice data, I want the piece type (PIECE or TECHNIQUE) to be preserved in CSV files, so that my data maintains complete integrity without losing the distinction between musical pieces and technical exercises during import.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] CSV export includes PieceType column after Piece column
 - [ ] PieceType values are exported as "PIECE" or "TECHNIQUE" (enum string values)
 - [ ] CSV import validates and parses PieceType field correctly
@@ -1243,7 +1243,7 @@ As a user who exports and imports my practice data, I want the piece type (PIECE
 - [ ] Import validation includes PieceType field validation with clear error messages
 - [ ] Documentation updated to reflect new CSV format
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Update CsvHandler.exportActivitiesToCsv to include piece.type field
 - Update CSV header constants to include HEADER_PIECE_TYPE
 - Modify import validation to handle both old and new CSV formats
@@ -1253,7 +1253,7 @@ As a user who exports and imports my practice data, I want the piece type (PIECE
 - Maintain backward compatibility with existing CSV files
 - Update error messages to include PieceType validation failures
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority data integrity fix that prevents data loss during export/import cycles. Currently, users lose piece type classification when exporting and re-importing data, requiring manual re-classification or relying on imperfect keyword detection. This is a fundamental data preservation issue that affects the reliability of the backup/restore functionality.
 
 **Implementation Approach:**
@@ -1277,9 +1277,9 @@ High priority data integrity fix that prevents data loss during export/import cy
 - **Validation**: Ensure PieceType is valid ItemType enum value
 
 **Files to Modify:**
-- `app/src/main/java/com/pseddev/playstreak/utils/CsvHandler.kt`
+- `app/src/main/java/com/pseddev/mystreak/utils/CsvHandler.kt`
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - Feature addresses critical data integrity issue where piece type information is lost during export/import
 - Maintains backward compatibility with existing CSV files through format detection
 - Enhances the reliability of PlayStreak's backup and restore functionality
@@ -1289,19 +1289,19 @@ High priority data integrity fix that prevents data loss during export/import cy
 ---
 
 ### Feature #23: ✅ Include Techniques in Pieces Tab with Emoji Indicator
-**Status:** Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** Medium  
-**Requested By:** User Experience Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** Medium
+**Requested By:** User Experience Team
 
-**Description:**  
+**Description:**
 Modify the Pieces tab to display both pieces AND techniques in a unified view, with a visual emoji indicator to distinguish techniques from regular pieces. Currently, the Pieces tab only shows items of type PIECE, but users should be able to see and manage their techniques (scales, exercises, etc.) in the same interface.
 
-**User Story:**  
+**User Story:**
 As a user managing my practice repertoire, I want to see both my pieces and techniques in the Pieces tab, so that I have a complete view of all my practice materials in one place, with clear visual distinction between pieces and technical exercises.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Pieces tab displays both PIECE and TECHNIQUE items in the same list
 - [ ] Techniques show a visual emoji indicator next to their title
 - [ ] Pieces continue to display without technique emoji (maintain current appearance)
@@ -1313,7 +1313,7 @@ As a user managing my practice repertoire, I want to see both my pieces and tech
 - [ ] Techniques are visually distinguishable but integrated seamlessly
 - [ ] Activity counts and last practice dates work for both types
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Update PiecesViewModel to query both PIECE and TECHNIQUE types instead of filtering to PIECE only
 - Modify piece list item layout or adapter to conditionally display technique emoji
 - Determine appropriate emoji for techniques (🎼, 🎹, ⚙️, or other music-related emoji)
@@ -1322,7 +1322,7 @@ As a user managing my practice repertoire, I want to see both my pieces and tech
 - Consider whether techniques should be grouped separately or fully integrated
 - Maintain backward compatibility with existing piece-focused functionality
 
-**Priority Justification:**  
+**Priority Justification:**
 Medium priority UX enhancement that provides users with a more complete and unified view of their practice materials. Currently, techniques are somewhat hidden or less accessible, but they are an important part of practice routines. This improves discoverability and management of technical exercises.
 
 **Implementation Approach:**
@@ -1339,18 +1339,18 @@ Medium priority UX enhancement that provides users with a more complete and unif
   ```
 - **Emoji Selection**: Choose from music-related options:
   - 🎼 (musical score - indicates written exercises)
-  - 🎹 (piano - indicates piano techniques)  
+  - 🎹 (piano - indicates piano techniques)
   - ⚙️ (gear - indicates technical exercises)
   - 🔧 (wrench - indicates "technique work")
 - **Sorting Compatibility**: Ensure existing sort options work with mixed types
 - **Testing**: Verify all piece-related functionality works with techniques
 
 **Files to Modify:**
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/PiecesViewModel.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/PiecesAdapter.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/PiecesViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/PiecesAdapter.kt`
 - Possibly `app/src/main/res/layout/item_piece_stats.xml` if emoji needs special styling
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - Feature creates a more unified and complete practice materials management interface
 - Maintains clear visual distinction between pieces and techniques while integrating them
 - Improves discoverability of techniques that may currently be less accessible
@@ -1360,19 +1360,19 @@ Medium priority UX enhancement that provides users with a more complete and unif
 ---
 
 ### Feature #24: ✅ Add Technique Emoji to Timeline and Inactive Tab
-**Status:** Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** Medium  
-**Requested By:** User Experience Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** Medium
+**Requested By:** User Experience Team
 
-**Description:**  
+**Description:**
 Add the technique emoji indicator (🎼) next to technique names in both the Timeline and Inactive tabs to maintain visual consistency across the app. This ensures that techniques are clearly distinguished from pieces throughout all interfaces, not just in the Pieces tab.
 
-**User Story:**  
+**User Story:**
 As a user viewing my activity timeline or inactive items, I want to easily distinguish between pieces and techniques at a glance, so that I can quickly understand what type of practice material each activity involved without having to rely on memory or naming conventions.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Timeline tab shows technique emoji (🎼) next to technique names in activity entries
 - [ ] Inactive tab shows technique emoji (🎼) next to technique names in the pieces list
 - [ ] Regular pieces continue to display without emoji in both tabs
@@ -1383,7 +1383,7 @@ As a user viewing my activity timeline or inactive items, I want to easily disti
 - [ ] Emoji rendering is consistent across all tabs (Timeline, Inactive, Pieces)
 - [ ] Performance impact is minimal (emoji added at display time, not stored)
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Update TimelineAdapter to conditionally display emoji for techniques
 - Update AbandonedAdapter (Inactive tab) to conditionally display emoji for techniques
 - Ensure consistent emoji choice (🎼) across all implementations
@@ -1392,7 +1392,7 @@ As a user viewing my activity timeline or inactive items, I want to easily disti
 - Test emoji rendering consistency across different Android versions
 - Verify that emoji doesn't interfere with existing text truncation or styling
 
-**Priority Justification:**  
+**Priority Justification:**
 Medium priority UX consistency enhancement that extends the visual distinction system from Feature #23 across the entire app. Provides uniform user experience and reduces cognitive load when scanning through practice history or inactive items.
 
 **Implementation Approach:**
@@ -1408,7 +1408,7 @@ Medium priority UX consistency enhancement that extends the visual distinction s
   ```
 - **Inactive Adapter**: Update piece name display to include emoji for techniques:
   ```kotlin
-  // In AbandonedAdapter ViewHolder  
+  // In AbandonedAdapter ViewHolder
   val displayName = if (item.piece.type == ItemType.TECHNIQUE) {
       "🎼 ${item.piece.name}"
   } else {
@@ -1420,10 +1420,10 @@ Medium priority UX consistency enhancement that extends the visual distinction s
 - **Performance**: Add emoji at display time, not stored in database
 
 **Files to Modify:**
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/TimelineAdapter.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/AbandonedAdapter.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/TimelineAdapter.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/AbandonedAdapter.kt`
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - Feature provides visual consistency across all tabs where pieces/techniques are displayed
 - Maintains same emoji choice (🎼) and placement pattern established in Feature #23
 - Enhances user ability to quickly scan and understand practice material types
@@ -1438,21 +1438,21 @@ Medium priority UX consistency enhancement that extends the visual distinction s
 ---
 
 ### Feature #25: ✅ Import/Export Button Label Updates and Free User Access
-**Status:** Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** Medium  
-**Requested By:** User Interface Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** Medium
+**Requested By:** User Interface Team
 
-**Description:**  
+**Description:**
 Update the import/export UI to provide clearer button labeling and remove unnecessary feature gating for free users on the import functionality. The export button should be renamed to "Export Activities to CSV" and the import button to "Import Activities from CSV" for better clarity. Additionally, free users should have access to the same import button as Pro users, removing the current disabled/different import button behavior.
 
-**User Story:**  
+**User Story:**
 As a user, I want clear and descriptive button labels so that I understand exactly what each action will do, and as a free user, I want access to import functionality without being shown disabled buttons that create confusion about available features.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Export button text changed from current label to "Export Activities to CSV"
-- [ ] Import button text changed from current label to "Import Activities from CSV"  
+- [ ] Import button text changed from current label to "Import Activities from CSV"
 - [ ] Free users see the same enabled import button as Pro users
 - [ ] Remove any code that shows disabled/different import buttons for free users
 - [ ] Import functionality works identically for both free and Pro users
@@ -1460,14 +1460,14 @@ As a user, I want clear and descriptive button labels so that I understand exact
 - [ ] UI layout and styling remain consistent with current design
 - [ ] No breaking changes to existing import/export logic
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Update button text resources in strings.xml or directly in layout/code
 - Remove Pro user checks specifically around import button display/enablement
 - Verify that import functionality doesn't have other Pro-gated features that would break
 - Test both free and Pro user flows to ensure consistent behavior
 - Consider if this aligns with overall monetization strategy
 
-**Priority Justification:**  
+**Priority Justification:**
 Medium priority UX improvement that removes user confusion and provides clearer interface labeling. Removing arbitrary feature gates on import improves user experience without significantly impacting Pro value proposition, as the core differentiation should focus on other premium features.
 
 **Implementation Approach:**
@@ -1483,32 +1483,32 @@ Medium priority UX improvement that removes user confusion and provides clearer 
 ---
 
 ### Feature #26: ✅ Update Default Export Filename Format
-**Status:** Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** Low  
-**Requested By:** User Interface Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** Low
+**Requested By:** User Interface Team
 
-**Description:**  
+**Description:**
 Update the default export filename format to better reflect the PlayStreak brand and clarify the export content type. The current filename uses underscores and a generic "export" label that doesn't specify what type of data is being exported. With future plans for multiple export types (pieces, favorites, etc.), the filename should be more descriptive and consistent with branding.
 
-**User Story:**  
+**User Story:**
 As a user exporting my practice data, I want the default filename to clearly indicate what type of data is being exported and maintain consistent branding, so that I can easily organize and identify my exported files.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Default export filename uses "PlayStreak" as a single word (not "play_streak")
 - [ ] Filename includes "activities" to specify the export type
 - [ ] Filename format supports future differentiation from other export types
 - [ ] Maintains timestamp for uniqueness
 - [ ] Uses consistent naming conventions with underscores as separators
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Update filename generation in ImportExportFragment
 - Consider establishing naming convention pattern for future export types
 - Ensure filename compatibility across different operating systems
 - Maintain backward compatibility (existing functionality unchanged)
 
-**Priority Justification:**  
+**Priority Justification:**
 Low priority cosmetic improvement that enhances user experience through clearer file identification and consistent branding. Prepares filename structure for future multiple export types.
 
 **Implementation Approach:**
@@ -1517,26 +1517,26 @@ Low priority cosmetic improvement that enhances user experience through clearer 
 - **Future Formats**: `PlayStreak_pieces_export_...`, `PlayStreak_favorites_export_...`, etc.
 
 **Files to Modify:**
-- `app/src/main/java/com/pseddev/playstreak/ui/importexport/ImportExportFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/importexport/ImportExportFragment.kt`
 
 ---
 
 ### Feature #27: ✅ Implement Piece/Technique Count Limits
-**Status:** Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** High  
-**Requested By:** Free Release Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** High
+**Requested By:** Free Release Team
 
-**Description:**  
+**Description:**
 Implement limits on the total number of pieces and techniques that users can add to the app. Free users should be limited to 50 total items (pieces + techniques combined), while Pro users can have up to 60 total items. This limit only applies to new additions - users who already have more items than the limit should be allowed to keep them but not add more.
 
-**User Story:**  
+**User Story:**
 As a system administrator, I want to limit the number of pieces and techniques users can add based on their subscription tier, so that we can maintain app performance and create differentiation between Free and Pro users while ensuring existing users aren't penalized.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Free users limited to maximum 50 pieces + techniques combined
-- [ ] Pro users limited to maximum 60 pieces + techniques combined  
+- [ ] Pro users limited to maximum 60 pieces + techniques combined
 - [ ] Limit enforcement only applies to new piece/technique additions
 - [ ] Users with existing items above the limit can keep them but cannot add more
 - [ ] Clear error message when user attempts to exceed limit
@@ -1546,7 +1546,7 @@ As a system administrator, I want to limit the number of pieces and techniques u
 - [ ] Import functionality should handle limits appropriately (see Investigation section)
 - [ ] Limits are enforced consistently across all piece/technique creation flows
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Update AddPieceViewModel to check current count before allowing new pieces
 - Add ProUserManager method to get appropriate limit for user type
 - Update PianoRepository to provide current piece/technique count
@@ -1555,7 +1555,7 @@ As a system administrator, I want to limit the number of pieces and techniques u
 - Handle edge cases where count changes between check and insertion
 - Ensure thread safety for concurrent piece additions
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority for Free release preparation. Essential for creating meaningful differentiation between Free and Pro tiers while ensuring good performance for all users. Prevents potential abuse and ensures sustainable resource usage.
 
 **Implementation Approach:**
@@ -1566,7 +1566,7 @@ High priority for Free release preparation. Essential for creating meaningful di
 
 **Implementation Details:**
 - **Piece Limits**: Added constants FREE_USER_PIECE_LIMIT = 50 and PRO_USER_PIECE_LIMIT = 60
-- **ProUserManager**: Enhanced with canAddMorePieces() and getPieceLimit() methods  
+- **ProUserManager**: Enhanced with canAddMorePieces() and getPieceLimit() methods
 - **AddPieceViewModel**: Added piece count validation before saving new pieces
 - **AddPieceFragment**: Added limit reached dialog with clear messaging
 - **Validation Logic**: Checks current piece/technique count against user type limits
@@ -1575,7 +1575,7 @@ High priority for Free release preparation. Essential for creating meaningful di
 
 **Phase 1 Complete - Manual Piece Addition:**
 - ✅ Piece limit constants and validation logic implemented
-- ✅ User-friendly error dialog with clear messaging  
+- ✅ User-friendly error dialog with clear messaging
 - ✅ Existing pieces preserved (grandfathered) above limits
 - ✅ Consistent Pro/Free user differentiation
 
@@ -1589,7 +1589,7 @@ High priority for Free release preparation. Essential for creating meaningful di
 3. Pro user imports CSV that would exceed 60 piece limit
 4. User downgrades from Pro to Free after having 55 pieces
 
-**Recommendation:** 
+**Recommendation:**
 Implement **Import Limit Enforcement with User Choice**:
 
 1. **Pre-Import Validation:**
@@ -1600,10 +1600,10 @@ Implement **Import Limit Enforcement with User Choice**:
 2. **Import Options Dialog:**
    ```
    "Import Limit Warning
-   
+
    This import contains 75 pieces, but you are limited to 50 pieces total.
    You currently have 30 pieces.
-   
+
    Choose an option:
    • Import first 20 pieces (up to your limit)
    • Proceed anyway (existing pieces kept, new ones truncated)"
@@ -1620,15 +1620,15 @@ Implement **Import Limit Enforcement with User Choice**:
    - Provides more user control over which pieces are important
 
 **Files Modified:**
-- `app/src/main/java/com/pseddev/playstreak/utils/ProUserManager.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/pieces/AddPieceViewModel.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/pieces/AddPieceFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/utils/ProUserManager.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/pieces/AddPieceViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/pieces/AddPieceFragment.kt`
 
 **Files Pending (Import Functionality):**
-- `app/src/main/java/com/pseddev/playstreak/data/repository/PianoRepository.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/importexport/ImportExportViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/data/repository/PianoRepository.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/importexport/ImportExportViewModel.kt`
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - Feature is critical for Free release and Pro differentiation
 - Import handling requires careful UX design to avoid user frustration
 - Consider phased implementation: basic limits first, import handling second
@@ -1638,19 +1638,19 @@ Implement **Import Limit Enforcement with User Choice**:
 ---
 
 ### Feature #28: ✅ Update Practice Suggestions Algorithm Timing
-**Status:** Implemented  
-**Date Requested:** 2025-07-22  
-**Date Implemented:** 2025-07-22  
-**Priority:** Medium  
+**Status:** Implemented
+**Date Requested:** 2025-07-22
+**Date Implemented:** 2025-07-22
+**Priority:** Medium
 **Requested By:** User Experience Team
 
-**Description:**  
+**Description:**
 Update the user-facing text description of the practice suggestions algorithm to clarify the timing intervals. Change the explanation text from "favorites after 2+ days, others after 7-31 days" to "favorites after 1+ day, others after 7+ days" to better communicate the suggestion criteria to users.
 
-**User Story:**  
+**User Story:**
 As a user who practices regularly, I want to see practice suggestions more frequently so that I can maintain consistent practice on my favorite pieces and don't forget about other pieces in my repertoire for too long.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Favorite pieces appear in suggestions after 1+ day without practice (down from 2+ days)
 - [ ] Non-favorite pieces appear in suggestions after 7+ days without practice
 - [ ] Today exclusion logic remains unchanged (pieces practiced today are never suggested)
@@ -1660,7 +1660,7 @@ As a user who practices regularly, I want to see practice suggestions more frequ
 - [ ] Clear suggestion reasons display updated timing ("not practiced in 1+ day" vs "not practiced in 7+ days")
 - [ ] Fallback logic (least recently practiced) uses same timing thresholds
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Update SuggestionsViewModel favorite condition from 2+ days to 1+ day
 - Update DashboardViewModel to match SuggestionsViewModel timing
 - Modify suggestion reason text to reflect new timing
@@ -1669,13 +1669,13 @@ As a user who practices regularly, I want to see practice suggestions more frequ
 - Consider impact on suggestion frequency and user experience
 - Test with various practice patterns to ensure appropriate suggestion behavior
 
-**Priority Justification:**  
+**Priority Justification:**
 Medium priority UX enhancement that makes the suggestion system more responsive and encourages more frequent practice. The shorter intervals align with daily practice habits and help users maintain momentum with their favorite pieces while ensuring other repertoire doesn't get forgotten.
 
 **Implementation Approach:**
 - **Favorites Logic**: Change from `lastActivityDate < twoDaysAgo` to `lastActivityDate < oneDayAgo`
 - **Non-Favorites Logic**: Implement `lastActivityDate < sevenDaysAgo` threshold for non-favorite suggestions
-- **Time Calculations**: 
+- **Time Calculations**:
   ```kotlin
   val oneDayAgo = System.currentTimeMillis() - (24 * 60 * 60 * 1000)
   val sevenDaysAgo = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000)
@@ -1689,11 +1689,11 @@ Medium priority UX enhancement that makes the suggestion system more responsive 
 - **Impact**: More frequent suggestions overall, better coverage of user's repertoire
 
 **Files to Modify:**
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/SuggestionsViewModel.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/DashboardViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/SuggestionsViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/DashboardViewModel.kt`
 - Any suggestion reason text resources or string formatting
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - Feature makes suggestions more responsive to daily practice patterns
 - Should encourage more consistent practice by surfacing favorites more frequently
 - 7-day threshold for non-favorites prevents repertoire from being completely forgotten
@@ -1703,32 +1703,32 @@ Medium priority UX enhancement that makes the suggestion system more responsive 
 ---
 
 ### Feature #29: ✅ Set App Version to Beta Status
-**Status:** Implemented  
-**Date Requested:** 2025-07-23  
-**Date Implemented:** 2025-07-23  
-**Priority:** High  
-**Requested By:** Development Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-23
+**Date Implemented:** 2025-07-23
+**Priority:** High
+**Requested By:** Development Team
 
-**Description:**  
+**Description:**
 Update the app version number in build.gradle.kts to include a "-beta" suffix to clearly indicate the current development stage. The version should be changed from "1.0.8.3" to "1.0.8.3-beta" to properly reflect that this is a beta release.
 
-**User Story:**  
+**User Story:**
 As a developer or beta tester, I want the app version to clearly indicate beta status so that everyone understands this is a pre-release version, and as a user, I want to know when I'm using beta software so I can set appropriate expectations.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] App version changed from "1.0.8.3" to "1.0.8.3-beta" in build.gradle.kts
 - [x] Version naming strategy documented for future beta releases (1.0.8.4-beta, 1.0.8.5-beta, etc.)
 - [x] Production release target set as 1.0.9 (without beta suffix)
 - [x] Beta version is visible in app UI where version is displayed
 - [x] Consistent beta labeling across development workflow
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Update versionName in app/build.gradle.kts defaultConfig section
 - Ensure version is properly displayed in About/Settings screens
 - Plan version numbering strategy for future beta releases
 - Prepare transition to stable release version (1.0.9)
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority for proper beta release management and user expectation setting. Beta versioning prevents confusion about app maturity level and ensures appropriate feedback from testers.
 
 **Implementation Details:**
@@ -1741,7 +1741,7 @@ High priority for proper beta release management and user expectation setting. B
 - `app/build.gradle.kts`
 - `app/docs/free-release-readiness.md`
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - Feature provides clear beta status indication for all stakeholders
 - Maintains version continuity while adding development stage clarity
 - Prepares path for smooth transition to stable release
@@ -1750,19 +1750,19 @@ High priority for proper beta release management and user expectation setting. B
 ---
 
 ### Feature #30: ✅ Add Activity Count to Settings Page Add Activity Button
-**Status:** Implemented  
-**Date Requested:** 2025-07-23  
-**Date Implemented:** 2025-07-23  
-**Priority:** Low  
-**Requested By:** User Interface Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-23
+**Date Implemented:** 2025-07-23
+**Priority:** Low
+**Requested By:** User Interface Team
 
-**Description:**  
+**Description:**
 Add the current total number of activities to the Add Activity button in the Settings page, similar to how the Add Piece button shows the piece count. The button should display the format "Add Activity (#)" where # is the total number of activities in the user's database.
 
-**User Story:**  
+**User Story:**
 As a user, I want to see at a glance how many activities I have logged in total when I'm on the Settings page, so that I can quickly understand the scope of my practice history and track my overall activity volume.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Add Activity button in Settings page shows current activity count in parentheses
 - [x] Button format: "Add Activity (123)" where 123 is the total activity count
 - [x] Activity count updates dynamically when activities are added/removed
@@ -1772,7 +1772,7 @@ As a user, I want to see at a glance how many activities I have logged in total 
 - [x] Real-time count updates when returning to Settings page after adding activities
 - [x] Performance is acceptable (count query doesn't slow down Settings page)
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Add activity count query to Settings page/ViewModel
 - Use LiveData or similar reactive pattern to observe activity count changes
 - Query repository for total activity count: `repository.getAllActivities().count()`
@@ -1781,7 +1781,7 @@ As a user, I want to see at a glance how many activities I have logged in total 
 - Ensure count updates when user returns from adding/editing activities
 - Handle zero activities case gracefully ("Add Activity (0)")
 
-**Priority Justification:**  
+**Priority Justification:**
 Low priority UI enhancement that provides useful information to users about their practice volume. Complements the existing Add Piece (#) button pattern and helps users understand their overall app usage statistics at a glance.
 
 **Implementation Approach:**
@@ -1792,11 +1792,11 @@ Low priority UI enhancement that provides useful information to users about thei
 - **Performance**: Use efficient count query or cached count if needed
 - **Consistency**: Match styling and behavior of Add Piece button
 
-**Similar Features:**  
+**Similar Features:**
 This feature mirrors Feature #15 (Add Piece button with count) but for activities instead of pieces, providing users with a complete view of both their repertoire size and practice volume.
 
 **Files to Modify:**
-- Settings page/fragment (likely `app/src/main/java/com/pseddev/playstreak/ui/main/MainFragment.kt`)
+- Settings page/fragment (likely `app/src/main/java/com/pseddev/mystreak/ui/main/MainFragment.kt`)
 - Settings ViewModel if exists, or add activity count to MainViewModel
 - Settings layout file for button text updates
 
@@ -1808,36 +1808,36 @@ This feature mirrors Feature #15 (Add Piece button with count) but for activitie
 - **UI Consistency**: Follows same pattern as existing Add Piece button implementation
 
 **Files Modified:**
-- `app/src/main/java/com/pseddev/playstreak/ui/main/MainViewModel.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/main/MainFragment.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/main/MainViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/main/MainFragment.kt`
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - Feature provides symmetric information display with piece count button
 - Helps users understand their practice activity volume at a glance
 - Uses efficient database queries without performance impact
-- Count display creates sense of accomplishment for active users  
+- Count display creates sense of accomplishment for active users
 - May be useful for tracking progress toward activity limits in future features
 - Seamlessly integrates with existing Settings page UI pattern
 
 ---
 
 ### Feature #31: ✅ Update Developer Attribution to PseudonymousEd
-**Status:** Implemented  
-**Date Requested:** 2025-07-23  
-**Date Implemented:** 2025-07-23  
-**Priority:** High  
-**Requested By:** Developer/Legal Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-23
+**Date Implemented:** 2025-07-23
+**Priority:** High
+**Requested By:** Developer/Legal Team
 
-**Description:**  
+**Description:**
 Update all references to the developer's real name throughout the codebase, documentation, and configuration files to use "PseudonymousEd" instead. This includes code comments, copyright notices, author attributions, package names, documentation, and any other places where the developer name appears.
 
-**User Story:**  
+**User Story:**
 As a developer preparing for public release, I want to use a pseudonymous identity "PseudonymousEd" instead of my real name in all project files, so that my personal identity is protected while maintaining proper attribution for the work.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] All code files updated to reference "PseudonymousEd" instead of real name
 - [x] Documentation files updated with new attribution
-- [x] Copyright notices updated to use "PseudonymousEd" 
+- [x] Copyright notices updated to use "PseudonymousEd"
 - [x] Package names or namespaces updated if they contain personal name references
 - [x] Build configuration files updated (gradle, manifest, etc.)
 - [x] README files and project descriptions updated
@@ -1846,10 +1846,10 @@ As a developer preparing for public release, I want to use a pseudonymous identi
 - [x] Consistent use of "PseudonymousEd" across all files and contexts
 - [x] Legal/licensing files updated to reflect new attribution
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Search entire codebase for real name references
 - Update package declarations if they contain personal name
-- Review AndroidManifest.xml for developer/author references  
+- Review AndroidManifest.xml for developer/author references
 - Check gradle files for author or developer information
 - Update any LICENSE or COPYRIGHT files
 - Consider implications for app store listings and developer accounts
@@ -1857,7 +1857,7 @@ As a developer preparing for public release, I want to use a pseudonymous identi
 - Check string resources for developer attribution
 - Verify no hardcoded personal information remains
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority for privacy and professional pseudonymous identity management. Essential for public release preparation to protect developer's personal identity while maintaining proper code attribution and ownership.
 
 **Implementation Approach:**
@@ -1881,7 +1881,7 @@ High priority for privacy and professional pseudonymous identity management. Ess
 
 **Implementation Details:**
 - **UI Attribution**: Updated fragment_main.xml author text from real name to "PseudonymousEd"
-- **Package Names**: Confirmed existing package "com.pseddev.playstreak" already uses pseudonymous identity
+- **Package Names**: Confirmed existing package "com.pseddev.mystreak" already uses pseudonymous identity
 - **Documentation**: Verified and updated features.md to remove real name references
 - **Copyright Files**: Confirmed COPYRIGHT file already uses pseudonymous "PlayStreak" attribution
 - **README**: Verified README.md already uses pseudonymous references throughout
@@ -1899,7 +1899,7 @@ High priority for privacy and professional pseudonymous identity management. Ess
 - Legal/copyright files use business name attribution
 - UI displays "PseudonymousEd" as developer attribution
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - Feature successfully protects developer privacy while maintaining code attribution
 - Essential for public release and professional pseudonymous identity management
 - Completed before any public code repository or app store publication
@@ -1909,19 +1909,19 @@ High priority for privacy and professional pseudonymous identity management. Ess
 ---
 
 ### Feature #32: ✅ Performance Suggestions for Pro Users
-**Status:** Implemented  
-**Date Requested:** 2025-07-23  
-**Date Implemented:** 2025-07-23  
-**Priority:** High  
-**Requested By:** User Experience Team  
+**Status:** Implemented
+**Date Requested:** 2025-07-23
+**Date Implemented:** 2025-07-23
+**Priority:** High
+**Requested By:** User Experience Team
 
-**Description:**  
+**Description:**
 Add a new "Performance Suggestions" section to the Dashboard tab's suggestions area, positioned after the existing Practice Suggestions section. This Pro-only feature will help users identify pieces they should consider performing by analyzing their performance history and favorite status.
 
-**User Story:**  
+**User Story:**
 As a Pro user preparing for performances, I want intelligent suggestions for pieces to perform based on my performance history and favorites, so that I can maintain a balanced performance repertoire and ensure I'm regularly performing my favorite pieces.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Performance Suggestions section appears only for Pro users
 - [x] Section is positioned after Practice Suggestions in Dashboard tab
 - [x] Shows up to 5 performance suggestions using two-tier algorithm with quality requirement
@@ -1937,7 +1937,7 @@ As a Pro user preparing for performances, I want intelligent suggestions for pie
 - [x] Performance suggestions also appear in dedicated Suggestions tab
 - [x] Suggestions tab shows both Practice and Performance sections for Pro users
 
-**Technical Considerations:**  
+**Technical Considerations:**
 - Query database for both practice and performance activities to analyze practice frequency and quality
 - Two-tier algorithm based on practice frequency (≥3 times in 28 days) and quality (≥1 Level 4 practice)
 - Quality requirement ensures only performance-ready pieces are suggested
@@ -1947,14 +1947,14 @@ As a Pro user preparing for performances, I want intelligent suggestions for pie
 - Update Dashboard ViewModel and Fragment to handle new suggestions
 - Consider performance impact of additional database queries
 
-**Priority Justification:**  
+**Priority Justification:**
 High priority Pro feature that adds significant value for performing musicians. Helps Pro users maintain active performance repertoire and ensures favorite pieces aren't neglected in performance rotation.
 
 **Implementation Approach:**
 - **Database Queries**: Query both practice and performance activities for comprehensive analysis
 - **Pro User Check**: Use existing ProUserManager to show/hide section
 - **UI Integration**: Add new section to Dashboard fragment after Practice Suggestions
-- **Two-Tier Algorithm**: 
+- **Two-Tier Algorithm**:
   - **First Tier**: Pieces with ≥3 practices in 28 days but no performances in 28 days (sorted by most recent practice)
   - **Second Tier**: Pieces with ≥3 practices in 28 days (sorted by least recent performance)
   - **Combined**: Up to 5 suggestions total across both tiers
@@ -1976,14 +1976,14 @@ High priority Pro feature that adds significant value for performing musicians. 
 - **Suggestion Reasons**: Shows practice count and performance history in user-friendly format
 
 **Files Modified:**
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/DashboardViewModel.kt` - Added performanceSuggestions LiveData
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/DashboardFragment.kt` - Added observer for performance suggestions
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/DashboardViewModel.kt` - Added performanceSuggestions LiveData
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/DashboardFragment.kt` - Added observer for performance suggestions
 - `app/src/main/res/layout/fragment_dashboard.xml` - Added Performance Suggestions card section
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/SuggestionsViewModel.kt` - Enhanced with SuggestionType and performance logic
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/SuggestionsFragment.kt` - Updated to handle separate sections
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/SuggestionsViewModel.kt` - Enhanced with SuggestionType and performance logic
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/SuggestionsFragment.kt` - Updated to handle separate sections
 - `app/src/main/res/layout/fragment_suggestions.xml` - Modified layout for section-based display
 
-**Implementation Notes:**  
+**Implementation Notes:**
 - Feature successfully differentiates between practice and performance activities for targeted suggestions
 - Pro-only feature enhances value proposition for paid users
 - Helps performing musicians maintain active performance repertoire rotation
@@ -1997,31 +1997,31 @@ High priority Pro feature that adds significant value for performing musicians. 
 ---
 
 ### Feature #33: Filter Timeline by Performances (Pro Only) - ✅ COMPLETE
-**Status:** ✅ Fully Implemented via Sub-Features  
-**Date Requested:** 2025-07-23  
-**Priority:** Medium  
-**Requested By:** Pro User Experience Team  
+**Status:** ✅ Fully Implemented via Sub-Features
+**Date Requested:** 2025-07-23
+**Priority:** Medium
+**Requested By:** Pro User Experience Team
 
-**Description:**  
+**Description:**
 Add a filter option to the Timeline tab that allows Pro users to view only Performance activities, hiding Practice activities from the timeline view. This will help Pro users focus on their performance history and track their performance frequency and patterns.
 
-**User Story:**  
+**User Story:**
 As a Pro user tracking my performance activities, I want to filter the Timeline tab to show only performances, so that I can focus on my performance history without being distracted by practice activities and better analyze my performance patterns over time.
 
-**Implementation Strategy:**  
+**Implementation Strategy:**
 Due to previous app crashes when implementing this feature, it has been split into smaller, safer sub-features that can be implemented and tested incrementally.
 
 ---
 
 ### Feature #33A: Timeline Pro User Detection and Basic Filter UI
-**Status:** ✅ Implemented  
-**Priority:** High (Foundation)  
+**Status:** ✅ Implemented
+**Priority:** High (Foundation)
 **Dependencies:** None
 
-**Description:**  
+**Description:**
 Add basic Pro user detection to Timeline and create minimal filter UI structure without any functional filtering logic.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Add ProUserManager integration to TimelineViewModel
 - [x] Add basic filter UI section that shows/hides based on Pro status
 - [x] Filter UI appears only for Pro users
@@ -2040,14 +2040,14 @@ Add basic Pro user detection to Timeline and create minimal filter UI structure 
 ---
 
 ### Feature #33B: Timeline Filter State Management (Safe Implementation)
-**Status:** ✅ Implemented  
-**Priority:** High (Core Logic)  
+**Status:** ✅ Implemented
+**Priority:** High (Core Logic)
 **Dependencies:** Feature #33A
 
-**Description:**  
+**Description:**
 Add filter state management to TimelineViewModel without connecting it to actual data filtering. Uses simple Switch control instead of ChipGroup to avoid crashes.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Add filter state LiveData in TimelineViewModel
 - [x] Add methods to toggle filter state
 - [x] Filter state responds to UI interactions
@@ -2055,7 +2055,7 @@ Add filter state management to TimelineViewModel without connecting it to actual
 - [x] No actual data filtering occurs yet
 - [x] App remains stable when toggling filter
 
-**Safe Implementation Approach:**  
+**Safe Implementation Approach:**
 - Uses simple `Switch` control instead of Material ChipGroup
 - Single toggle method instead of multiple state setters
 - Comprehensive logging for debugging
@@ -2073,14 +2073,14 @@ Add filter state management to TimelineViewModel without connecting it to actual
 ---
 
 ### Feature #33C: Timeline Data Filtering Logic
-**Status:** ✅ Implemented  
-**Priority:** Medium (Filtering Implementation)  
+**Status:** ✅ Implemented
+**Priority:** Medium (Filtering Implementation)
 **Dependencies:** Feature #33B
 
-**Description:**  
+**Description:**
 Implement actual activity filtering based on filter state, showing only Performance activities when filter is active.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Activities are filtered by ActivityType.PERFORMANCE when filter is active
 - [x] "All Activities" shows all activities (current behavior)
 - [x] "Performances Only" shows only performance activities
@@ -2098,14 +2098,14 @@ Implement actual activity filtering based on filter state, showing only Performa
 ---
 
 ### Feature #33D: Timeline Filter State Persistence
-**Status:** ✅ Implemented  
-**Priority:** Low (Enhancement)  
+**Status:** ✅ Implemented
+**Priority:** Low (Enhancement)
 **Dependencies:** Feature #33C
 
-**Description:**  
+**Description:**
 Add SharedPreferences to persist filter state across app sessions and navigation.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Filter state persists when navigating away and back
 - [x] Filter state persists across app restarts
 - [x] Different users can have different filter preferences
@@ -2133,26 +2133,26 @@ When requesting new features, please use this template:
 
 ```markdown
 ### 💡 [Feature Title]
-**Status:** Requested  
-**Date Requested:** YYYY-MM-DD  
-**Priority:** [Critical/High/Medium/Low/Future]  
+**Status:** Requested
+**Date Requested:** YYYY-MM-DD
+**Priority:** [Critical/High/Medium/Low/Future]
 **Requested By:** [Name/Community/User Feedback]
 
-**Description:**  
+**Description:**
 [Clear description of the requested feature]
 
-**User Story:**  
+**User Story:**
 As a [user type], I want [functionality] so that [benefit/value].
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] [Criterion 1]
 - [ ] [Criterion 2]
 - [ ] [Criterion 3]
 
-**Technical Considerations:**  
+**Technical Considerations:**
 [Any technical requirements, constraints, or implementation notes]
 
-**Priority Justification:**  
+**Priority Justification:**
 [Why this feature has the assigned priority level]
 ```
 
@@ -2171,53 +2171,53 @@ As a [user type], I want [functionality] so that [benefit/value].
 ---
 
 ### Feature #34: Improved Streak Emoji Differentiation
-**Status:** ✅ Implemented  
-**Date Requested:** 2025-07-23  
-**Date Implemented:** 2025-07-23  
-**Priority:** Low (Visual Enhancement)  
-**Requested By:** User Experience Team  
+**Status:** ✅ Implemented
+**Date Requested:** 2025-07-23
+**Date Implemented:** 2025-07-23
+**Priority:** Low (Visual Enhancement)
+**Requested By:** User Experience Team
 
-**Description:**  
+**Description:**
 Replace duplicate musical note emojis (🎵🎵) in streak display with a more distinct musical notes emoji (🎶) to create better visual differentiation between streak levels and avoid redundant emoji usage.
 
-**User Story:**  
+**User Story:**
 As a user tracking my practice streak, I want visually distinct emojis for different streak levels so that I can easily distinguish my progress milestones and feel a sense of progression through the emoji changes.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Replace duplicate 🎵🎵 emoji with single 🎶 emoji for 5-6 day streaks
 - [x] Maintain existing emoji progression logic and thresholds
 - [x] Ensure new emoji displays correctly across all Android devices
 - [x] Preserve visual consistency with existing streak display
 
-**Current Emoji Progression:**  
+**Current Emoji Progression:**
 - **1-2 days**: No emoji suffix
 - **3-4 days**: 🎵 (single musical note)
 - **5-6 days**: 🎶 (multiple musical notes) - *Updated from 🎵🎵*
 - **7-13 days**: 🔥 (fire - "hot streak")
 - **14+ days**: 🔥🔥🔥 (triple fire - "on fire")
 
-**Technical Implementation:**  
+**Technical Implementation:**
 Updated `DashboardFragment.kt` streak emoji logic:
 ```kotlin
 val emojiSuffix = when {
     streak >= 14 -> " 🔥🔥🔥"
-    streak >= 7 -> " 🔥" 
+    streak >= 7 -> " 🔥"
     streak >= 5 -> " 🎶"      // Changed from " 🎵🎵"
     streak >= 3 -> " 🎵"
     else -> ""
 }
 ```
 
-**Files Modified:**  
-- `/app/src/main/java/com/pseddev/playstreak/ui/progress/DashboardFragment.kt` (line 87)
+**Files Modified:**
+- `/app/src/main/java/com/pseddev/mystreak/ui/progress/DashboardFragment.kt` (line 87)
 
-**Impact:**  
+**Impact:**
 - Improves visual progression and user experience
 - Eliminates redundant emoji usage
 - Creates clearer milestone distinction
 - Maintains musical theme consistency
 
-**Testing Notes:**  
+**Testing Notes:**
 - Verify emoji displays correctly on various Android versions
 - Test streak calculation and emoji assignment at different streak levels
 - Confirm no regression in existing streak functionality
@@ -2225,25 +2225,25 @@ val emojiSuffix = when {
 ---
 
 ### Feature #35: Adjust Fire Emoji Streak Threshold
-**Status:** ✅ Implemented  
-**Date Requested:** 2025-07-23  
-**Date Implemented:** 2025-07-23  
-**Priority:** Low (Visual Enhancement)  
-**Requested By:** User Experience Team  
+**Status:** ✅ Implemented
+**Date Requested:** 2025-07-23
+**Date Implemented:** 2025-07-23
+**Priority:** Low (Visual Enhancement)
+**Requested By:** User Experience Team
 
-**Description:**  
+**Description:**
 Adjust the streak emoji progression to make the fire emoji (🔥) appear at 8 days instead of 7 days, creating a more challenging and rewarding milestone for users to achieve the "hot streak" status.
 
-**User Story:**  
+**User Story:**
 As a user building practice streaks, I want the fire emoji to appear at 8 days instead of 7 so that achieving a "hot streak" feels more significant and rewarding, encouraging me to maintain longer consistent practice habits.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Fire emoji (🔥) appears at 8+ day streaks instead of 7+ days
 - [x] Maintain existing emoji progression for other thresholds
 - [x] Update any documentation referencing the 7-day fire threshold
 - [x] Test streak calculation and emoji assignment at all levels
 
-**Previous vs. New Emoji Progression:**  
+**Previous vs. New Emoji Progression:**
 
 **Previous:**
 - 1-2 days: No emoji suffix
@@ -2259,7 +2259,7 @@ As a user building practice streaks, I want the fire emoji to appear at 8 days i
 - 8-13 days: 🔥 (fire - "hot streak") - *Moved from 7 to 8*
 - 14+ days: 🔥🔥🔥 (triple fire - "on fire")
 
-**Technical Implementation:**  
+**Technical Implementation:**
 Update `DashboardFragment.kt` streak emoji logic:
 ```kotlin
 val emojiSuffix = when {
@@ -2271,20 +2271,20 @@ val emojiSuffix = when {
 }
 ```
 
-**Files to Modify:**  
-- `/app/src/main/java/com/pseddev/playstreak/ui/progress/DashboardFragment.kt` (line 86)
+**Files to Modify:**
+- `/app/src/main/java/com/pseddev/mystreak/ui/progress/DashboardFragment.kt` (line 86)
 - Update any documentation referencing 7-day fire threshold
 
-**Impact:**  
+**Impact:**
 - Increases challenge and reward for achieving fire emoji status
 - Makes 7-day streaks still feel rewarding with musical notes emoji
 - Maintains progression logic while adjusting milestone significance
 - Encourages longer practice consistency
 
-**Dependencies:**  
+**Dependencies:**
 - None (independent change to existing emoji logic)
 
-**Testing Notes:**  
+**Testing Notes:**
 - Test emoji assignment at streak days 6, 7, 8, 9 to verify transition
 - Verify existing streak calculation logic remains intact
 - Test with various streak lengths to ensure no regression
@@ -2293,19 +2293,19 @@ val emojiSuffix = when {
 ---
 
 ### Feature #36: Firebase Crashlytics and Analytics Integration
-**Status:** ✅ Implemented  
-**Date Requested:** 2025-07-23  
-**Date Completed:** 2025-07-23  
-**Priority:** High (Release Critical)  
-**Requested By:** Release Preparation Team  
+**Status:** ✅ Implemented
+**Date Requested:** 2025-07-23
+**Date Completed:** 2025-07-23
+**Priority:** High (Release Critical)
+**Requested By:** Release Preparation Team
 
-**Description:**  
+**Description:**
 Integrate Firebase Crashlytics for crash reporting and Firebase Analytics for basic usage tracking to monitor app health, user engagement, and support successful free release launch. This is a critical component of the free release preparation identified in free-release-readiness.md.
 
-**User Story:**  
+**User Story:**
 As a developer preparing for free release, I want comprehensive crash reporting and usage analytics so that I can monitor app stability, identify issues quickly, track user engagement patterns, and make data-driven decisions for app improvements.
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [x] Firebase project created and configured for PlayStreak
 - [x] Firebase Crashlytics SDK integrated and functional
 - [x] Firebase Analytics SDK integrated and functional
@@ -2328,7 +2328,7 @@ As a developer preparing for free release, I want comprehensive crash reporting 
 
 2. **Add Android App to Project**
    - Click "Add app" → Android icon
-   - **Android package name**: `com.pseddev.playstreak` (must match build.gradle)
+   - **Android package name**: `com.pseddev.mystreak` (must match build.gradle)
    - **App nickname**: "PlayStreak Android"
    - **SHA-1 signing certificate**: Generate using `./gradlew signingReport`
    - Download `google-services.json` file
@@ -2356,16 +2356,16 @@ As a developer preparing for free release, I want comprehensive crash reporting 
        // Note: Don't add crashlytics plugin yet
    }
    ```
-   
+
    - Add Firebase Analytics dependency:
    ```kotlin
    dependencies {
        // Firebase BOM (Bill of Materials) - check for latest version
        implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-       
+
        // Firebase Analytics only (start with this)
        implementation("com.google.firebase:firebase-analytics-ktx")
-       
+
        // existing dependencies...
    }
    ```
@@ -2398,13 +2398,13 @@ As a developer preparing for free release, I want comprehensive crash reporting 
    dependencies {
        // Firebase BOM (already added)
        implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-       
+
        // Firebase Analytics (already added)
        implementation("com.google.firebase:firebase-analytics-ktx")
-       
+
        // Firebase Crashlytics (add this)
        implementation("com.google.firebase:firebase-crashlytics-ktx")
-       
+
        // existing dependencies...
    }
    ```
@@ -2414,9 +2414,9 @@ As a developer preparing for free release, I want comprehensive crash reporting 
    - Add to application initialization:
    ```kotlin
    import com.google.firebase.analytics.FirebaseAnalytics
-   
+
    private lateinit var firebaseAnalytics: FirebaseAnalytics
-   
+
    // In onCreate()
    firebaseAnalytics = FirebaseAnalytics.getInstance(this)
    ```
@@ -2431,7 +2431,7 @@ As a developer preparing for free release, I want comprehensive crash reporting 
         param("has_duration", hasDuration)
     }
     ```
-    
+
     - **Streak Achieved**:
     ```kotlin
     firebaseAnalytics.logEvent("streak_achieved") {
@@ -2439,7 +2439,7 @@ As a developer preparing for free release, I want comprehensive crash reporting 
         param("emoji_level", emojiLevel)
     }
     ```
-    
+
     - **Piece Added**:
     ```kotlin
     firebaseAnalytics.logEvent("piece_added") {
@@ -2447,7 +2447,7 @@ As a developer preparing for free release, I want comprehensive crash reporting 
         param("total_pieces", totalPieceCount)
     }
     ```
-    
+
     - **CSV Import/Export**:
     ```kotlin
     firebaseAnalytics.logEvent("csv_operation") {
@@ -2457,12 +2457,12 @@ As a developer preparing for free release, I want comprehensive crash reporting 
     }
     ```
 
-#### **Phase 4: Crashlytics Implementation** 
+#### **Phase 4: Crashlytics Implementation**
 12. **Initialize Crashlytics**
    - Add to `PlayStreakApplication.kt` or `MainActivity.kt`:
    ```kotlin
    import com.google.firebase.crashlytics.FirebaseCrashlytics
-   
+
    // In onCreate() or initialization
    FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
    ```
@@ -2581,19 +2581,19 @@ All acceptance criteria have been met and the feature is fully operational. Anal
 ---
 
 ### Feature #37: Reduce Debug Logging for Performance Suggestions
-**Status:** ❌ Moved to Ticket #3  
-**Date Requested:** 2025-07-23  
-**Date Moved:** 2025-07-24  
-**Priority:** Low (Code Quality)  
-**Requested By:** Development Team  
+**Status:** ❌ Moved to Ticket #3
+**Date Requested:** 2025-07-23
+**Date Moved:** 2025-07-24
+**Priority:** Low (Code Quality)
+**Requested By:** Development Team
 
-**Description:**  
+**Description:**
 Remove or reduce excessive debug logging for performance suggestions in DashboardFragment that is cluttering the log output and potentially impacting performance. The current implementation logs detailed performance suggestion information on every dashboard update, creating verbose and repetitive log entries.
 
-**User Story:**  
+**User Story:**
 As a developer debugging the app, I want cleaner log output without excessive performance suggestion debug messages so that I can focus on relevant debugging information and reduce log noise during development and testing.
 
-**Current Issue:**  
+**Current Issue:**
 The DashboardFragment currently outputs verbose logging like:
 ```
 D/DashboardFragment: Performance suggestions: 4
@@ -2602,7 +2602,7 @@ D/DashboardFragment: Performance Suggestion: On My Own - Type: PERFORMANCE - Rea
 [... repeated multiple times per dashboard refresh]
 ```
 
-**Acceptance Criteria:**  
+**Acceptance Criteria:**
 - [ ] Remove or significantly reduce debug logging for performance suggestions
 - [ ] Keep essential error logging for debugging actual issues
 - [ ] Maintain logging for critical suggestion calculation failures
@@ -2626,8 +2626,8 @@ D/DashboardFragment: Performance Suggestion: On My Own - Type: PERFORMANCE - Rea
 - Remove individual suggestion detail logging
 - Keep high-level information for debugging
 
-**Files to Modify:**  
-- `/app/src/main/java/com/pseddev/playstreak/ui/progress/DashboardFragment.kt`
+**Files to Modify:**
+- `/app/src/main/java/com/pseddev/mystreak/ui/progress/DashboardFragment.kt`
 - Any other files with performance suggestion logging
 
 **Benefits:**
@@ -2636,7 +2636,7 @@ D/DashboardFragment: Performance Suggestion: On My Own - Type: PERFORMANCE - Rea
 - Better performance (less string formatting and I/O)
 - More professional codebase ready for release
 
-**Technical Implementation:**  
+**Technical Implementation:**
 ```kotlin
 // Current (verbose):
 android.util.Log.d("DashboardFragment", "Performance suggestions: ${suggestions.size}")
@@ -2656,7 +2656,7 @@ if (BuildConfig.DEBUG) {
 android.util.Log.d("DashboardFragment", "Loaded ${suggestions.size} performance suggestions")
 ```
 
-**Priority Justification:**  
+**Priority Justification:**
 Low priority as this is a code quality issue that doesn't affect functionality, but it improves development experience and prepares the codebase for release by removing debug noise.
 
 ---

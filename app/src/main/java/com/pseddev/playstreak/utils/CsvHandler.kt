@@ -1,12 +1,12 @@
-package com.pseddev.playstreak.utils
+package com.pseddev.mystreak.utils
 
 import android.util.Log
-import com.pseddev.playstreak.BuildConfig
-import com.pseddev.playstreak.data.entities.Activity
-import com.pseddev.playstreak.data.entities.ActivityType
-import com.pseddev.playstreak.data.entities.ItemType
-import com.pseddev.playstreak.data.entities.PieceOrTechnique
-import com.pseddev.playstreak.utils.TextNormalizer
+import com.pseddev.mystreak.BuildConfig
+import com.pseddev.mystreak.data.entities.Activity
+import com.pseddev.mystreak.data.entities.ActivityType
+import com.pseddev.mystreak.data.entities.ItemType
+import com.pseddev.mystreak.data.entities.PieceOrTechnique
+import com.pseddev.mystreak.utils.TextNormalizer
 import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
 import java.io.Reader
@@ -15,13 +15,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CsvHandler {
-    
+
     companion object {
         // Enable detailed logging only when needed for debugging
         private const val ENABLE_DETAILED_LOGGING = false
         private const val DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss"
         private val datetimeFormatter = SimpleDateFormat(DATETIME_FORMAT, Locale.US)
-        
+
         // CSV Headers
         private const val HEADER_DATE = "DateTime"
         private const val HEADER_LENGTH = "Length"
@@ -31,7 +31,7 @@ class CsvHandler {
         private const val HEADER_LEVEL = "Level"
         private const val HEADER_PERFORMANCE_TYPE = "PerformanceType"
         private const val HEADER_NOTES = "Notes"
-        
+
         fun exportActivitiesToCsv(
             writer: Writer,
             activities: List<Activity>,
@@ -40,11 +40,11 @@ class CsvHandler {
             if (BuildConfig.DEBUG && ENABLE_DETAILED_LOGGING) {
                 Log.d("ExportDebug", "CsvHandler.exportActivitiesToCsv called with ${activities.size} activities")
             }
-            
+
             try {
                 // Write CSV manually to avoid OpenCSV issues
                 val bufferedWriter = writer.buffered()
-                
+
                 // Write header
                 val header = listOf(
                     HEADER_DATE,
@@ -58,7 +58,7 @@ class CsvHandler {
                 )
                 bufferedWriter.write(header.joinToString(",") { escapeCSVField(it) })
                 bufferedWriter.write("\n")
-                
+
                 // Write activities
                 var rowCount = 0
                 activities.forEach { activity ->
@@ -78,26 +78,26 @@ class CsvHandler {
                         bufferedWriter.write(row.joinToString(",") { escapeCSVField(it) })
                         bufferedWriter.write("\n")
                         rowCount++
-                        
+
                         if (BuildConfig.DEBUG && ENABLE_DETAILED_LOGGING && rowCount % 50 == 0) {
                             Log.d("ExportDebug", "Written $rowCount rows so far")
                         }
                     }
                 }
-                
+
                 // Just flush, don't close
                 bufferedWriter.flush()
-                
+
                 if (BuildConfig.DEBUG && ENABLE_DETAILED_LOGGING) {
                     Log.d("ExportDebug", "CsvHandler.exportActivitiesToCsv completed successfully with $rowCount rows")
                 }
-                
+
             } catch (e: Exception) {
                 Log.e("ExportDebug", "Exception in CsvHandler.exportActivitiesToCsv: ${e.javaClass.simpleName} - ${e.message}", e)
                 throw e
             }
         }
-        
+
         private fun escapeCSVField(field: String): String {
             return if (field.contains(",") || field.contains("\"") || field.contains("\n")) {
                 "\"${field.replace("\"", "\"\"")}\""
@@ -105,13 +105,13 @@ class CsvHandler {
                 field
             }
         }
-        
+
         fun importActivitiesFromCsv(reader: Reader): ImportResult {
             val csvReader = CSVReader(reader)
             val importedActivities = mutableListOf<ImportedActivity>()
             val errors = mutableListOf<String>()
             val uniquePieces = mutableSetOf<String>()
-            
+
             try {
                 // Skip header
                 val header = csvReader.readNext()
@@ -119,13 +119,13 @@ class CsvHandler {
                     errors.add("Invalid CSV header format")
                     return ImportResult(emptyList(), emptySet(), errors)
                 }
-                
+
                 // Determine if this is the new format with PieceType
                 val isNewFormat = header.size >= 8 && header[4] == HEADER_PIECE_TYPE
-                
+
                 var lineNumber = 2 // Start from 2 (after header)
                 var line: Array<String>?
-                
+
                 while (csvReader.readNext().also { line = it } != null) {
                     try {
                         val row = line!!
@@ -134,7 +134,7 @@ class CsvHandler {
                             lineNumber++
                             continue
                         }
-                        
+
                         // Parse datetime
                         val timestamp = try {
                             datetimeFormatter.parse(row[0])?.time ?: throw Exception("Invalid datetime")
@@ -143,7 +143,7 @@ class CsvHandler {
                             lineNumber++
                             continue
                         }
-                        
+
                         // Parse minutes
                         val minutes = try {
                             row[1].toInt()
@@ -152,7 +152,7 @@ class CsvHandler {
                             lineNumber++
                             continue
                         }
-                        
+
                         // Parse activity type
                         val activityType = try {
                             ActivityType.valueOf(row[2])
@@ -161,21 +161,21 @@ class CsvHandler {
                             lineNumber++
                             continue
                         }
-                        
+
                         // Parse piece name and normalize it
                         val originalName = row[3]
                         val pieceName = TextNormalizer.normalizePieceName(originalName)
-                        
+
                         if (BuildConfig.DEBUG && ENABLE_DETAILED_LOGGING) {
                             Log.d("CsvImport", "Line $lineNumber: Original='$originalName', Normalized='$pieceName'")
                         }
-                            
+
                         if (pieceName.isEmpty()) {
                             errors.add("Line $lineNumber: Empty piece name")
                             lineNumber++
                             continue
                         }
-                        
+
                         // Parse piece type (only in new format)
                         val pieceType = if (isNewFormat) {
                             try {
@@ -187,7 +187,7 @@ class CsvHandler {
                         } else {
                             null
                         }
-                        
+
                         // Parse level (column index depends on format)
                         val levelColumnIndex = if (isNewFormat) 5 else 4
                         val level = try {
@@ -197,7 +197,7 @@ class CsvHandler {
                             lineNumber++
                             continue
                         }
-                        
+
                         // Validate level range
                         when (activityType) {
                             ActivityType.PRACTICE -> {
@@ -215,23 +215,23 @@ class CsvHandler {
                                 }
                             }
                         }
-                        
+
                         // Parse performance type and notes (column indices depend on format)
                         val performanceTypeIndex = if (isNewFormat) 6 else 5
                         val notesIndex = if (isNewFormat) 7 else 6
-                        
+
                         val performanceType = row[performanceTypeIndex]
                         val notes = if (row.size > notesIndex) TextNormalizer.normalizeUserInput(row[notesIndex]) else ""
-                        
+
                         // Explicitly check for duplicates to work around Set issues
                         val alreadyExists = uniquePieces.any { existing ->
                             existing == pieceName
                         }
-                        
+
                         if (!alreadyExists) {
                             uniquePieces.add(pieceName)
                         }
-                        
+
                         importedActivities.add(
                             ImportedActivity(
                                 timestamp = timestamp,
@@ -244,37 +244,37 @@ class CsvHandler {
                                 notes = notes
                             )
                         )
-                        
+
                     } catch (e: Exception) {
                         errors.add("Line $lineNumber: ${e.message}")
                     }
-                    
+
                     lineNumber++
                 }
-                
+
             } finally {
                 csvReader.close()
             }
-            
+
             if (BuildConfig.DEBUG) {
                 Log.d("CsvImport", "Import completed: ${importedActivities.size} activities, ${uniquePieces.size} unique pieces")
             }
-            
+
             return ImportResult(importedActivities, uniquePieces, errors)
         }
-        
+
         private fun validateHeader(header: Array<String>): Boolean {
             if (header.size < 6) return false
-            
+
             // Support both old format (7 columns) and new format (8 columns with PieceType)
-            val isOldFormat = header.size == 7 && 
+            val isOldFormat = header.size == 7 &&
                     header[0] == HEADER_DATE &&
                     header[1] == HEADER_LENGTH &&
                     header[2] == HEADER_ACTIVITY_TYPE &&
                     header[3] == HEADER_PIECE &&
                     header[4] == HEADER_LEVEL &&
                     header[5] == HEADER_PERFORMANCE_TYPE
-            
+
             val isNewFormat = header.size >= 8 &&
                     header[0] == HEADER_DATE &&
                     header[1] == HEADER_LENGTH &&
@@ -283,10 +283,10 @@ class CsvHandler {
                     header[4] == HEADER_PIECE_TYPE &&
                     header[5] == HEADER_LEVEL &&
                     header[6] == HEADER_PERFORMANCE_TYPE
-            
+
             return isOldFormat || isNewFormat
         }
-        
+
         /**
          * Validates a CSV file without importing it, checking piece and activity limits
          * @param reader Reader for the CSV file
@@ -299,7 +299,7 @@ class CsvHandler {
             val errors = mutableListOf<String>()
             val uniquePieces = mutableSetOf<String>()
             var activityCount = 0
-            
+
             try {
                 // Skip header
                 val header = csvReader.readNext()
@@ -311,14 +311,14 @@ class CsvHandler {
                         errors = listOf("Invalid CSV header format")
                     )
                 }
-                
+
                 // Count activities and unique pieces
                 var row: Array<String>?
                 while (csvReader.readNext().also { row = it } != null) {
                     row?.let { currentRow ->
                         if (currentRow.size >= 6) {
                             activityCount++
-                            
+
                             // Extract piece name (column 3 in both formats)
                             val pieceName = TextNormalizer.normalizePieceName(currentRow[3])
                             if (pieceName.isNotBlank()) {
@@ -327,23 +327,23 @@ class CsvHandler {
                         }
                     }
                 }
-                
+
                 // Check limits
                 if (uniquePieces.size > maxPieces) {
                     errors.add("This file contains ${uniquePieces.size} unique pieces, but the limit is $maxPieces pieces.")
                 }
-                
+
                 if (activityCount > maxActivities) {
                     errors.add("This file contains $activityCount activities, but the limit is $maxActivities activities.")
                 }
-                
+
                 return CsvValidationResult(
                     isValid = errors.isEmpty(),
                     activityCount = activityCount,
                     uniquePieceCount = uniquePieces.size,
                     errors = errors
                 )
-                
+
             } catch (e: Exception) {
                 return CsvValidationResult(
                     isValid = false,
@@ -360,7 +360,7 @@ class CsvHandler {
             }
         }
     }
-    
+
     data class ImportedActivity(
         val timestamp: Long,
         val pieceName: String,
@@ -371,13 +371,13 @@ class CsvHandler {
         val minutes: Int,
         val notes: String
     )
-    
+
     data class ImportResult(
         val activities: List<ImportedActivity>,
         val uniquePieceNames: Set<String>,
         val errors: List<String>
     )
-    
+
     data class CsvValidationResult(
         val isValid: Boolean,
         val activityCount: Int,

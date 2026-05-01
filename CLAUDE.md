@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Piano Track Opus is an Android application written in Kotlin using the modern Android development stack. The project uses Gradle with Kotlin DSL for build configuration and follows standard Android project structure.
+MyStreak is an Android application written in Kotlin using the modern Android development stack. The project uses Gradle with Kotlin DSL for build configuration and follows standard Android project structure.
 
 ## Development Commands
 
@@ -46,14 +46,14 @@ Piano Track Opus is an Android application written in Kotlin using the modern An
 
 ## Project Structure
 
-- **Package**: `com.example.pianotrackopus`
-- **Namespace**: `com.example.pianotrackopus`
+- **Package**: `com.pseddev.mystreak`
+- **Namespace**: `com.pseddev.mystreak`
 - **Min SDK**: 24 (Android 7.0)
 - **Target SDK**: 36
 - **Compile SDK**: 36
 
 ### Key Directories
-- `app/src/main/java/com/example/pianotrackopus/` - Main application source code (currently empty)
+- `app/src/main/java/com/pseddev/mystreak/` - Main application source code
 - `app/src/test/` - Unit tests
 - `app/src/androidTest/` - Instrumented Android tests
 - `app/src/main/res/` - Android resources (layouts, strings, drawables, etc.)
@@ -76,10 +76,9 @@ The project uses:
 
 ## Development Notes
 
-- This appears to be a new/template Android project with minimal code implementation
-- No main Activity or UI components have been implemented yet
-- Standard Android testing framework is set up with example tests
-- The project follows modern Android development practices with Kotlin and AndroidX libraries
+- MyStreak tracks task activity, daily streaks, and calendar-based completion state.
+- The package/application ID migration is separate from product naming and is not yet complete.
+- The project follows modern Android development practices with Kotlin and AndroidX libraries.
 
 ## Development Cycle Rules
 

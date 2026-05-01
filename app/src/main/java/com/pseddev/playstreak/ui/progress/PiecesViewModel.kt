@@ -1,12 +1,12 @@
-package com.pseddev.playstreak.ui.progress
+package com.pseddev.mystreak.ui.progress
 
 import androidx.lifecycle.*
-import com.pseddev.playstreak.data.entities.Activity
-import com.pseddev.playstreak.data.entities.ItemType
-import com.pseddev.playstreak.data.entities.TaskPriority
-import com.pseddev.playstreak.data.entities.PieceOrTechnique
-import com.pseddev.playstreak.data.repository.PianoRepository
-import com.pseddev.playstreak.utils.ProUserManager
+import com.pseddev.mystreak.data.entities.Activity
+import com.pseddev.mystreak.data.entities.ItemType
+import com.pseddev.mystreak.data.entities.TaskPriority
+import com.pseddev.mystreak.data.entities.PieceOrTechnique
+import com.pseddev.mystreak.data.repository.PianoRepository
+import com.pseddev.mystreak.utils.ProUserManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,9 +44,9 @@ class PiecesViewModel(
     private val repository: PianoRepository,
     private val context: android.content.Context
 ) : ViewModel() {
-    
+
     private val proUserManager = ProUserManager.getInstance(context)
-    
+
     private val selectedPieceId = MutableStateFlow<Long?>(null)
     private val sortType = MutableStateFlow(SortType.ALPHABETICAL)
     private val sortDirection = MutableStateFlow(SortDirection.ASCENDING)
@@ -57,8 +57,8 @@ class PiecesViewModel(
         set(Calendar.MILLISECOND, 0)
     }.timeInMillis
     private val todayEnd: Long = todayStart + 24L * 60L * 60L * 1000L
-    
-    val piecesWithStats: LiveData<List<PieceWithStats>> = 
+
+    val piecesWithStats: LiveData<List<PieceWithStats>> =
         combine(
             repository.getAllPiecesAndTechniques(),
             repository.getAllActivities(),
@@ -71,7 +71,7 @@ class PiecesViewModel(
                     val todayCount = pieceActivities.count {
                         it.timestamp >= todayStart && it.timestamp < todayEnd
                     }
-                    
+
                     PieceWithStats(
                         piece = piece,
                         activityCount = pieceActivities.size,
@@ -79,14 +79,14 @@ class PiecesViewModel(
                         lastActivityDate = pieceActivities.maxOfOrNull { it.timestamp }
                     )
                 }
-            
+
             // Apply sorting
             val sorted = when (currentSortType) {
                 SortType.ALPHABETICAL -> piecesWithStats.sortedBy { it.piece.name.lowercase() }
                 SortType.LAST_DATE -> piecesWithStats.sortedBy { it.lastActivityDate ?: 0L }
                 SortType.ACTIVITY_COUNT -> piecesWithStats.sortedBy { it.activityCount }
             }
-            
+
             // Apply direction
             if (currentSortDirection == SortDirection.DESCENDING) {
                 sorted.reversed()
@@ -95,8 +95,8 @@ class PiecesViewModel(
             }
         }
         .asLiveData()
-    
-    val selectedPieceDetails: LiveData<PieceDetails?> = 
+
+    val selectedPieceDetails: LiveData<PieceDetails?> =
         selectedPieceId.flatMapLatest { pieceId ->
             if (pieceId == null) {
                 kotlinx.coroutines.flow.flowOf(null)
@@ -118,15 +118,15 @@ class PiecesViewModel(
             }
         }
         .asLiveData()
-    
+
     fun selectPiece(pieceId: Long) {
         selectedPieceId.value = pieceId
     }
-    
+
     fun clearSelection() {
         selectedPieceId.value = null
     }
-    
+
     fun setSortType(type: SortType) {
         sortType.value = type
         // Set appropriate default direction based on sort type
@@ -136,7 +136,7 @@ class PiecesViewModel(
             SortType.ACTIVITY_COUNT -> SortDirection.DESCENDING // Highest count first makes sense
         }
     }
-    
+
     fun toggleSortDirection() {
         sortDirection.value = if (sortDirection.value == SortDirection.ASCENDING) {
             SortDirection.DESCENDING
@@ -144,38 +144,38 @@ class PiecesViewModel(
             SortDirection.ASCENDING
         }
     }
-    
+
     fun getCurrentSortType(): SortType = sortType.value
     fun getCurrentSortDirection(): SortDirection = sortDirection.value
-    
+
     fun toggleFavorite(pieceWithStats: PieceWithStats): Boolean {
         val currentlyFavorite = pieceWithStats.piece.isFavorite
-        
+
         // If trying to add a favorite (not currently favorite), check limits for Free users
         if (!currentlyFavorite) {
             // Get current favorite count from the live data
             val currentFavoriteCount = piecesWithStats.value?.count { it.piece.isFavorite } ?: 0
-            
+
             if (!proUserManager.canAddMoreFavorites(currentFavoriteCount)) {
                 return false // Cannot add more favorites - caller should show upgrade prompt
             }
         }
-        
+
         // Proceed with toggle (either removing favorite or adding within limits)
         viewModelScope.launch {
             val updatedPiece = pieceWithStats.piece.copy(priority = if (currentlyFavorite) TaskPriority.LOW else TaskPriority.HIGH)
             repository.updatePieceOrTechnique(updatedPiece)
         }
-        
+
         return true // Toggle was allowed and performed
     }
-    
+
     fun deletePiece(pieceWithStats: PieceWithStats) {
         viewModelScope.launch {
             repository.deletePieceAndActivities(pieceWithStats.piece.id)
         }
     }
-    
+
     fun updateTask(
         pieceId: Long,
         newName: String,

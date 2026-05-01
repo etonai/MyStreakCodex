@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.ui.progress
+package com.pseddev.mystreak.ui.progress
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.pseddev.playstreak.data.entities.TaskPriority
-import com.pseddev.playstreak.databinding.ItemPieceStatsBinding
-import com.pseddev.playstreak.utils.ProUserManager
+import com.pseddev.mystreak.data.entities.TaskPriority
+import com.pseddev.mystreak.databinding.ItemPieceStatsBinding
+import com.pseddev.mystreak.utils.ProUserManager
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

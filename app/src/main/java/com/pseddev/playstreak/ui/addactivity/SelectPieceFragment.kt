@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.ui.addactivity
+package com.pseddev.mystreak.ui.addactivity
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,27 +9,27 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.pseddev.playstreak.PlayStreakApplication
-import com.pseddev.playstreak.data.entities.ItemType
-import com.pseddev.playstreak.data.entities.PieceOrTechnique
-import com.pseddev.playstreak.databinding.FragmentSelectPieceBinding
+import com.pseddev.mystreak.MyStreakApplication
+import com.pseddev.mystreak.data.entities.ItemType
+import com.pseddev.mystreak.data.entities.PieceOrTechnique
+import com.pseddev.mystreak.databinding.FragmentSelectPieceBinding
 
 class SelectPieceFragment : Fragment() {
-    
+
     private var _binding: FragmentSelectPieceBinding? = null
     private val binding get() = _binding!!
-    
+
     private val args: SelectPieceFragmentArgs by navArgs()
-    
+
     private val viewModel: AddActivityViewModel by activityViewModels {
         AddActivityViewModelFactory(
-            (requireActivity().application as PlayStreakApplication).repository,
+            (requireActivity().application as MyStreakApplication).repository,
             requireContext()
         )
     }
-    
+
     private lateinit var adapter: PieceAdapter
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,20 +38,20 @@ class SelectPieceFragment : Fragment() {
         _binding = FragmentSelectPieceBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         setupRecyclerView()
         setupObservers()
-        
+
         binding.buttonAddNew.setOnClickListener {
             val action = SelectPieceFragmentDirections
                 .actionSelectPieceFragmentToAddNewPieceFragment(args.activityType)
             findNavController().navigate(action)
         }
     }
-    
+
     private fun navigateToSelectLevel(pieceId: Long, pieceName: String, itemType: ItemType) {
         val action = SelectPieceFragmentDirections
             .actionSelectPieceFragmentToSelectLevelFragment(
@@ -62,40 +62,40 @@ class SelectPieceFragment : Fragment() {
             )
         findNavController().navigate(action)
     }
-    
+
     private fun setupRecyclerView() {
         adapter = PieceAdapter { piece ->
             navigateToSelectLevel(piece.id, piece.name, piece.type)
         }
-        
+
         binding.recyclerViewPieces.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@SelectPieceFragment.adapter
         }
     }
-    
+
     private fun setupObservers() {
         viewModel.getFavorites().observe(viewLifecycleOwner) { favorites ->
             viewModel.getPiecesAndTechniques(args.activityType).observe(viewLifecycleOwner) { all ->
                 val groupedItems = mutableListOf<PieceAdapterItem>()
                 val highPriorityIds = favorites.map { it.id }.toSet()
                 val remainingTasks = all.filter { it.id !in highPriorityIds }
-                
+
                 if (favorites.isNotEmpty()) {
                     groupedItems.add(PieceAdapterItem.Header("High Priority:"))
                     groupedItems.addAll(favorites.map { PieceAdapterItem.Item(it) })
                 }
-                
+
                 if (remainingTasks.isNotEmpty()) {
                     groupedItems.add(PieceAdapterItem.Header("All Tasks:"))
                     groupedItems.addAll(remainingTasks.map { PieceAdapterItem.Item(it) })
                 }
-                
+
                 adapter.submitList(groupedItems)
             }
         }
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

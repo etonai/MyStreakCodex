@@ -1,10 +1,10 @@
 # MyStreak
 
-MyStreak is an Android app for tracking general task activity, daily streaks, and high-priority task follow-through. It began as a product fork/conversion of PlayStreak, a music practice tracker, and is being reshaped around Tasks, Activities, success levels, active/inactive task status, and calendar-based accountability.
+MyStreak is an Android app for tracking general task activity, daily streaks, and high-priority task follow-through. It is organized around Tasks, Activities, success levels, active/inactive task status, and calendar-based accountability.
 
 The app is built natively for Android using Kotlin, Room (SQLite), MVVM architecture, AndroidX Navigation, and Material Design components.
 
-**Current Status:** In active conversion from PlayStreak to MyStreak.
+**Current Status:** Active MyStreak implementation.
 
 **Primary Development Plan:** See [`app/docs/DevCycle_2026_001.md`](app/docs/DevCycle_2026_001.md).
 
@@ -68,8 +68,8 @@ Tasks can be active or inactive. Inactive Tasks remain visible for history, but 
 The following areas are intentionally still being converted or deferred:
 
 - Import/export for MyStreak JSON is planned in `DevCycle_2026_002.md`.
-- Package names and some internal class names still use the original `playstreak` naming during the early conversion.
-- Some legacy PlayStreak screens/classes may remain in source while being removed from reachable MyStreak navigation.
+- Package names still use the `playstreak` namespace until the application ID migration is planned.
+- Some legacy screens/classes may remain in source while being removed from reachable MyStreak navigation.
 - Automated tests for the new MyStreak business rules are still being expanded.
 
 ## Tech Stack
@@ -89,7 +89,7 @@ The following areas are intentionally still being converted or deferred:
 ## Project Structure
 
 ```text
-app/src/main/java/com/pseddev/playstreak/
+app/src/main/java/com/pseddev/mystreak/
 |-- data/
 |   |-- entities/      # Room entities for Tasks, Activities, calendar state, etc.
 |   |-- daos/          # Data Access Objects
@@ -139,7 +139,7 @@ This software is proprietary and confidential. See the [COPYRIGHT](COPYRIGHT) fi
 
 ## Acknowledgments
 
-MyStreak builds on the original PlayStreak codebase and architecture. Development has been AI-assisted, with human review and product direction guiding the conversion.
+MyStreak development has been AI-assisted, with human review and product direction guiding the product.
 
 Key libraries and tools include:
 

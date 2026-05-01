@@ -1,20 +1,20 @@
-package com.pseddev.playstreak.crashlytics
+package com.pseddev.mystreak.crashlytics
 
 import android.content.Context
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.pseddev.playstreak.BuildConfig
-import com.pseddev.playstreak.PlayStreakApplication
+import com.pseddev.mystreak.BuildConfig
+import com.pseddev.mystreak.MyStreakApplication
 
 /**
- * Centralized crash reporting manager for PlayStreak
+ * Centralized crash reporting manager for MyStreak
  * Following Feature #36 implementation requirements
  */
 class CrashlyticsManager(private val context: Context) {
-    
+
     private val firebaseCrashlytics: FirebaseCrashlytics by lazy {
-        (context.applicationContext as PlayStreakApplication).firebaseCrashlytics
+        (context.applicationContext as MyStreakApplication).firebaseCrashlytics
     }
-    
+
     /**
      * Record a non-fatal exception for monitoring
      */
@@ -22,7 +22,7 @@ class CrashlyticsManager(private val context: Context) {
         if (BuildConfig.DEBUG) return
         firebaseCrashlytics.recordException(exception)
     }
-    
+
     /**
      * Log a message for crash context
      */
@@ -30,7 +30,7 @@ class CrashlyticsManager(private val context: Context) {
         if (BuildConfig.DEBUG) return
         firebaseCrashlytics.log(message)
     }
-    
+
     /**
      * Set custom key-value pair for crash reporting context
      */
@@ -38,7 +38,7 @@ class CrashlyticsManager(private val context: Context) {
         if (BuildConfig.DEBUG) return
         firebaseCrashlytics.setCustomKey(key, value)
     }
-    
+
     /**
      * Set custom key-value pair for crash reporting context (boolean)
      */
@@ -46,7 +46,7 @@ class CrashlyticsManager(private val context: Context) {
         if (BuildConfig.DEBUG) return
         firebaseCrashlytics.setCustomKey(key, value)
     }
-    
+
     /**
      * Set custom key-value pair for crash reporting context (int)
      */
@@ -54,7 +54,7 @@ class CrashlyticsManager(private val context: Context) {
         if (BuildConfig.DEBUG) return
         firebaseCrashlytics.setCustomKey(key, value)
     }
-    
+
     /**
      * Set user identifier for crash reporting
      */
@@ -62,7 +62,7 @@ class CrashlyticsManager(private val context: Context) {
         if (BuildConfig.DEBUG) return
         firebaseCrashlytics.setUserId(userId)
     }
-    
+
     /**
      * Force a crash for testing purposes (DEBUG ONLY)
      * This should only be used during development testing
@@ -70,7 +70,7 @@ class CrashlyticsManager(private val context: Context) {
     fun forceCrashForTesting() {
         throw RuntimeException("Test crash triggered for Firebase Crashlytics verification")
     }
-    
+
     /**
      * Record database operation error context
      */
@@ -80,7 +80,7 @@ class CrashlyticsManager(private val context: Context) {
         log("Database operation failed: $operation")
         recordException(exception)
     }
-    
+
     /**
      * Record CSV import/export error context
      */
@@ -91,7 +91,7 @@ class CrashlyticsManager(private val context: Context) {
         log("CSV operation failed: $operation with $activityCount activities")
         recordException(exception)
     }
-    
+
     /**
      * Record sync/Google Drive error context
      */

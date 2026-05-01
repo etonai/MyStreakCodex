@@ -1,15 +1,15 @@
 # Ticket #9: Independently Store Piece Information
 
-**Status:** 🎫 Open  
-**Date Created:** 2025-07-26  
-**Priority:** High  
-**Type:** Feature Enhancement  
+**Status:** 🎫 Open
+**Date Created:** 2025-07-26
+**Priority:** High
+**Type:** Feature Enhancement
 
 ## Problem Statement
 
 Currently, piece information is derived by querying the activities database every time we need piece statistics. This approach requires expensive database queries to calculate:
 - Total practice count per piece
-- Total performance count per piece  
+- Total performance count per piece
 - Last practice date per piece
 - Last performance date per piece
 - Practice frequency and patterns
@@ -37,7 +37,7 @@ data class Piece(
     val name: String,
     val type: ItemType,
     val dateCreated: Long,
-    
+
     // New independent statistics fields
     val practiceCount: Int = 0,
     val performanceCount: Int = 0,
@@ -72,13 +72,13 @@ data class Piece(
 ### Implementation Areas
 
 **Files to Modify:**
-- `app/src/main/java/com/pseddev/playstreak/data/entities/Piece.kt`
-- `app/src/main/java/com/pseddev/playstreak/data/dao/PieceDao.kt`
-- `app/src/main/java/com/pseddev/playstreak/data/dao/ActivityDao.kt`
-- `app/src/main/java/com/pseddev/playstreak/data/AppDatabase.kt` (migration)
-- `app/src/main/java/com/pseddev/playstreak/data/repositories/ActivityRepository.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/progress/DashboardViewModel.kt`
-- `app/src/main/java/com/pseddev/playstreak/ui/pieces/PiecesViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/data/entities/Piece.kt`
+- `app/src/main/java/com/pseddev/mystreak/data/dao/PieceDao.kt`
+- `app/src/main/java/com/pseddev/mystreak/data/dao/ActivityDao.kt`
+- `app/src/main/java/com/pseddev/mystreak/data/AppDatabase.kt` (migration)
+- `app/src/main/java/com/pseddev/mystreak/data/repositories/ActivityRepository.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/progress/DashboardViewModel.kt`
+- `app/src/main/java/com/pseddev/mystreak/ui/pieces/PiecesViewModel.kt`
 
 **Key Operations to Optimize:**
 - Piece list display with last activity dates

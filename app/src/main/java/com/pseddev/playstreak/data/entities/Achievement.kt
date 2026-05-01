@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.data.entities
+package com.pseddev.mystreak.data.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

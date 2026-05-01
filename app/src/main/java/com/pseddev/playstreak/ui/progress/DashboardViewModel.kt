@@ -1,14 +1,14 @@
-package com.pseddev.playstreak.ui.progress
+package com.pseddev.mystreak.ui.progress
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.pseddev.playstreak.data.entities.Activity
-import com.pseddev.playstreak.data.repository.PianoRepository
-import com.pseddev.playstreak.utils.ProUserManager
-import com.pseddev.playstreak.utils.StreakCalculator
+import com.pseddev.mystreak.data.entities.Activity
+import com.pseddev.mystreak.data.repository.PianoRepository
+import com.pseddev.mystreak.utils.ProUserManager
+import com.pseddev.mystreak.utils.StreakCalculator
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch

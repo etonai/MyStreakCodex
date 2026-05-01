@@ -1,7 +1,7 @@
 # PlayStreak Product Specification (As Built)
 
-**Version:** 1.1.0  
-**Date:** July 22, 2025  
+**Version:** 1.1.0
+**Date:** July 22, 2025
 **Purpose:** Accurate specification of PlayStreak as currently implemented
 **Author:** Claude Code Assistant (Opus model)
 
@@ -334,7 +334,7 @@ Used to conditionally:
 
 - Min SDK: 24 (Android 7.0)
 - Target SDK: 36
-- Package: `com.pseddev.playstreak`
+- Package: `com.pseddev.mystreak`
 - Debug builds: Pro mode default
 - Release builds: Free mode default
 

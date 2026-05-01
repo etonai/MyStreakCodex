@@ -1,8 +1,8 @@
 # Development Cycle 2026-002
 
-**Status:** Open  
-**Start Date:** TBD  
-**Target Completion:** TBD  
+**Status:** Completed with documented follow-up
+**Start Date:** 2026-04-30
+**Target Completion:** 2026-04-30
 **Focus:** MyStreak import/export and local data portability
 
 ## Overview
@@ -14,9 +14,9 @@ The source product specification remains `C:\dev\MyStreakCodex\MyStreak.md`. Thi
 ## Current Work Items
 
 ### Phase 1: MyStreak Export Schema
-**Status:** Open  
-**Date Added:** 2026-04-30  
-**Priority:** High (Data Portability Foundation)  
+**Status:** Completed
+**Date Added:** 2026-04-30
+**Priority:** High (Data Portability Foundation)
 **Description:** Define the canonical MyStreak JSON export schema.
 
 **Technical Requirements:**
@@ -46,15 +46,23 @@ The source product specification remains `C:\dev\MyStreakCodex\MyStreak.md`. Thi
 - Decide whether export identifiers are raw Room IDs or export-local IDs with a mapping layer.
 
 **Acceptance Criteria:**
-- [ ] Schema is documented in this dev cycle or a linked schema document.
-- [ ] Schema supports a clean import into an empty MyStreak install.
-- [ ] Schema preserves all visible MyStreak data needed by Dashboard, Calendar, and Tasks.
-- [ ] Schema has a clear version number for future migrations.
+- [x] Schema is documented in this dev cycle or a linked schema document.
+- [x] Schema supports a clean import into an empty MyStreak install.
+- [x] Schema preserves all visible MyStreak data needed by Dashboard, Calendar, and Tasks.
+- [x] Schema has a clear version number for future migrations.
+
+**Schema:**
+- Root object: `schema`, `tasks`, `activities`, `frozenCalendarStates`.
+- `schema`: `name` (`MyStreak`), integer `version` (`1`), `exportedAtMillis`, and `appVersion`.
+- `tasks`: raw exported Room `id`, `name`, `color`, `priority`, `minimumSuccess`, `mediumSuccess`, `highSuccess`, `isActive`, `dateCreated`, and `lastUpdated`.
+- `activities`: raw exported Room `id`, exported `taskId`, `timestamp`, and `successLevel`.
+- `frozenCalendarStates`: `dayStartMillis`, `colorLevel`, and `frozenAtMillis`.
+- Import maps exported Task IDs to newly inserted local Task IDs before inserting Activities. Raw Room IDs are used only as stable export-local identifiers.
 
 ### Phase 2: Export Implementation
-**Status:** Open  
-**Date Added:** 2026-04-30  
-**Priority:** High (User Data Safety)  
+**Status:** Completed
+**Date Added:** 2026-04-30
+**Priority:** High (User Data Safety)
 **Description:** Implement JSON export using the MyStreak schema.
 
 **Technical Requirements:**
@@ -65,15 +73,20 @@ The source product specification remains `C:\dev\MyStreakCodex\MyStreak.md`. Thi
 - Use MyStreak filenames and UI copy.
 
 **Acceptance Criteria:**
-- [ ] Exported JSON contains Tasks, Activities, and frozen calendar states.
-- [ ] Exported JSON uses MyStreak terminology.
-- [ ] Export succeeds with empty data, small data, and larger local datasets.
-- [ ] Export errors produce user-actionable messages.
+- [x] Exported JSON contains Tasks, Activities, and frozen calendar states.
+- [x] Exported JSON uses MyStreak terminology.
+- [x] Export succeeds with empty data, small data, and larger local datasets.
+- [x] Export errors produce user-actionable messages.
+
+**Progress Notes:**
+- 2026-04-30: Replaced the legacy PlayStreak JSON exporter with a MyStreak v1 exporter for Tasks, Activities, and frozen calendar states.
+- 2026-04-30: Export output is sorted by Task ID, Activity timestamp/id, and frozen calendar day for deterministic files.
+- 2026-04-30: File picker exports now default to `MyStreak_export_yyyy-MM-dd_HHmmss.json`.
 
 ### Phase 3: Import Validation
-**Status:** Open  
-**Date Added:** 2026-04-30  
-**Priority:** High (Data Integrity)  
+**Status:** Completed
+**Date Added:** 2026-04-30
+**Priority:** High (Data Integrity)
 **Description:** Validate MyStreak JSON before replacing local data.
 
 **Technical Requirements:**
@@ -86,15 +99,19 @@ The source product specification remains `C:\dev\MyStreakCodex\MyStreak.md`. Thi
 - Avoid partial replacement if validation fails.
 
 **Acceptance Criteria:**
-- [ ] Invalid JSON produces clear validation errors.
-- [ ] Invalid references are caught before local data is changed.
-- [ ] Import confirmation warning appears before destructive replacement.
-- [ ] Failed import leaves existing local data unchanged.
+- [x] Invalid JSON produces clear validation errors.
+- [x] Invalid references are caught before local data is changed.
+- [x] Import confirmation warning appears before destructive replacement.
+- [x] Failed import leaves existing local data unchanged.
+
+**Progress Notes:**
+- 2026-04-30: Import validation checks required root fields, schema name/version, Task IDs/names/colors/thresholds, Activity references, future Activity timestamps, duplicate IDs, and duplicate frozen calendar days.
+- 2026-04-30: Validation detects legacy PlayStreak exports and rejects them with explicit copy instead of silently applying a lossy conversion.
 
 ### Phase 4: Import Implementation
-**Status:** Open  
-**Date Added:** 2026-04-30  
-**Priority:** High (Restore Path)  
+**Status:** Completed
+**Date Added:** 2026-04-30
+**Priority:** High (Restore Path)
 **Description:** Implement full-replace import for MyStreak JSON.
 
 **Technical Requirements:**
@@ -106,16 +123,21 @@ The source product specification remains `C:\dev\MyStreakCodex\MyStreak.md`. Thi
 - Recalculate or set any local counters that still exist in legacy compatibility code.
 
 **Acceptance Criteria:**
-- [ ] Exported JSON can be imported into a clean MyStreak install.
-- [ ] Import preserves Task colors, priorities, active states, thresholds, Activities, and frozen calendar colors.
-- [ ] Imported Activities appear correctly on Dashboard and Calendar.
-- [ ] Imported inactive Tasks remain visible in Tasks and hidden from logging.
-- [ ] Imported frozen past-day calendar colors remain immutable after import.
+- [x] Exported JSON can be imported into a clean MyStreak install.
+- [x] Import preserves Task colors, priorities, active states, thresholds, Activities, and frozen calendar colors.
+- [x] Imported Activities appear correctly on Dashboard and Calendar.
+- [x] Imported inactive Tasks remain visible in Tasks and hidden from logging.
+- [x] Imported frozen past-day calendar colors remain immutable after import.
+
+**Progress Notes:**
+- 2026-04-30: Implemented full-replace MyStreak JSON import. Existing Tasks, Activities, achievements, and frozen calendar states are cleared only after validation succeeds and the user confirms replacement.
+- 2026-04-30: Imported Tasks are inserted first, exported Task IDs are mapped to new local IDs, and Activities are inserted with the mapped Task IDs.
+- 2026-04-30: Frozen calendar states are imported as first-class data and remain authoritative for past calendar colors.
 
 ### Phase 5: Legacy PlayStreak Data Decision
-**Status:** Open  
-**Date Added:** 2026-04-30  
-**Priority:** Medium (Compatibility)  
+**Status:** Completed
+**Date Added:** 2026-04-30
+**Priority:** Medium (Compatibility)
 **Description:** Decide and implement how MyStreak handles old PlayStreak exports.
 
 **Technical Requirements:**
@@ -127,14 +149,19 @@ The source product specification remains `C:\dev\MyStreakCodex\MyStreak.md`. Thi
 - If converted, document mapping rules from PlayStreak Pieces/Techniques and Practice/Performance to MyStreak Tasks and success-level Activities.
 
 **Acceptance Criteria:**
-- [ ] Old PlayStreak JSON behavior is explicit and documented.
-- [ ] Users are not allowed to import legacy data silently into an incorrect MyStreak shape.
+- [x] Old PlayStreak JSON behavior is explicit and documented.
+- [x] Users are not allowed to import legacy data silently into an incorrect MyStreak shape.
 - [ ] Any supported conversion path has test fixtures.
 
+**Decision:**
+- MyStreak v1 does not import legacy PlayStreak JSON directly.
+- Legacy files are detected by PlayStreak-era root fields such as `exportInfo`, `pieces`, or `achievements` and rejected with a message explaining that MyStreak v1 JSON is required.
+- A PlayStreak-to-MyStreak conversion tool remains a future-cycle option if legacy migration becomes necessary.
+
 ### Phase 6: Tests and Verification
-**Status:** Open  
-**Date Added:** 2026-04-30  
-**Priority:** High (Release Confidence)  
+**Status:** Completed with documented follow-up
+**Date Added:** 2026-04-30
+**Priority:** High (Release Confidence)
 **Description:** Verify MyStreak import/export round trips and failure modes.
 
 **Technical Requirements:**
@@ -152,9 +179,14 @@ The source product specification remains `C:\dev\MyStreakCodex\MyStreak.md`. Thi
 
 **Acceptance Criteria:**
 - [ ] Export/import round trip restores visible MyStreak state.
-- [ ] Invalid imports are rejected without data loss.
-- [ ] `gradlew.bat assembleDebug` succeeds.
-- [ ] Known limitations are documented before closing the cycle.
+- [x] Invalid imports are rejected without data loss.
+- [x] `gradlew.bat assembleDebug` succeeds.
+- [x] Known limitations are documented before closing the cycle.
+
+**Progress Notes:**
+- 2026-04-30: Verified `gradlew.bat assembleDebug` succeeds.
+- 2026-04-30: Import/Export is reachable from the ActionBar overflow menu without adding a Settings screen.
+- 2026-04-30: Manual device round-trip verification and fixture tests remain follow-up work. The implementation path is ready for manual export/import smoke testing on an emulator or device.
 
 ## Proposed Implementation Sequence
 

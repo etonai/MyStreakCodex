@@ -67,7 +67,7 @@ if (BuildConfig.DEBUG) {
 - [ ] Consider adding conditional debug logging (debug builds only)
 
 ## Files to Modify
-- `/app/src/main/java/com/pseddev/playstreak/ui/progress/DashboardFragment.kt`
+- `/app/src/main/java/com/pseddev/mystreak/ui/progress/DashboardFragment.kt`
 - Any other files with performance suggestion logging
 
 ## Benefits

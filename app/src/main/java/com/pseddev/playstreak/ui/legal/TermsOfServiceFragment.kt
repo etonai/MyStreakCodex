@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.ui.legal
+package com.pseddev.mystreak.ui.legal
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,14 +8,14 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.pseddev.playstreak.databinding.FragmentTermsOfServiceBinding
+import com.pseddev.mystreak.databinding.FragmentTermsOfServiceBinding
 import java.io.IOException
 
 class TermsOfServiceFragment : Fragment() {
-    
+
     private var _binding: FragmentTermsOfServiceBinding? = null
     private val binding get() = _binding!!
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -24,14 +24,14 @@ class TermsOfServiceFragment : Fragment() {
         _binding = FragmentTermsOfServiceBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         setupWebView()
         loadTermsOfService()
     }
-    
+
     private fun setupWebView() {
         binding.webViewTermsOfService.apply {
             webViewClient = WebViewClient()
@@ -47,7 +47,7 @@ class TermsOfServiceFragment : Fragment() {
             }
         }
     }
-    
+
     private fun loadTermsOfService() {
         try {
             // Load HTML file from assets
@@ -63,11 +63,11 @@ class TermsOfServiceFragment : Fragment() {
                 </body>
                 </html>
             """.trimIndent()
-            
+
             binding.webViewTermsOfService.loadData(errorHtml, "text/html", "UTF-8")
         }
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

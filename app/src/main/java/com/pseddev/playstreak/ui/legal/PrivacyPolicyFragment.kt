@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.ui.legal
+package com.pseddev.mystreak.ui.legal
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,14 +8,14 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.pseddev.playstreak.databinding.FragmentPrivacyPolicyBinding
+import com.pseddev.mystreak.databinding.FragmentPrivacyPolicyBinding
 import java.io.IOException
 
 class PrivacyPolicyFragment : Fragment() {
-    
+
     private var _binding: FragmentPrivacyPolicyBinding? = null
     private val binding get() = _binding!!
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -24,14 +24,14 @@ class PrivacyPolicyFragment : Fragment() {
         _binding = FragmentPrivacyPolicyBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         setupWebView()
         loadPrivacyPolicy()
     }
-    
+
     private fun setupWebView() {
         binding.webViewPrivacyPolicy.apply {
             webViewClient = WebViewClient()
@@ -47,7 +47,7 @@ class PrivacyPolicyFragment : Fragment() {
             }
         }
     }
-    
+
     private fun loadPrivacyPolicy() {
         try {
             // Load HTML file from assets
@@ -63,11 +63,11 @@ class PrivacyPolicyFragment : Fragment() {
                 </body>
                 </html>
             """.trimIndent()
-            
+
             binding.webViewPrivacyPolicy.loadData(errorHtml, "text/html", "UTF-8")
         }
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

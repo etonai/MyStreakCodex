@@ -1,7 +1,7 @@
-package com.pseddev.playstreak.data.models
+package com.pseddev.mystreak.data.models
 
-import com.pseddev.playstreak.data.entities.Activity
-import com.pseddev.playstreak.data.entities.PieceOrTechnique
+import com.pseddev.mystreak.data.entities.Activity
+import com.pseddev.mystreak.data.entities.PieceOrTechnique
 import com.google.gson.annotations.SerializedName
 import java.util.Date
 
@@ -11,13 +11,13 @@ import java.util.Date
 data class SyncData(
     @SerializedName("format_version")
     val formatVersion: String = "1.0",
-    
+
     @SerializedName("export_timestamp")
     val exportTimestamp: Long = System.currentTimeMillis(),
-    
+
     @SerializedName("pieces_techniques")
     val piecesTechniques: List<PieceOrTechnique>,
-    
+
     @SerializedName("activities")
     val activities: List<Activity>
 )
@@ -28,19 +28,19 @@ data class SyncData(
 data class BackupMetadata(
     @SerializedName("last_sync_timestamp")
     val lastSyncTimestamp: Long = System.currentTimeMillis(),
-    
+
     @SerializedName("device_id")
     val deviceId: String,
-    
+
     @SerializedName("app_version")
     val appVersion: String,
-    
+
     @SerializedName("total_activities")
     val totalActivities: Int,
-    
+
     @SerializedName("total_pieces")
     val totalPieces: Int,
-    
+
     @SerializedName("sync_count")
     val syncCount: Int = 0
 )

@@ -1,312 +1,52 @@
-package com.pseddev.playstreak.ui.main
+package com.pseddev.mystreak.ui.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.pseddev.playstreak.BuildConfig
-import com.pseddev.playstreak.PlayStreakApplication
-import com.pseddev.playstreak.R
-import com.pseddev.playstreak.analytics.AnalyticsManager
-import com.pseddev.playstreak.crashlytics.CrashlyticsManager
-import com.pseddev.playstreak.databinding.FragmentMainBinding
-import com.pseddev.playstreak.utils.ProUserManager
-import com.pseddev.playstreak.utils.ConfigurationManager
-import com.pseddev.playstreak.utils.AchievementManager
-import android.app.AlertDialog
-import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
+import com.pseddev.mystreak.BuildConfig
+import com.pseddev.mystreak.R
+import com.pseddev.mystreak.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
-    
+
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
-    
-    private val viewModel: MainViewModel by viewModels {
-        MainViewModelFactory((requireActivity().application as PlayStreakApplication).repository)
-    }
-    
-    private lateinit var proUserManager: ProUserManager
-    private lateinit var crashlyticsManager: CrashlyticsManager
-    private lateinit var analyticsManager: AnalyticsManager
-    private lateinit var configurationManager: ConfigurationManager
-    private lateinit var achievementManager: AchievementManager
-    
+
     override fun onCreateView(
-        inflater: LayoutInflater, 
+        inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        proUserManager = ProUserManager.getInstance(requireContext())
-        crashlyticsManager = CrashlyticsManager(requireContext())
-        analyticsManager = AnalyticsManager(requireContext())
-        configurationManager = ConfigurationManager.getInstance(requireContext())
-        achievementManager = AchievementManager(
-            requireContext(),
-            (requireActivity().application as PlayStreakApplication).repository
-        )
-        
-        setupObservers()
-        setupClickListeners()
-        updateAppTitle()
-        updateToggleButtonText(proUserManager.isProUser())
-        updatePruneDataButtonState()
-        updateLifetimeActivitiesDisplay()
-        updateAchievementsDisplay()
-        
-        // Hide debug buttons in production builds
-        binding.buttonTogglePro.visibility = if (BuildConfig.DEBUG) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-        
-        binding.buttonTestCrash.visibility = if (BuildConfig.DEBUG) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-        
-        binding.buttonForceAnalyticsSync.visibility = if (BuildConfig.DEBUG) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-        
-        binding.buttonResetAchievements.visibility = if (BuildConfig.DEBUG) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-        
-        // Hide testing/development buttons in production builds
-        binding.buttonAddActivity.visibility = if (BuildConfig.DEBUG) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-        
-        binding.buttonAddPiece.visibility = if (BuildConfig.DEBUG) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-        
-        binding.buttonManageFavorites.visibility = if (BuildConfig.DEBUG) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-    }
-    
-    private fun setupObservers() {
-        viewModel.favoritesCount.observe(viewLifecycleOwner) { count ->
-            val buttonText = if (count > 0) {
-                "Manage Favorites ($count)"
-            } else {
-                "Manage Favorites"
-            }
-            binding.buttonManageFavorites.text = buttonText
-            binding.favoritesCountText.text = "Favorites: $count"
-        }
-        
-        viewModel.piecesCount.observe(viewLifecycleOwner) { count ->
-            binding.buttonAddPiece.text = "Add Piece ($count)"
-            binding.piecesCountText.text = "Pieces: $count"
-        }
-        
-        viewModel.activitiesCount.observe(viewLifecycleOwner) { count ->
-            binding.buttonAddActivity.text = "Add Activity ($count)"
-            binding.activitiesCountText.text = "Stored Activities: $count"
-            // Update lifetime activities count when activities count changes
-            updateLifetimeActivitiesDisplay()
-        }
-        
-        // Set version text
+
+        binding.textAppTitle.text = getString(R.string.app_name)
         binding.textVersion.text = "Version ${BuildConfig.VERSION_NAME}"
-    }
-    
-    private fun setupClickListeners() {
-        binding.buttonAddActivity.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_addActivityFragment)
-        }
-        
-        binding.buttonAddPiece.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_addPieceFragment)
-        }
-        
-        binding.buttonManageFavorites.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_favoritesFragment)
-        }
-        
-        binding.buttonImportExport.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_syncFragment)
-        }
-        
-        binding.buttonPruneData.setOnClickListener {
-            if (configurationManager.isPruningEnabled()) {
-                findNavController().navigate(R.id.action_mainFragment_to_pruneDataFragment)
-            } else {
-                showPruningDisabledDialog()
-            }
-        }
-        
+
         binding.buttonConfiguration.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_configurationFragment)
         }
-        
+
+        binding.buttonImportExport.setOnClickListener {
+            findNavController().navigate(R.id.action_mainFragment_to_syncFragment)
+        }
+
         binding.buttonPrivacyPolicy.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_privacyPolicyFragment)
         }
-        
+
         binding.buttonTermsOfService.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_termsOfServiceFragment)
         }
-        
-        binding.buttonViewAchievements.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_achievementsFragment)
-        }
-        
-        binding.buttonTogglePro.setOnClickListener {
-            val newStatus = proUserManager.toggleProStatus()
-            updateAppTitle()
-            updateToggleButtonText(newStatus)
-        }
-        
-        binding.buttonTestCrash.setOnClickListener {
-            crashlyticsManager.forceCrashForTesting()
-        }
-        
-        binding.buttonForceAnalyticsSync.setOnClickListener {
-            analyticsManager.forceAnalyticsSyncForTesting()
-        }
-        
-        binding.buttonResetAchievements.setOnClickListener {
-            showResetAchievementsDialog()
-        }
     }
-    
-    private fun updateAppTitle() {
-        val title = if (proUserManager.isProUser()) {
-            getString(R.string.app_name) + " Pro"
-        } else {
-            getString(R.string.app_name)
-        }
-        binding.textAppTitle.text = title
-    }
-    
-    private fun updateToggleButtonText(isProUser: Boolean) {
-        val buttonText = if (isProUser) {
-            "Switch to Free (Testing)"
-        } else {
-            "Switch to Pro (Testing)"
-        }
-        binding.buttonTogglePro.text = buttonText
-    }
-    
-    private fun updatePruneDataButtonState() {
-        val isPruningEnabled = configurationManager.isPruningEnabled()
-        binding.buttonPruneData.isEnabled = isPruningEnabled
-        binding.buttonPruneData.alpha = if (isPruningEnabled) 1.0f else 0.5f
-    }
-    
-    private fun updateLifetimeActivitiesDisplay() {
-        lifecycleScope.launch {
-            val lifetimeCount = configurationManager.getLifetimeActivityCount()
-            binding.lifetimeActivitiesCountText.text = "Lifetime Activities: $lifetimeCount"
-        }
-    }
-    
-    private fun updateAchievementsDisplay() {
-        lifecycleScope.launch {
-            achievementManager.initializeAchievements()
-            val (unlockedCount, totalCount) = achievementManager.getAchievementCounts()
-            binding.achievementsCountText.text = "Achievements: $unlockedCount/$totalCount"
-        }
-    }
-    
-    private fun showPruningDisabledDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Data Pruning Disabled")
-            .setMessage("Enable 'Allow Pruning of Data' in Configuration to access this feature.")
-            .setPositiveButton("Go to Configuration") { _, _ ->
-                findNavController().navigate(R.id.action_mainFragment_to_configurationFragment)
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-    
-    private fun showResetAchievementsDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Reset Achievements (Debug)")
-            .setMessage("⚠️ WARNING: This will permanently reset all achievement unlock states and dates.\n\nAchievements will be recalculated based on your current practice data.\n\nThis action cannot be undone. Continue?")
-            .setPositiveButton("Reset") { _, _ ->
-                resetAchievements()
-            }
-            .setNegativeButton("Cancel", null)
-            .setCancelable(true)
-            .show()
-    }
-    
-    private fun resetAchievements() {
-        lifecycleScope.launch {
-            try {
-                // Show progress (simple approach - could add proper progress dialog)
-                binding.buttonResetAchievements.isEnabled = false
-                binding.buttonResetAchievements.text = "Resetting..."
-                
-                // Reset achievements
-                achievementManager.resetAllAchievements()
-                
-                // Update achievements display
-                updateAchievementsDisplay()
-                
-                // Show success message
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Reset Complete")
-                    .setMessage("Achievements have been reset and recalculated based on your practice data.")
-                    .setPositiveButton("OK", null)
-                    .show()
-                
-            } catch (e: Exception) {
-                // Show error message
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Reset Failed")
-                    .setMessage("Failed to reset achievements: ${e.message}")
-                    .setPositiveButton("OK", null)
-                    .show()
-            } finally {
-                // Restore button state
-                binding.buttonResetAchievements.isEnabled = true
-                binding.buttonResetAchievements.text = "Reset Achievements (Debug)"
-            }
-        }
-    }
-    
-    override fun onResume() {
-        super.onResume()
-        // Update title and button text when returning to the fragment in case Pro status changed
-        updateAppTitle()
-        updateToggleButtonText(proUserManager.isProUser())
-        // Update prune data button state in case configuration toggle changed
-        updatePruneDataButtonState()
-        // Update lifetime activities display in case it changed
-        updateLifetimeActivitiesDisplay()
-        // Update achievements display in case new achievements were unlocked
-        updateAchievementsDisplay()
-    }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

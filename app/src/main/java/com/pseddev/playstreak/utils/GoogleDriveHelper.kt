@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.utils
+package com.pseddev.mystreak.utils
 
 import android.content.Context
 import android.content.Intent
@@ -19,62 +19,62 @@ import java.util.*
  */
 
 class GoogleDriveHelper(private val context: Context) {
-    
+
     companion object {
         private const val TAG = "GoogleDriveHelper"
-        private const val APPLICATION_NAME = "PlayStreak"
-        private const val DATA_FILE_NAME = "piano_tracker_data.json"
+        private const val APPLICATION_NAME = "MyStreak"
+        private const val DATA_FILE_NAME = "mystreak_data.json"
         private const val METADATA_FILE_NAME = "backup_metadata.json"
         private const val MIME_TYPE_JSON = "application/json"
         private const val APP_DATA_FOLDER = "appDataFolder"
-        
+
         // Request codes
         const val REQUEST_CODE_SIGN_IN = 9001
     }
-    
+
     // Placeholder for Drive service - would need proper implementation
     private lateinit var googleSignInClient: GoogleSignInClient
-    
+
     init {
         setupGoogleSignInClient()
     }
-    
+
     private fun setupGoogleSignInClient() {
         val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .requestId()
             .requestProfile()
             .build()
-            
+
         googleSignInClient = GoogleSignIn.getClient(context, signInOptions)
     }
-    
+
     fun getSignInIntent(): Intent {
         return googleSignInClient.signInIntent
     }
-    
+
     fun isSignedIn(): Boolean {
         return GoogleSignIn.getLastSignedInAccount(context) != null
     }
-    
+
     fun getSignedInAccount(): GoogleSignInAccount? {
         return GoogleSignIn.getLastSignedInAccount(context)
     }
-    
+
     suspend fun signOut() = withContext(Dispatchers.IO) {
         googleSignInClient.signOut()
     }
-    
+
     suspend fun disconnect() = withContext(Dispatchers.IO) {
         googleSignInClient.revokeAccess()
     }
-    
+
     fun initializeDriveService(account: GoogleSignInAccount): Boolean {
         Log.d(TAG, "Drive service initialization simulated for: ${account.email}")
         // Simplified implementation - returns true for compilation
         return true
     }
-    
+
     suspend fun uploadDataToDrive(jsonData: String, metadata: String): Result<String> = withContext(Dispatchers.IO) {
         try {
             Log.d(TAG, "Data upload simulated - size: ${jsonData.length} chars")
@@ -85,7 +85,7 @@ class GoogleDriveHelper(private val context: Context) {
             Result.failure(e)
         }
     }
-    
+
     suspend fun downloadDataFromDrive(): Result<String> = withContext(Dispatchers.IO) {
         try {
             Log.d(TAG, "Data download simulated")
@@ -96,7 +96,7 @@ class GoogleDriveHelper(private val context: Context) {
             Result.failure(e)
         }
     }
-    
+
     suspend fun getLastSyncTime(): Result<Date?> = withContext(Dispatchers.IO) {
         try {
             Log.d(TAG, "Last sync time check simulated")
@@ -107,9 +107,9 @@ class GoogleDriveHelper(private val context: Context) {
             Result.failure(e)
         }
     }
-    
+
     // Removed - simplified implementation doesn't need this method
-    
+
     suspend fun deleteAllDriveData(): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             Log.d(TAG, "Drive data deletion simulated")

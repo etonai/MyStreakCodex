@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.ui.progress
+package com.pseddev.mystreak.ui.progress
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
-import com.pseddev.playstreak.databinding.FragmentViewProgressBinding
+import com.pseddev.mystreak.databinding.FragmentViewProgressBinding
 
 class ViewProgressFragment : Fragment() {
-    
+
     private var _binding: FragmentViewProgressBinding? = null
     private val binding get() = _binding!!
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -22,13 +22,13 @@ class ViewProgressFragment : Fragment() {
         _binding = FragmentViewProgressBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         setupTabs()
     }
-    
+
     private fun setupTabs() {
         val pagerAdapter = ViewProgressPagerAdapter(this)
         binding.viewPager.adapter = pagerAdapter
@@ -43,15 +43,15 @@ class ViewProgressFragment : Fragment() {
             }
         }.attach()
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    
+
     private inner class ViewProgressPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
         override fun getItemCount(): Int = 3
-        
+
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> DashboardFragment()

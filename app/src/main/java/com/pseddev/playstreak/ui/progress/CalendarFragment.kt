@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.ui.progress
+package com.pseddev.mystreak.ui.progress
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -18,13 +18,13 @@ import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.view.CalendarView
 import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.ViewContainer
-import com.pseddev.playstreak.PlayStreakApplication
-import com.pseddev.playstreak.R
-import com.pseddev.playstreak.data.entities.ActivityType
-import com.pseddev.playstreak.data.entities.CalendarColorLevel
-import com.pseddev.playstreak.data.entities.SuccessLevel
-import com.pseddev.playstreak.databinding.FragmentCalendarBinding
-import com.pseddev.playstreak.databinding.ItemDashboardActivityBinding
+import com.pseddev.mystreak.MyStreakApplication
+import com.pseddev.mystreak.R
+import com.pseddev.mystreak.data.entities.ActivityType
+import com.pseddev.mystreak.data.entities.CalendarColorLevel
+import com.pseddev.mystreak.data.entities.SuccessLevel
+import com.pseddev.mystreak.databinding.FragmentCalendarBinding
+import com.pseddev.mystreak.databinding.ItemDashboardActivityBinding
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import java.text.SimpleDateFormat
@@ -41,7 +41,7 @@ class CalendarFragment : Fragment() {
 
     private val viewModel: CalendarViewModel by viewModels {
         CalendarViewModelFactory(
-            (requireActivity().application as PlayStreakApplication).repository
+            (requireActivity().application as MyStreakApplication).repository
         )
     }
 

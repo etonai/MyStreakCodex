@@ -1,23 +1,23 @@
-package com.pseddev.playstreak.utils
+package com.pseddev.mystreak.utils
 
-import com.pseddev.playstreak.data.entities.Achievement
-import com.pseddev.playstreak.data.entities.AchievementType
+import com.pseddev.mystreak.data.entities.Achievement
+import com.pseddev.mystreak.data.entities.AchievementType
 
 object AchievementDefinitions {
-    
+
     fun getAllAchievementDefinitions(): List<Achievement> {
         return listOf(
             // First Actions Achievements
             Achievement(
                 type = AchievementType.FIRST_PIECE,
                 title = "First Steps",
-                description = "Added your first piece to PlayStreak",
+                description = "Added your first task to MyStreak",
                 iconEmoji = "🎹"
             ),
             Achievement(
                 type = AchievementType.FIRST_TECHNIQUE,
                 title = "Skill Builder",
-                description = "Added your first technique to PlayStreak",
+                description = "Added your first routine to MyStreak",
                 iconEmoji = "🛠️"
             ),
             Achievement(
@@ -44,7 +44,7 @@ object AchievementDefinitions {
                 description = "Completed your first live performance",
                 iconEmoji = "🎤"
             ),
-            
+
             // Streak Milestone Achievements
             Achievement(
                 type = AchievementType.STREAK_3_DAYS,
@@ -90,11 +90,11 @@ object AchievementDefinitions {
             )
         )
     }
-    
+
     fun getAchievementByType(type: AchievementType): Achievement? {
         return getAllAchievementDefinitions().find { it.type == type }
     }
-    
+
     fun getTotalAchievementsCount(): Int {
         return getAllAchievementDefinitions().size
     }

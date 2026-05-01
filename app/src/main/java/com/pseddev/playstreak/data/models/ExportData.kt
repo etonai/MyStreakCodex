@@ -1,183 +1,111 @@
-package com.pseddev.playstreak.data.models
+package com.pseddev.mystreak.data.models
 
-import com.pseddev.playstreak.data.entities.ActivityType
-import com.pseddev.playstreak.data.entities.ItemType
-import com.pseddev.playstreak.data.entities.AchievementType
 import com.google.gson.annotations.SerializedName
+import com.pseddev.mystreak.data.entities.CalendarColorLevel
+import com.pseddev.mystreak.data.entities.SuccessLevel
+import com.pseddev.mystreak.data.entities.TaskPriority
 
-/**
- * Root container for JSON export data
- */
-data class ExportData(
-    @SerializedName("exportInfo")
-    val exportInfo: ExportInfo,
-    
-    @SerializedName("pieces")
-    val pieces: List<ExportPiece>,
-    
-    @SerializedName("activities") 
-    val activities: List<ExportActivity>,
-    
-    @SerializedName("achievements")
-    val achievements: List<ExportAchievement>? = null // Optional for backward compatibility
+data class MyStreakExportData(
+    @SerializedName("schema")
+    val schema: MyStreakExportInfo,
+
+    @SerializedName("tasks")
+    val tasks: List<MyStreakExportTask>,
+
+    @SerializedName("activities")
+    val activities: List<MyStreakExportActivity>,
+
+    @SerializedName("frozenCalendarStates")
+    val frozenCalendarStates: List<MyStreakExportCalendarState>
 )
 
-/**
- * Metadata about the export
- */
-data class ExportInfo(
-    @SerializedName("version")
-    val version: String,
-    
-    @SerializedName("exportDate")
-    val exportDate: String, // ISO 8601 format
-    
-    @SerializedName("format")
-    val format: String,
-    
-    @SerializedName("appVersion")
-    val appVersion: String,
-    
-    @SerializedName("lifetimeActivityCount")
-    val lifetimeActivityCount: Int? = null // Total activities ever created
-)
-
-/**
- * Piece data for JSON export including statistics
- */
-data class ExportPiece(
-    @SerializedName("id")
-    val id: Long,
-    
+data class MyStreakExportInfo(
     @SerializedName("name")
     val name: String,
-    
-    @SerializedName("type")
-    val type: ItemType,
-    
-    @SerializedName("isFavorite")
-    val isFavorite: Boolean,
-    
-    @SerializedName("statistics")
-    val statistics: PieceStatistics
+
+    @SerializedName("version")
+    val version: Int,
+
+    @SerializedName("exportedAtMillis")
+    val exportedAtMillis: Long,
+
+    @SerializedName("appVersion")
+    val appVersion: String
 )
 
-/**
- * Piece statistics for JSON export
- */
-data class PieceStatistics(
-    @SerializedName("practiceCount")
-    val practiceCount: Int,
-    
-    @SerializedName("performanceCount")
-    val performanceCount: Int,
-    
-    @SerializedName("lastPracticeDate")
-    val lastPracticeDate: String?, // ISO 8601 format or null
-    
-    @SerializedName("secondLastPracticeDate")
-    val secondLastPracticeDate: String?, // ISO 8601 format or null
-    
-    @SerializedName("thirdLastPracticeDate")
-    val thirdLastPracticeDate: String?, // ISO 8601 format or null
-    
-    @SerializedName("lastPerformanceDate")
-    val lastPerformanceDate: String?, // ISO 8601 format or null
-    
-    @SerializedName("secondLastPerformanceDate")
-    val secondLastPerformanceDate: String?, // ISO 8601 format or null
-    
-    @SerializedName("thirdLastPerformanceDate")
-    val thirdLastPerformanceDate: String?, // ISO 8601 format or null
-    
-    @SerializedName("lastSatisfactoryPractice")
-    val lastSatisfactoryPractice: String?, // ISO 8601 format or null
-    
-    @SerializedName("lastSatisfactoryPerformance")
-    val lastSatisfactoryPerformance: String?, // ISO 8601 format or null
-    
-    @SerializedName("dateCreated")
-    val dateCreated: String, // ISO 8601 format
-    
-    @SerializedName("lastUpdated")
-    val lastUpdated: String // ISO 8601 format
-)
-
-/**
- * Activity data for JSON export
- */
-data class ExportActivity(
+data class MyStreakExportTask(
     @SerializedName("id")
     val id: Long,
-    
-    @SerializedName("pieceId")
-    val pieceId: Long,
-    
-    @SerializedName("timestamp")
-    val timestamp: String, // ISO 8601 format
-    
-    @SerializedName("activityType")
-    val activityType: ActivityType,
-    
-    @SerializedName("level")
-    val level: Int,
-    
-    @SerializedName("performanceType")
-    val performanceType: String,
-    
-    @SerializedName("minutes")
-    val minutes: Int,
-    
-    @SerializedName("notes")
-    val notes: String
-)
 
-/**
- * Achievement data for JSON export
- */
-data class ExportAchievement(
-    @SerializedName("type")
-    val type: AchievementType,
-    
-    @SerializedName("title")
-    val title: String,
-    
-    @SerializedName("description")
-    val description: String,
-    
-    @SerializedName("iconEmoji")
-    val iconEmoji: String,
-    
-    @SerializedName("isUnlocked")
-    val isUnlocked: Boolean,
-    
-    @SerializedName("unlockedAt")
-    val unlockedAt: String?, // ISO 8601 format or null
-    
+    @SerializedName("name")
+    val name: String,
+
+    @SerializedName("color")
+    val color: String,
+
+    @SerializedName("priority")
+    val priority: TaskPriority,
+
+    @SerializedName("minimumSuccess")
+    val minimumSuccess: String,
+
+    @SerializedName("mediumSuccess")
+    val mediumSuccess: String,
+
+    @SerializedName("highSuccess")
+    val highSuccess: String,
+
+    @SerializedName("isActive")
+    val isActive: Boolean,
+
     @SerializedName("dateCreated")
-    val dateCreated: String // ISO 8601 format
+    val dateCreated: Long,
+
+    @SerializedName("lastUpdated")
+    val lastUpdated: Long
 )
 
-/**
- * Result of JSON import operation
- */
+data class MyStreakExportActivity(
+    @SerializedName("id")
+    val id: Long,
+
+    @SerializedName("taskId")
+    val taskId: Long,
+
+    @SerializedName("timestamp")
+    val timestamp: Long,
+
+    @SerializedName("successLevel")
+    val successLevel: SuccessLevel
+)
+
+data class MyStreakExportCalendarState(
+    @SerializedName("dayStartMillis")
+    val dayStartMillis: Long,
+
+    @SerializedName("colorLevel")
+    val colorLevel: CalendarColorLevel,
+
+    @SerializedName("frozenAtMillis")
+    val frozenAtMillis: Long
+)
+
 data class JsonImportResult(
     val success: Boolean,
     val piecesImported: Int,
     val activitiesImported: Int,
-    val achievementsImported: Int, // Added achievements count
+    val achievementsImported: Int,
+    val calendarStatesImported: Int = 0,
     val errors: List<String>,
     val warnings: List<String>
 )
 
-/**
- * Validation result for JSON import
- */
 data class JsonValidationResult(
     val isValid: Boolean,
     val pieceCount: Int,
     val activityCount: Int,
-    val achievementCount: Int, // Added achievements count
+    val achievementCount: Int,
+    val calendarStateCount: Int = 0,
     val errors: List<String>,
     val formatVersion: String?
 )

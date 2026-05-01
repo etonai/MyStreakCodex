@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.ui.progress
+package com.pseddev.mystreak.ui.progress
 
 import android.app.Dialog
 import android.os.Bundle
@@ -8,35 +8,35 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import com.pseddev.playstreak.PlayStreakApplication
-import com.pseddev.playstreak.R
-import com.pseddev.playstreak.data.entities.Activity
-import com.pseddev.playstreak.data.entities.ActivityType
-import com.pseddev.playstreak.databinding.DialogQuickAddActivityBinding
+import com.pseddev.mystreak.MyStreakApplication
+import com.pseddev.mystreak.R
+import com.pseddev.mystreak.data.entities.Activity
+import com.pseddev.mystreak.data.entities.ActivityType
+import com.pseddev.mystreak.databinding.DialogQuickAddActivityBinding
 import kotlinx.coroutines.launch
 import java.util.*
 
 class QuickAddActivityDialogFragment : DialogFragment() {
-    
+
     private var _binding: DialogQuickAddActivityBinding? = null
     private val binding get() = _binding!!
-    
+
     private val viewModel: QuickAddActivityViewModel by viewModels {
         QuickAddActivityViewModelFactory(
-            (requireActivity().application as PlayStreakApplication).repository,
+            (requireActivity().application as MyStreakApplication).repository,
             requireContext()
         )
     }
-    
+
     private var pieceId: Long = -1
     private var pieceName: String = ""
     private var source: String = "dashboard_quick"
-    
+
     companion object {
         private const val ARG_PIECE_ID = "piece_id"
         private const val ARG_PIECE_NAME = "piece_name"
         private const val ARG_SOURCE = "source"
-        
+
         fun newInstance(pieceId: Long, pieceName: String, source: String = "dashboard_quick"): QuickAddActivityDialogFragment {
             val fragment = QuickAddActivityDialogFragment()
             val args = Bundle().apply {
@@ -48,7 +48,7 @@ class QuickAddActivityDialogFragment : DialogFragment() {
             return fragment
         }
     }
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -57,13 +57,13 @@ class QuickAddActivityDialogFragment : DialogFragment() {
             source = it.getString(ARG_SOURCE, "dashboard_quick")
         }
     }
-    
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DialogQuickAddActivityBinding.inflate(layoutInflater)
-        
+
         setupViews()
         setupObservers()
-        
+
         return AlertDialog.Builder(requireContext())
             .setTitle("Add Activity for $pieceName")
             .setView(binding.root)
@@ -73,7 +73,7 @@ class QuickAddActivityDialogFragment : DialogFragment() {
             .setNegativeButton("Cancel", null)
             .create()
     }
-    
+
     private fun setupViews() {
         binding.pieceNameText.text = pieceName
 
@@ -97,11 +97,11 @@ class QuickAddActivityDialogFragment : DialogFragment() {
             binding.levelSpinner.adapter = levelAdapter
         }
     }
-    
+
     private fun setupObservers() {
         viewModel.addResult.observe(this) { result ->
             result.fold(
-                onSuccess = { 
+                onSuccess = {
                     Toast.makeText(context, "Activity added successfully!", Toast.LENGTH_SHORT).show()
                     dismiss()
                 },
@@ -111,10 +111,10 @@ class QuickAddActivityDialogFragment : DialogFragment() {
             )
         }
     }
-    
+
     private fun addActivity() {
         val level = binding.levelSpinner.selectedItemPosition + 1
-        
+
         val activity = Activity(
             id = 0, // Will be auto-generated
             pieceOrTechniqueId = pieceId,
@@ -125,10 +125,10 @@ class QuickAddActivityDialogFragment : DialogFragment() {
             notes = "",
             performanceType = "activity"
         )
-        
+
         viewModel.addActivity(activity, source)
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

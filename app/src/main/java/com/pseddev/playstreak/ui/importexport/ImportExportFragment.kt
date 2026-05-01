@@ -1,4 +1,4 @@
-package com.pseddev.playstreak.ui.importexport
+package com.pseddev.mystreak.ui.importexport
 
 import android.app.Activity
 import android.content.Intent
@@ -15,9 +15,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.pseddev.playstreak.PlayStreakApplication
-import com.pseddev.playstreak.databinding.FragmentImportExportBinding
-import com.pseddev.playstreak.utils.GoogleDriveHelper
+import com.pseddev.mystreak.MyStreakApplication
+import com.pseddev.mystreak.databinding.FragmentImportExportBinding
+import com.pseddev.mystreak.utils.GoogleDriveHelper
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
@@ -28,42 +28,42 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ImportExportFragment : Fragment() {
-    
+
     private var _binding: FragmentImportExportBinding? = null
     private val binding get() = _binding!!
-    
+
     private val viewModel: ImportExportViewModel by viewModels {
         ImportExportViewModelFactory(
-            (requireActivity().application as PlayStreakApplication).repository,
+            (requireActivity().application as MyStreakApplication).repository,
             requireContext()
         )
     }
-    
-    
+
+
     private val exportCsvLauncher = registerForActivityResult(
         ActivityResultContracts.CreateDocument("text/csv")
     ) { uri ->
         uri?.let { exportToCsv(it) }
     }
-    
+
     private val exportJsonLauncher = registerForActivityResult(
         ActivityResultContracts.CreateDocument("application/json")
     ) { uri ->
         uri?.let { exportToJson(it) }
     }
-    
+
     private val importCsvLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri ->
         uri?.let { showImportConfirmation(it, "CSV") }
     }
-    
+
     private val importJsonLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri ->
         uri?.let { showImportConfirmation(it, "JSON") }
     }
-    
+
     private val googleSignInLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -74,7 +74,7 @@ class ImportExportFragment : Fragment() {
             Toast.makeText(context, "Sign-in failed", Toast.LENGTH_SHORT).show()
         }
     }
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -83,37 +83,26 @@ class ImportExportFragment : Fragment() {
         _binding = FragmentImportExportBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         setupButtons()
         observeViewModel()
         updateDriveUI()
     }
-    
+
     private fun setupButtons() {
         binding.exportToCsvButton.setOnClickListener {
-            if (com.pseddev.playstreak.BuildConfig.DEBUG) {
-                showExportFormatDialog()
-            } else {
-                // Production mode: directly export as JSON
-                val timestamp = SimpleDateFormat("yyyy-MM-dd_HHmmss", Locale.US).format(Date())
-                val fileName = "PlayStreak_combined_export_$timestamp.json"
-                exportJsonLauncher.launch(fileName)
-            }
+            val timestamp = SimpleDateFormat("yyyy-MM-dd_HHmmss", Locale.US).format(Date())
+            exportJsonLauncher.launch("MyStreak_export_$timestamp.json")
         }
-        
+
         binding.importFromCsvButton.setOnClickListener {
-            if (com.pseddev.playstreak.BuildConfig.DEBUG) {
-                showImportFormatDialog()
-            } else {
-                // Production mode: directly import JSON
-                binding.warningTextView.visibility = View.VISIBLE
-                importJsonLauncher.launch("application/json")
-            }
+            binding.warningTextView.visibility = View.VISIBLE
+            importJsonLauncher.launch("application/json")
         }
-        
+
         binding.syncWithDriveButton.setOnClickListener {
             if (viewModel.isSignedIn()) {
                 showSyncOptions()
@@ -121,41 +110,21 @@ class ImportExportFragment : Fragment() {
                 startGoogleSignIn()
             }
         }
-        
+
         binding.purgeDataButton.setOnClickListener {
             showPurgeConfirmation()
         }
-        
-        // Hide purge button in production builds
-        binding.purgeDataButton.visibility = if (com.pseddev.playstreak.BuildConfig.DEBUG) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-        
-        // Hide Google Drive functionality in production builds
-        binding.driveStatusCard.visibility = if (com.pseddev.playstreak.BuildConfig.DEBUG) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-        
-        binding.syncWithDriveButton.visibility = if (com.pseddev.playstreak.BuildConfig.DEBUG) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-        
-        // Update content descriptions based on build type
-        if (com.pseddev.playstreak.BuildConfig.DEBUG) {
-            binding.exportToCsvButton.contentDescription = "Export data to CSV or JSON file"
-            binding.importFromCsvButton.contentDescription = "Import data from CSV or JSON file"
-        } else {
-            binding.exportToCsvButton.contentDescription = "Export data to JSON file"
-            binding.importFromCsvButton.contentDescription = "Import data from JSON file"
-        }
+
+        binding.purgeDataButton.visibility = View.GONE
+
+        binding.driveStatusCard.visibility = View.GONE
+
+        binding.syncWithDriveButton.visibility = View.GONE
+
+        binding.exportToCsvButton.contentDescription = "Export MyStreak data to JSON file"
+        binding.importFromCsvButton.contentDescription = "Import MyStreak data from JSON file"
     }
-    
+
     private fun observeViewModel() {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
@@ -165,7 +134,7 @@ class ImportExportFragment : Fragment() {
             // Keep Google Drive button disabled since functionality is disabled
             binding.syncWithDriveButton.isEnabled = false
         }
-        
+
         viewModel.exportResult.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled()?.let { result ->
                 result.fold(
@@ -183,7 +152,7 @@ class ImportExportFragment : Fragment() {
                 )
             }
         }
-        
+
         viewModel.importResult.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled()?.let { result ->
                 result.fold(
@@ -208,13 +177,13 @@ class ImportExportFragment : Fragment() {
                 binding.warningTextView.visibility = View.GONE
             }
         }
-        
+
         viewModel.jsonImportResult.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled()?.let { result ->
                 result.fold(
                     onSuccess = { importResult ->
                         if (importResult.success) {
-                            val message = "JSON import successful! Imported ${importResult.activitiesImported} activities and ${importResult.piecesImported} pieces."
+                            val message = "MyStreak import successful! Imported ${importResult.piecesImported} tasks, ${importResult.activitiesImported} activities, and ${importResult.calendarStatesImported} frozen calendar days."
                             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                             // Navigate back to main screen
                             findNavController().navigateUp()
@@ -233,7 +202,7 @@ class ImportExportFragment : Fragment() {
                 binding.warningTextView.visibility = View.GONE
             }
         }
-        
+
         viewModel.validationResult.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled()?.let { validationResult ->
                 if (validationResult.isValid) {
@@ -248,13 +217,13 @@ class ImportExportFragment : Fragment() {
                 binding.warningTextView.visibility = View.GONE
             }
         }
-        
+
         viewModel.jsonValidationResult.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled()?.let { validationResult ->
                 if (validationResult.isValid) {
                     // Show success message with counts
-                    val message = "JSON file is valid!\n" +
-                            "Contains: ${validationResult.activityCount} activities, ${validationResult.pieceCount} pieces"
+                    val message = "MyStreak file is valid!\n" +
+                            "Contains: ${validationResult.activityCount} activities, ${validationResult.pieceCount} tasks, ${validationResult.calendarStateCount} frozen calendar days"
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                 } else {
                     // Show rejection dialog
@@ -263,7 +232,7 @@ class ImportExportFragment : Fragment() {
                 binding.warningTextView.visibility = View.GONE
             }
         }
-        
+
         viewModel.purgeResult.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled()?.let { result ->
                 result.fold(
@@ -282,7 +251,7 @@ class ImportExportFragment : Fragment() {
                 )
             }
         }
-        
+
         viewModel.syncResult.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled()?.let { result ->
                 if (result.success) {
@@ -301,15 +270,15 @@ class ImportExportFragment : Fragment() {
                 }
             }
         }
-        
+
         viewModel.driveConnectionState.observe(viewLifecycleOwner) { connected ->
             updateDriveUI()
         }
     }
-    
+
     private fun exportToCsv(uri: Uri) {
         Log.d("ExportDebug", "Starting exportToCsv with URI: $uri")
-        
+
         // Launch coroutine that will wait for the export to complete
         lifecycleScope.launch {
             try {
@@ -334,10 +303,10 @@ class ImportExportFragment : Fragment() {
             }
         }
     }
-    
+
     private fun exportToJson(uri: Uri) {
         Log.d("JsonExport", "Starting exportToJson with URI: $uri")
-        
+
         // Launch coroutine that will wait for the export to complete
         lifecycleScope.launch {
             try {
@@ -362,11 +331,11 @@ class ImportExportFragment : Fragment() {
             }
         }
     }
-    
+
     private fun showImportConfirmation(uri: Uri, format: String) {
         AlertDialog.Builder(requireContext())
-            .setTitle("Import $format Data")
-            .setMessage("This will replace all existing data in the app. Are you sure you want to continue?")
+            .setTitle("Import MyStreak Data")
+            .setMessage("This will replace all existing Tasks, Activities, and frozen calendar colors in MyStreak. Are you sure you want to continue?")
             .setPositiveButton("Import") { _, _ ->
                 when (format) {
                     "CSV" -> importFromCsv(uri)
@@ -379,7 +348,7 @@ class ImportExportFragment : Fragment() {
             }
             .show()
     }
-    
+
     private fun importFromCsv(uri: Uri) {
         try {
             requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
@@ -395,7 +364,7 @@ class ImportExportFragment : Fragment() {
             binding.warningTextView.visibility = View.GONE
         }
     }
-    
+
     private fun importFromJson(uri: Uri) {
         try {
             requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
@@ -411,8 +380,8 @@ class ImportExportFragment : Fragment() {
             binding.warningTextView.visibility = View.GONE
         }
     }
-    
-    private fun showCsvImportErrors(importResult: com.pseddev.playstreak.utils.CsvHandler.ImportResult) {
+
+    private fun showCsvImportErrors(importResult: com.pseddev.mystreak.utils.CsvHandler.ImportResult) {
         val message = buildString {
             appendLine("CSV import completed with errors:")
             appendLine("Imported ${importResult.activities.size} activities successfully.")
@@ -425,18 +394,18 @@ class ImportExportFragment : Fragment() {
                 appendLine("... and ${importResult.errors.size - 10} more errors")
             }
         }
-        
+
         AlertDialog.Builder(requireContext())
             .setTitle("CSV Import Errors")
             .setMessage(message)
             .setPositiveButton("OK", null)
             .show()
     }
-    
-    private fun showJsonImportErrors(importResult: com.pseddev.playstreak.data.models.JsonImportResult) {
+
+    private fun showJsonImportErrors(importResult: com.pseddev.mystreak.data.models.JsonImportResult) {
         val message = buildString {
-            appendLine("JSON import completed with errors:")
-            appendLine("Imported ${importResult.activitiesImported} activities and ${importResult.piecesImported} pieces.")
+            appendLine("MyStreak import completed with errors:")
+            appendLine("Imported ${importResult.activitiesImported} activities, ${importResult.piecesImported} tasks, and ${importResult.calendarStatesImported} frozen calendar days.")
             appendLine()
             if (importResult.errors.isNotEmpty()) {
                 appendLine("Errors:")
@@ -458,20 +427,20 @@ class ImportExportFragment : Fragment() {
                 }
             }
         }
-        
+
         AlertDialog.Builder(requireContext())
-            .setTitle("JSON Import Errors")
+            .setTitle("MyStreak Import Errors")
             .setMessage(message)
             .setPositiveButton("OK", null)
             .show()
     }
-    
-    
+
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    
+
     private fun updateDriveUI() {
         if (viewModel.isSignedIn()) {
             val account = viewModel.getSignedInAccount()
@@ -479,7 +448,7 @@ class ImportExportFragment : Fragment() {
             binding.driveAccountTextView.text = account?.email ?: ""
             binding.driveAccountTextView.visibility = View.VISIBLE
             binding.syncWithDriveButton.text = "Sync Now"
-            
+
             // Update last sync time
             val lastSyncTime = viewModel.getLastSyncTime()
             if (lastSyncTime > 0) {
@@ -495,7 +464,7 @@ class ImportExportFragment : Fragment() {
             binding.syncWithDriveButton.text = "Connect to Google Drive"
             binding.lastSyncTextView.text = "Last sync: Never"
         }
-        
+
         // Update last export time (independent of Google Drive status)
         val lastExportTime = viewModel.getLastExportTime()
         if (lastExportTime > 0) {
@@ -506,26 +475,26 @@ class ImportExportFragment : Fragment() {
             binding.lastExportTextView.text = "Last export: Never"
         }
     }
-    
+
     private fun startGoogleSignIn() {
         val signInIntent = viewModel.getSignInIntent()
         googleSignInLauncher.launch(signInIntent)
     }
-    
+
     private fun handleSignInResult(data: Intent?) {
         try {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             val account = task.getResult(ApiException::class.java)
-            
+
             Log.d("ImportExportFragment", "Sign-in successful: ${account.email}")
             viewModel.handleSignInSuccess(account)
             updateDriveUI()
-            
+
             // Show sync dialog after successful sign-in
             showSyncOptions()
         } catch (e: ApiException) {
             Log.e("ImportExportFragment", "Sign-in failed with code: ${e.statusCode}, message: ${e.message}", e)
-            
+
             val errorMessage = when (e.statusCode) {
                 12500 -> "Sign-in cancelled by user"
                 12501 -> "Sign-in currently in progress"
@@ -533,7 +502,7 @@ class ImportExportFragment : Fragment() {
                 10 -> "Developer error - check Google Cloud Console configuration"
                 else -> "Sign-in failed (code: ${e.statusCode}): ${e.message}"
             }
-            
+
             Toast.makeText(
                 context,
                 errorMessage,
@@ -541,10 +510,10 @@ class ImportExportFragment : Fragment() {
             ).show()
         }
     }
-    
+
     private fun showSyncOptions() {
         val options = arrayOf("Sync to Drive", "Restore from Drive", "Disconnect")
-        
+
         AlertDialog.Builder(requireContext())
             .setTitle("Google Drive Options")
             .setItems(options) { _, which ->
@@ -556,7 +525,7 @@ class ImportExportFragment : Fragment() {
             }
             .show()
     }
-    
+
     private fun showRestoreConfirmation() {
         AlertDialog.Builder(requireContext())
             .setTitle("Restore from Drive")
@@ -567,7 +536,7 @@ class ImportExportFragment : Fragment() {
             .setNegativeButton("Cancel", null)
             .show()
     }
-    
+
     private fun showDisconnectConfirmation() {
         AlertDialog.Builder(requireContext())
             .setTitle("Disconnect Google Drive")
@@ -579,8 +548,8 @@ class ImportExportFragment : Fragment() {
             .setNegativeButton("Cancel", null)
             .show()
     }
-    
-    private fun showCsvValidationErrorDialog(validationResult: com.pseddev.playstreak.utils.CsvHandler.CsvValidationResult) {
+
+    private fun showCsvValidationErrorDialog(validationResult: com.pseddev.mystreak.utils.CsvHandler.CsvValidationResult) {
         val message = buildString {
             appendLine("CSV File Rejected")
             appendLine()
@@ -593,7 +562,7 @@ class ImportExportFragment : Fragment() {
                 appendLine("• $error")
             }
         }
-        
+
         AlertDialog.Builder(requireContext())
             .setTitle("CSV Import Not Allowed")
             .setMessage(message)
@@ -602,14 +571,15 @@ class ImportExportFragment : Fragment() {
             }
             .show()
     }
-    
-    private fun showJsonValidationErrorDialog(validationResult: com.pseddev.playstreak.data.models.JsonValidationResult) {
+
+    private fun showJsonValidationErrorDialog(validationResult: com.pseddev.mystreak.data.models.JsonValidationResult) {
         val message = buildString {
-            appendLine("JSON File Rejected")
+            appendLine("MyStreak File Rejected")
             appendLine()
             appendLine("File contents:")
             appendLine("• ${validationResult.activityCount} activities")
-            appendLine("• ${validationResult.pieceCount} pieces")
+            appendLine("• ${validationResult.pieceCount} tasks")
+            appendLine("• ${validationResult.calendarStateCount} frozen calendar days")
             validationResult.formatVersion?.let { version ->
                 appendLine("• Format version: $version")
             }
@@ -619,40 +589,40 @@ class ImportExportFragment : Fragment() {
                 appendLine("• $error")
             }
         }
-        
+
         AlertDialog.Builder(requireContext())
-            .setTitle("JSON Import Not Allowed")
+            .setTitle("MyStreak Import Not Allowed")
             .setMessage(message)
             .setPositiveButton("OK") { dialog, _ ->
                 dialog.dismiss()
             }
             .show()
     }
-    
+
     private fun showExportFormatDialog() {
         val options = arrayOf("CSV Format", "JSON Format")
-        
+
         AlertDialog.Builder(requireContext())
             .setTitle("Choose Export Format")
             .setItems(options) { _, which ->
                 val timestamp = SimpleDateFormat("yyyy-MM-dd_HHmmss", Locale.US).format(Date())
                 when (which) {
                     0 -> {
-                        val fileName = "PlayStreak_activities_export_$timestamp.csv"
+                        val fileName = "MyStreak_activities_export_$timestamp.csv"
                         exportCsvLauncher.launch(fileName)
                     }
                     1 -> {
-                        val fileName = "PlayStreak_combined_export_$timestamp.json"
+                        val fileName = "MyStreak_combined_export_$timestamp.json"
                         exportJsonLauncher.launch(fileName)
                     }
                 }
             }
             .show()
     }
-    
+
     private fun showImportFormatDialog() {
         val options = arrayOf("CSV Format", "JSON Format")
-        
+
         AlertDialog.Builder(requireContext())
             .setTitle("Choose Import Format")
             .setItems(options) { _, which ->
@@ -664,7 +634,7 @@ class ImportExportFragment : Fragment() {
             }
             .show()
     }
-    
+
     private fun showPurgeConfirmation() {
         AlertDialog.Builder(requireContext())
             .setTitle("⚠️ Purge All Data")
@@ -675,7 +645,7 @@ class ImportExportFragment : Fragment() {
             .setNegativeButton("Cancel", null)
             .show()
     }
-    
+
     private fun showSecondPurgeConfirmation() {
         AlertDialog.Builder(requireContext())
             .setTitle("⚠️ Final Confirmation")
