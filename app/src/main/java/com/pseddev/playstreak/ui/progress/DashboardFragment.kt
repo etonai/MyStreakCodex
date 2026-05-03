@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import com.pseddev.mystreak.MyStreakApplication
 import com.pseddev.mystreak.R
 import com.pseddev.mystreak.data.entities.ActivityType
-import com.pseddev.mystreak.data.entities.SuccessLevel
 import com.pseddev.mystreak.databinding.FragmentDashboardBinding
 import com.pseddev.mystreak.databinding.ItemDashboardActivityBinding
 import java.text.SimpleDateFormat
@@ -125,7 +124,7 @@ class DashboardFragment : Fragment() {
         val time = SimpleDateFormat("h:mm a", Locale.US).format(Date(activity.timestamp))
 
         itemBinding.activityPrimaryText.text = "$time - ${task.name}"
-        itemBinding.activitySecondaryText.text = successLevelText(activity.successLevel)
+        itemBinding.activitySecondaryText.text = successLevelDescription(activity.successLevel, task)
 
         val indicator = itemBinding.taskColorIndicator.background.mutate() as? GradientDrawable
         indicator?.setColor(parseTaskColor(task.color))
@@ -137,14 +136,6 @@ class DashboardFragment : Fragment() {
 
         itemBinding.deleteButton.setOnClickListener {
             showDeleteConfirmationDialog(item)
-        }
-    }
-
-    private fun successLevelText(successLevel: SuccessLevel): String {
-        return when (successLevel) {
-            SuccessLevel.MINIMUM -> "Success: Minimum"
-            SuccessLevel.MEDIUM -> "Success: Medium"
-            SuccessLevel.HIGH -> "Success: High"
         }
     }
 

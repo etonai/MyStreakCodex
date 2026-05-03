@@ -16,6 +16,8 @@ import androidx.navigation.fragment.navArgs
 import com.pseddev.mystreak.MyStreakApplication
 import com.pseddev.mystreak.R
 import com.pseddev.mystreak.databinding.FragmentSummaryBinding
+import com.pseddev.mystreak.ui.progress.successLevelDescription
+import com.pseddev.mystreak.ui.progress.successLevelFromActivityLevel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -153,13 +155,15 @@ class SummaryFragment : Fragment() {
         binding.textPiece.text = "Task: ${args.pieceName}"
         binding.textType.visibility = View.GONE
 
-        val levelText = when (args.level) {
-            1 -> "Success: Minimum"
-            2 -> "Success: Medium"
-            3, 4 -> "Success: High"
-            else -> "Success: Level ${args.level}"
+        binding.textLevel.text = "Success: Level ${args.level}"
+        viewModel.getTask(args.pieceId).observe(viewLifecycleOwner) { task ->
+            val successLevel = successLevelFromActivityLevel(args.level)
+            binding.textLevel.text = if (task != null && successLevel != null) {
+                "Success: ${successLevelDescription(successLevel, task)}"
+            } else {
+                "Success: Level ${args.level}"
+            }
         }
-        binding.textLevel.text = levelText
 
         binding.textTime.visibility = View.GONE
 

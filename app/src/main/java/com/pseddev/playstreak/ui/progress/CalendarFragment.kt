@@ -22,7 +22,6 @@ import com.pseddev.mystreak.MyStreakApplication
 import com.pseddev.mystreak.R
 import com.pseddev.mystreak.data.entities.ActivityType
 import com.pseddev.mystreak.data.entities.CalendarColorLevel
-import com.pseddev.mystreak.data.entities.SuccessLevel
 import com.pseddev.mystreak.databinding.FragmentCalendarBinding
 import com.pseddev.mystreak.databinding.ItemDashboardActivityBinding
 import androidx.appcompat.app.AlertDialog
@@ -227,7 +226,7 @@ class CalendarFragment : Fragment() {
         val time = SimpleDateFormat("h:mm a", Locale.US).format(Date(activity.timestamp))
 
         itemBinding.activityPrimaryText.text = "$time - ${task.name}"
-        itemBinding.activitySecondaryText.text = successLevelText(activity.successLevel)
+        itemBinding.activitySecondaryText.text = successLevelDescription(activity.successLevel, task)
 
         val indicator = itemBinding.taskColorIndicator.background.mutate() as? GradientDrawable
         indicator?.setColor(parseTaskColor(task.color))
@@ -314,14 +313,6 @@ class CalendarFragment : Fragment() {
             Color.BLACK
         } else {
             Color.WHITE
-        }
-    }
-
-    private fun successLevelText(successLevel: SuccessLevel): String {
-        return when (successLevel) {
-            SuccessLevel.MINIMUM -> "Success: Minimum"
-            SuccessLevel.MEDIUM -> "Success: Medium"
-            SuccessLevel.HIGH -> "Success: High"
         }
     }
 
