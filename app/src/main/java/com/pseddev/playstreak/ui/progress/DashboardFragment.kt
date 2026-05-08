@@ -188,4 +188,9 @@ class DashboardFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshDateRanges()
+    }
 }

@@ -6,14 +6,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.pseddev.mystreak.data.entities.Activity
+import com.pseddev.mystreak.data.entities.TaskPriority
 import com.pseddev.mystreak.data.repository.PianoRepository
 import com.pseddev.mystreak.utils.ProUserManager
 import com.pseddev.mystreak.utils.StreakCalculator
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class DashboardViewModel(
     private val repository: PianoRepository,
     private val context: android.content.Context
@@ -23,59 +28,66 @@ class DashboardViewModel(
     private val suggestionsService = SuggestionsService(proUserManager)
     private val streakCalculator = StreakCalculator()
 
-    private val todayStart = Calendar.getInstance().apply {
-        set(Calendar.HOUR_OF_DAY, 0)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-    }.timeInMillis
-
-    private val todayEnd = Calendar.getInstance().apply {
-        set(Calendar.HOUR_OF_DAY, 23)
-        set(Calendar.MINUTE, 59)
-        set(Calendar.SECOND, 59)
-        set(Calendar.MILLISECOND, 999)
-    }.timeInMillis
-
-    private val yesterdayStart = todayStart - 24 * 60 * 60 * 1000
-    private val yesterdayEnd = todayEnd - 24 * 60 * 60 * 1000
-
-    private val sevenDaysAgoStart = Calendar.getInstance().apply {
-        set(Calendar.HOUR_OF_DAY, 0)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-        add(Calendar.DAY_OF_YEAR, -6)
-    }.timeInMillis
+    private val todayStartMillis = MutableStateFlow(startOfDay(System.currentTimeMillis()))
 
     val todayActivities: LiveData<List<ActivityWithPiece>> =
-        combine(
-            repository.getActivitiesForDateRange(todayStart, todayEnd),
-            repository.getAllPiecesAndTechniques()
-        ) { activities, pieces ->
-            activities.mapNotNull { activity ->
-                val piece = pieces.find { it.id == activity.pieceOrTechniqueId }
-                piece?.let { ActivityWithPiece(activity, it) }
-            }.sortedBy { it.activity.timestamp }
+        todayStartMillis.flatMapLatest { todayStart ->
+            combine(
+                repository.getActivitiesForDateRange(todayStart, todayStart + DAY_MILLIS),
+                repository.getAllPiecesAndTechniques()
+            ) { activities, pieces ->
+                activities.mapNotNull { activity ->
+                    val piece = pieces.find { it.id == activity.pieceOrTechniqueId }
+                    piece?.let { ActivityWithPiece(activity, it) }
+                }.sortedBy { it.activity.timestamp }
+            }
         }.asLiveData()
 
     val yesterdayActivities: LiveData<List<ActivityWithPiece>> =
-        combine(
-            repository.getActivitiesForDateRange(yesterdayStart, yesterdayEnd),
-            repository.getAllPiecesAndTechniques()
-        ) { activities, pieces ->
-            activities.mapNotNull { activity ->
-                val piece = pieces.find { it.id == activity.pieceOrTechniqueId }
-                piece?.let { ActivityWithPiece(activity, it) }
-            }.sortedBy { it.activity.timestamp }
+        todayStartMillis.flatMapLatest { todayStart ->
+            val yesterdayStart = todayStart - DAY_MILLIS
+            combine(
+                repository.getActivitiesForDateRange(yesterdayStart, todayStart),
+                repository.getAllPiecesAndTechniques()
+            ) { activities, pieces ->
+                activities.mapNotNull { activity ->
+                    val piece = pieces.find { it.id == activity.pieceOrTechniqueId }
+                    piece?.let { ActivityWithPiece(activity, it) }
+                }.sortedBy { it.activity.timestamp }
+            }
         }.asLiveData()
 
-    val weekSummary: LiveData<String> = repository.getRollingWeekSummaryText().asLiveData()
+    val weekSummary: LiveData<String> =
+        todayStartMillis.flatMapLatest { todayStart ->
+            combine(
+                repository.getActivitiesForDateRange(todayStart - (6 * DAY_MILLIS), todayStart + DAY_MILLIS),
+                repository.getAllPiecesAndTechniques()
+            ) { activities, tasks ->
+                val activeTaskIds = tasks.filter { it.isActive }.map { it.id }.toSet()
+                val highPriorityTaskIds = tasks
+                    .filter { it.isActive && it.priority == TaskPriority.HIGH }
+                    .map { it.id }
+                    .toSet()
+                val activeActivities = activities.filter { it.taskId in activeTaskIds }
+                val highPriorityActivities = activeActivities.count { it.taskId in highPriorityTaskIds }
+
+                buildString {
+                    append("- ${activeActivities.size} activit${if (activeActivities.size != 1) "ies" else "y"} logged\n")
+                    append("- $highPriorityActivities high priority activit${if (highPriorityActivities != 1) "ies" else "y"} logged")
+                }
+            }
+        }.asLiveData()
 
     val highPriorityOutstanding: LiveData<List<String>> =
-        repository.getHighPriorityOutstandingTasksForToday()
-            .map { tasks -> tasks.map { it.name } }
-            .asLiveData()
+        todayStartMillis.flatMapLatest { todayStart ->
+            combine(
+                repository.getActiveHighPriorityTasks(),
+                repository.getActivitiesForDateRange(todayStart, todayStart + DAY_MILLIS)
+            ) { highPriorityTasks, todayActivities ->
+                val completedTaskIds = todayActivities.map { it.taskId }.toSet()
+                highPriorityTasks.filter { it.id !in completedTaskIds }.map { it.name }
+            }
+        }.asLiveData()
 
     val performanceSuggestions: LiveData<List<SuggestionItem>> =
         repository.getAllPiecesAndTechniques()
@@ -102,11 +114,30 @@ class DashboardViewModel(
             }
             .asLiveData()
 
-    val currentStreak: LiveData<Int> = repository.getAllActivities()
-        .map { activities ->
+    val currentStreak: LiveData<Int> = combine(
+        repository.getAllActivities(),
+        todayStartMillis
+    ) { activities, _ ->
             streakCalculator.calculateCurrentStreak(activities)
+    }.asLiveData()
+
+    init {
+        viewModelScope.launch {
+            while (true) {
+                val now = System.currentTimeMillis()
+                val nextDayStart = startOfDay(now) + DAY_MILLIS
+                delay((nextDayStart - now).coerceAtLeast(1L) + 1000L)
+                refreshDateRanges()
+            }
         }
-        .asLiveData()
+    }
+
+    fun refreshDateRanges() {
+        val currentTodayStart = startOfDay(System.currentTimeMillis())
+        if (todayStartMillis.value != currentTodayStart) {
+            todayStartMillis.value = currentTodayStart
+        }
+    }
 
     suspend fun calculateStreak(): Int = repository.calculateCurrentStreak()
 
@@ -114,6 +145,20 @@ class DashboardViewModel(
         viewModelScope.launch {
             repository.deleteActivity(activity)
         }
+    }
+
+    private fun startOfDay(timestamp: Long): Long {
+        return Calendar.getInstance().apply {
+            timeInMillis = timestamp
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+    }
+
+    private companion object {
+        const val DAY_MILLIS = 24L * 60L * 60L * 1000L
     }
 }
 

@@ -18,7 +18,8 @@ import java.util.Calendar
 enum class SortType {
     ALPHABETICAL,
     LAST_DATE,
-    ACTIVITY_COUNT
+    ACTIVITY_COUNT,
+    PRIORITY
 }
 
 enum class SortDirection {
@@ -65,7 +66,7 @@ class PiecesViewModel(
             sortType,
             sortDirection
         ) { pieces, activities, currentSortType, currentSortDirection ->
-            val piecesWithStats = pieces
+            val items = pieces
                 .map { piece ->
                     val pieceActivities = activities.filter { it.pieceOrTechniqueId == piece.id }
                     val todayCount = pieceActivities.count {
@@ -82,13 +83,19 @@ class PiecesViewModel(
 
             // Apply sorting
             val sorted = when (currentSortType) {
-                SortType.ALPHABETICAL -> piecesWithStats.sortedBy { it.piece.name.lowercase() }
-                SortType.LAST_DATE -> piecesWithStats.sortedBy { it.lastActivityDate ?: 0L }
-                SortType.ACTIVITY_COUNT -> piecesWithStats.sortedBy { it.activityCount }
+                SortType.ALPHABETICAL -> items.sortedBy { it.piece.name.lowercase() }
+                SortType.LAST_DATE -> items.sortedBy { it.lastActivityDate ?: 0L }
+                SortType.ACTIVITY_COUNT -> items.sortedBy { it.activityCount }
+                SortType.PRIORITY -> {
+                    val nameAndIdOrder = compareBy<PieceWithStats>({ it.piece.name.lowercase() }, { it.piece.id })
+                    val highItems = items.filter { it.piece.priority == TaskPriority.HIGH }.sortedWith(nameAndIdOrder)
+                    val lowItems = items.filter { it.piece.priority == TaskPriority.LOW }.sortedWith(nameAndIdOrder)
+                    if (currentSortDirection == SortDirection.ASCENDING) highItems + lowItems else lowItems + highItems
+                }
             }
 
-            // Apply direction
-            if (currentSortDirection == SortDirection.DESCENDING) {
+            // Apply direction (Priority sort handles its own direction above)
+            if (currentSortType != SortType.PRIORITY && currentSortDirection == SortDirection.DESCENDING) {
                 sorted.reversed()
             } else {
                 sorted
@@ -128,12 +135,17 @@ class PiecesViewModel(
     }
 
     fun setSortType(type: SortType) {
+        if (sortType.value == type) {
+            return
+        }
+
         sortType.value = type
         // Set appropriate default direction based on sort type
         sortDirection.value = when (type) {
             SortType.ALPHABETICAL -> SortDirection.ASCENDING  // A-Z makes sense
             SortType.LAST_DATE -> SortDirection.DESCENDING    // Newest first makes sense
             SortType.ACTIVITY_COUNT -> SortDirection.DESCENDING // Highest count first makes sense
+            SortType.PRIORITY -> SortDirection.ASCENDING // High priority first by default
         }
     }
 

@@ -99,8 +99,8 @@ class PiecesFragment : Fragment() {
                 binding.emptyView.visibility = View.GONE
                 binding.recyclerView.visibility = View.VISIBLE
                 adapter.submitList(pieces) {
-                    // Scroll to top after the new data is submitted if a sort change happened
                     if (shouldScrollToTop) {
+                        binding.recyclerView.itemAnimator?.endAnimations()
                         binding.recyclerView.scrollToPosition(0)
                         shouldScrollToTop = false
                     }
@@ -183,9 +183,11 @@ class PiecesFragment : Fragment() {
                     R.id.chipAlphabetical -> SortType.ALPHABETICAL
                     R.id.chipLastDate -> SortType.LAST_DATE
                     R.id.chipActivityCount -> SortType.ACTIVITY_COUNT
+                    R.id.chipPriority -> SortType.PRIORITY
                     else -> SortType.ALPHABETICAL
                 }
                 viewModel.setSortType(sortType)
+                updateSortDirectionButton()
                 shouldScrollToTop = true
             }
         }
@@ -204,6 +206,8 @@ class PiecesFragment : Fragment() {
     private fun updateSortDirectionButton() {
         val direction = viewModel.getCurrentSortDirection()
         binding.buttonSortDirection.text = if (direction == SortDirection.ASCENDING) "↑" else "↓"
+        binding.buttonSortDirection.isEnabled = true
+        binding.buttonSortDirection.alpha = 1.0f
     }
 
     private fun showFavoriteLimitPrompt() {
