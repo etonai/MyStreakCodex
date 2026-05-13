@@ -226,7 +226,7 @@ class CalendarFragment : Fragment() {
         val time = SimpleDateFormat("h:mm a", Locale.US).format(Date(activity.timestamp))
 
         itemBinding.activityPrimaryText.text = "$time - ${task.name}"
-        itemBinding.activitySecondaryText.text = successLevelDescription(activity.successLevel, task)
+        itemBinding.activitySecondaryText.text = activityDescription(activity, task)
 
         val indicator = itemBinding.taskColorIndicator.background.mutate() as? GradientDrawable
         indicator?.setColor(parseTaskColor(task.color))

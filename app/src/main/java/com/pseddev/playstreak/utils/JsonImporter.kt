@@ -15,6 +15,7 @@ import com.pseddev.mystreak.data.models.MyStreakExportData
 import java.io.Reader
 
 object JsonImporter {
+    private val SUPPORTED_SCHEMA_VERSIONS = setOf(1, JsonExporter.SCHEMA_VERSION)
     private val gson = Gson()
 
     data class ParsedImport(
@@ -65,7 +66,7 @@ object JsonImporter {
 
         if (root.has("exportInfo") || root.has("pieces") || root.has("achievements")) {
             return emptyParsed(
-                "This appears to be a legacy PlayStreak export. MyStreak imports require the MyStreak v1 JSON schema."
+                "This appears to be a legacy PlayStreak export. MyStreak imports require the MyStreak JSON schema."
             )
         }
 
@@ -92,8 +93,10 @@ object JsonImporter {
             errors.add("Unsupported schema name '${exportData.schema.name}'. Expected '${JsonExporter.SCHEMA_NAME}'.")
         }
 
-        if (exportData.schema.version != JsonExporter.SCHEMA_VERSION) {
-            errors.add("Unsupported schema version ${exportData.schema.version}. Expected ${JsonExporter.SCHEMA_VERSION}.")
+        if (exportData.schema.version !in SUPPORTED_SCHEMA_VERSIONS) {
+            errors.add(
+                "Unsupported schema version ${exportData.schema.version}. Expected one of ${SUPPORTED_SCHEMA_VERSIONS.joinToString()}."
+            )
         }
 
         validateTasks(exportData, errors)
@@ -194,7 +197,8 @@ object JsonImporter {
         return Activity(
             timestamp = activity.timestamp,
             taskId = newTaskId,
-            successLevel = activity.successLevel
+            successLevel = activity.successLevel,
+            notes = TextNormalizer.normalizeUserInput(activity.notes.orEmpty())
         )
     }
 

@@ -31,7 +31,7 @@
         android:layout_height="150dp"
         android:layout_marginTop="24dp"
         android:gravity="top"
-        android:hint="Enter performance notes..."
+        android:hint="Enter activity notes..."
         android:inputType="textMultiLine"
         android:padding="12dp"
         android:background="@color/edit_text_background"

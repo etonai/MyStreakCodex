@@ -1,5 +1,6 @@
 package com.pseddev.mystreak.ui.progress
 
+import com.pseddev.mystreak.data.entities.Activity
 import com.pseddev.mystreak.data.entities.PieceOrTechnique
 import com.pseddev.mystreak.data.entities.SuccessLevel
 
@@ -25,6 +26,12 @@ fun successLevelFromActivityLevel(level: Int): SuccessLevel? {
         3, 4 -> SuccessLevel.HIGH
         else -> null
     }
+}
+
+fun activityDescription(activity: Activity, task: PieceOrTechnique): String {
+    val successText = successLevelDescription(activity.successLevel, task)
+    val notes = activity.notes.trim()
+    return if (notes.isEmpty()) successText else "$successText\nNotes: $notes"
 }
 
 private val SuccessLevel.label: String

@@ -6,6 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.pseddev.mystreak.data.daos.AchievementDao
 import com.pseddev.mystreak.data.daos.ActivityDao
 import com.pseddev.mystreak.data.daos.DailyCalendarStateDao
@@ -23,7 +25,7 @@ import com.pseddev.mystreak.data.entities.TaskPriority
 
 @Database(
     entities = [PieceOrTechnique::class, Activity::class, DailyCalendarState::class, Achievement::class],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -44,10 +46,17 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "mystreak_database"
                 )
+                    .addMigrations(MIGRATION_7_8)
                     .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance
+            }
+        }
+
+        private val MIGRATION_7_8 = object : Migration(7, 8) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE activities ADD COLUMN notes TEXT NOT NULL DEFAULT ''")
             }
         }
     }

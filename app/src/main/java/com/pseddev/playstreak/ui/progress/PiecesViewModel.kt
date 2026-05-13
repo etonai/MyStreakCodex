@@ -49,7 +49,7 @@ class PiecesViewModel(
     private val proUserManager = ProUserManager.getInstance(context)
 
     private val selectedPieceId = MutableStateFlow<Long?>(null)
-    private val sortType = MutableStateFlow(SortType.ALPHABETICAL)
+    private val sortType = MutableStateFlow(SortType.PRIORITY)
     private val sortDirection = MutableStateFlow(SortDirection.ASCENDING)
     private val todayStart: Long = Calendar.getInstance().apply {
         set(Calendar.HOUR_OF_DAY, 0)

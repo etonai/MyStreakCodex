@@ -74,7 +74,7 @@ class SelectLevelFragment : Fragment() {
             }
 
             val action = SelectLevelFragmentDirections
-                .actionSelectLevelFragmentToSummaryFragment(
+                .actionSelectLevelFragmentToNotesInputFragment(
                     activityType = args.activityType,
                     pieceId = args.pieceId,
                     pieceName = args.pieceName,

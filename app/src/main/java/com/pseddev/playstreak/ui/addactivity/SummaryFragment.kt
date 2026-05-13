@@ -185,7 +185,13 @@ class SummaryFragment : Fragment() {
             binding.buttonEditTime.visibility = View.GONE
         }
 
-        binding.textNotes.visibility = View.GONE
+        val notes = args.notes.trim()
+        if (notes.isEmpty()) {
+            binding.textNotes.visibility = View.GONE
+        } else {
+            binding.textNotes.visibility = View.VISIBLE
+            binding.textNotes.text = "Notes: $notes"
+        }
     }
 
     private fun setupDateTimeEditing() {

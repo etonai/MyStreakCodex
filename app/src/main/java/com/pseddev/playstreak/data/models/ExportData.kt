@@ -76,7 +76,11 @@ data class MyStreakExportActivity(
     val timestamp: Long,
 
     @SerializedName("successLevel")
-    val successLevel: SuccessLevel
+    val successLevel: SuccessLevel,
+
+    // Nullable for backward-compatible imports of schema v1 files where notes are absent.
+    @SerializedName("notes")
+    val notes: String? = ""
 )
 
 data class MyStreakExportCalendarState(

@@ -15,7 +15,7 @@ import java.io.Writer
 
 object JsonExporter {
     const val SCHEMA_NAME = "MyStreak"
-    const val SCHEMA_VERSION = 1
+    const val SCHEMA_VERSION = 2
 
     private val gson: Gson = GsonBuilder()
         .setPrettyPrinting()
@@ -57,7 +57,8 @@ object JsonExporter {
                         id = activity.id,
                         taskId = activity.taskId,
                         timestamp = activity.timestamp,
-                        successLevel = activity.successLevel
+                        successLevel = activity.successLevel,
+                        notes = activity.notes
                     )
                 },
             frozenCalendarStates = frozenCalendarStates

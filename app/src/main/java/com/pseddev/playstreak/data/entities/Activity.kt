@@ -10,7 +10,8 @@ data class Activity(
     val id: Long = 0,
     val timestamp: Long,
     val taskId: Long,
-    val successLevel: SuccessLevel = SuccessLevel.MINIMUM
+    val successLevel: SuccessLevel = SuccessLevel.MINIMUM,
+    val notes: String = ""
 ) {
     @Ignore
     constructor(
@@ -30,7 +31,8 @@ data class Activity(
             level >= 3 -> SuccessLevel.HIGH
             level == 2 -> SuccessLevel.MEDIUM
             else -> SuccessLevel.MINIMUM
-        }
+        },
+        notes = notes
     )
 
     val pieceOrTechniqueId: Long
@@ -52,8 +54,6 @@ data class Activity(
     val minutes: Int
         get() = -1
 
-    val notes: String
-        get() = ""
 }
 
 enum class SuccessLevel {
