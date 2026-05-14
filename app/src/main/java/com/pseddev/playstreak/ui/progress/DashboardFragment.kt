@@ -130,6 +130,10 @@ class DashboardFragment : Fragment() {
         indicator?.setColor(parseTaskColor(task.color))
         itemBinding.taskColorIndicator.background = indicator
 
+        itemBinding.root.setOnClickListener {
+            showNoteDetailDialog(item)
+        }
+
         itemBinding.editButton.setOnClickListener {
             editActivity(item)
         }
@@ -167,6 +171,23 @@ class DashboardFragment : Fragment() {
                 "itemType" to activityWithPiece.pieceOrTechnique.type
             )
         )
+    }
+
+    private fun showNoteDetailDialog(item: ActivityWithPiece) {
+        if (!isAdded) return
+        val activity = item.activity
+        val task = item.pieceOrTechnique
+        val dateFormat = SimpleDateFormat("MMM d, yyyy h:mm a", Locale.US)
+        val dateString = dateFormat.format(Date(activity.timestamp))
+        val successText = successLevelDescription(activity.successLevel, task)
+        val notes = activity.notes.trim()
+        val notesSection = if (notes.isEmpty()) "No notes" else notes
+
+        AlertDialog.Builder(requireContext())
+            .setTitle(task.name)
+            .setMessage("$dateString\n$successText\n\n$notesSection")
+            .setPositiveButton("Close", null)
+            .show()
     }
 
     private fun showDeleteConfirmationDialog(activityWithPiece: ActivityWithPiece) {
