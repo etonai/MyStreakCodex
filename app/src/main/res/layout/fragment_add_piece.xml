@@ -112,6 +112,42 @@
                 android:layout_height="wrap_content"
                 android:text="Teal" />
 
+            <RadioButton
+                android:id="@+id/radioColorOrange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Orange" />
+
+            <RadioButton
+                android:id="@+id/radioColorPink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pink" />
+
+            <RadioButton
+                android:id="@+id/radioColorLime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lime" />
+
+            <RadioButton
+                android:id="@+id/radioColorIndigo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Indigo" />
+
+            <RadioButton
+                android:id="@+id/radioColorAmber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Amber" />
+
+            <RadioButton
+                android:id="@+id/radioColorCyan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cyan" />
+
         </RadioGroup>
 
         <com.google.android.material.textfield.TextInputLayout

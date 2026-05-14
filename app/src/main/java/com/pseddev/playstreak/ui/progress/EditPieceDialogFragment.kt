@@ -111,6 +111,12 @@ class EditPieceDialogFragment : DialogFragment() {
             "#E86B6B" -> binding.radioColorRed.id
             "#9B7EDE" -> binding.radioColorPurple.id
             "#3FB8B8" -> binding.radioColorTeal.id
+            "#F4884A" -> binding.radioColorOrange.id
+            "#E05CB0" -> binding.radioColorPink.id
+            "#8BC34A" -> binding.radioColorLime.id
+            "#5C6BC0" -> binding.radioColorIndigo.id
+            "#FFA726" -> binding.radioColorAmber.id
+            "#26C6DA" -> binding.radioColorCyan.id
             else -> binding.radioColorBlue.id
         }
         binding.colorRadioGroup.check(checkedId)
@@ -123,6 +129,12 @@ class EditPieceDialogFragment : DialogFragment() {
             binding.radioColorRed.id -> "#E86B6B"
             binding.radioColorPurple.id -> "#9B7EDE"
             binding.radioColorTeal.id -> "#3FB8B8"
+            binding.radioColorOrange.id -> "#F4884A"
+            binding.radioColorPink.id -> "#E05CB0"
+            binding.radioColorLime.id -> "#8BC34A"
+            binding.radioColorIndigo.id -> "#5C6BC0"
+            binding.radioColorAmber.id -> "#FFA726"
+            binding.radioColorCyan.id -> "#26C6DA"
             else -> "#66B2FF"
         }
     }
