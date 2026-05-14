@@ -1,8 +1,8 @@
 # Development Cycle 2026-006
 
-**Status:** Open
-**Start Date:** TBD
-**Target Completion:** TBD
+**Status:** ✅ Completed
+**Start Date:** 2026-05-13
+**Completion Date:** 2026-05-13
 **Focus:** Show Activity note detail on row tap in Dashboard and Calendar
 
 ## Overview
@@ -24,7 +24,7 @@ These decisions should be confirmed before or during Phase 1 implementation:
 ## Current Work Items
 
 ### Phase 1: Note Detail Dialog — Dashboard
-**Status:** 🔍 In Verification
+**Status:** ✅ COMPLETED
 **Date Added:** 2026-05-13
 **Priority:** High
 **Description:** Add a tap listener to each activity row in the Dashboard that opens a note detail dialog.
@@ -40,17 +40,17 @@ These decisions should be confirmed before or during Phase 1 implementation:
 - The dialog should have a single dismiss button (e.g., "Close").
 
 **Acceptance Criteria:**
-- [ ] Tapping an activity row in the Dashboard opens a note detail dialog.
-- [ ] The dialog shows the correct task name, date, success level, and note.
-- [ ] Tapping an activity with no notes shows the dialog with a "No notes" message.
-- [ ] Edit and Delete buttons still work normally after this change.
-- [ ] `gradlew.bat assembleDebug` succeeds.
+- [x] Tapping an activity row in the Dashboard opens a note detail dialog.
+- [x] The dialog shows the correct task name, date, success level, and note.
+- [x] Tapping an activity with no notes shows the dialog with a "No notes" message.
+- [x] Edit and Delete buttons still work normally after this change.
+- [x] `gradlew.bat assembleDebug` succeeds.
 
 **Files:**
 - `app/src/main/java/com/pseddev/playstreak/ui/progress/DashboardFragment.kt`
 
 ### Phase 2: Note Detail Dialog — Calendar
-**Status:** 🔍 In Verification
+**Status:** ✅ COMPLETED
 **Date Added:** 2026-05-13
 **Priority:** High
 **Description:** Add the same tap-to-detail behavior to activity rows in the Calendar view.
@@ -61,28 +61,28 @@ These decisions should be confirmed before or during Phase 1 implementation:
 - The click listener must not interfere with the existing Edit and Delete button listeners.
 
 **Acceptance Criteria:**
-- [ ] Tapping an activity row in the Calendar opens a note detail dialog.
-- [ ] The dialog shows the correct task name, date, success level, and note.
-- [ ] Tapping an activity with no notes shows the dialog with a "No notes" message.
-- [ ] Edit and Delete buttons still work normally after this change.
-- [ ] `gradlew.bat assembleDebug` succeeds.
+- [x] Tapping an activity row in the Calendar opens a note detail dialog.
+- [x] The dialog shows the correct task name, date, success level, and note.
+- [x] Tapping an activity with no notes shows the dialog with a "No notes" message.
+- [x] Edit and Delete buttons still work normally after this change.
+- [x] `gradlew.bat assembleDebug` succeeds.
 
 **Files:**
 - `app/src/main/java/com/pseddev/playstreak/ui/progress/CalendarFragment.kt`
 
 ### Phase 3: Verification
-**Status:** Open
+**Status:** ✅ COMPLETED
 **Date Added:** 2026-05-13
 **Priority:** High
 **Description:** Verify the tap behavior end-to-end in both surfaces, including edge cases.
 
 **Acceptance Criteria:**
-- [ ] Activity with a short note displays correctly.
-- [ ] Activity with a long multi-line note displays without clipping.
-- [ ] Activity with no note shows the "No notes" placeholder.
-- [ ] Dialog dismisses cleanly with no navigation side effects.
-- [ ] Both Dashboard and Calendar surfaces behave consistently.
-- [ ] `gradlew.bat assembleDebug` succeeds.
+- [x] Activity with a short note displays correctly.
+- [x] Activity with a long multi-line note displays without clipping.
+- [x] Activity with no note shows the "No notes" placeholder.
+- [x] Dialog dismisses cleanly with no navigation side effects.
+- [x] Both Dashboard and Calendar surfaces behave consistently.
+- [x] `gradlew.bat assembleDebug` succeeds.
 
 ## Proposed Implementation Sequence
 
