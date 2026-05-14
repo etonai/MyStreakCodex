@@ -3,6 +3,7 @@ package com.pseddev.mystreak.data.models
 import com.google.gson.annotations.SerializedName
 import com.pseddev.mystreak.data.entities.CalendarColorLevel
 import com.pseddev.mystreak.data.entities.SuccessLevel
+import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.data.entities.TaskPriority
 
 data class MyStreakExportData(
@@ -45,6 +46,10 @@ data class MyStreakExportTask(
 
     @SerializedName("priority")
     val priority: TaskPriority,
+
+    // Nullable for backward-compatible imports of schema v1/v2 files.
+    @SerializedName("taskKind")
+    val taskKind: TaskKind? = TaskKind.STANDARD,
 
     @SerializedName("minimumSuccess")
     val minimumSuccess: String,

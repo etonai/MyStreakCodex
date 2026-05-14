@@ -12,6 +12,7 @@ import com.pseddev.mystreak.MyStreakApplication
 import com.pseddev.mystreak.R
 import com.pseddev.mystreak.data.entities.Activity
 import com.pseddev.mystreak.data.entities.ActivityType
+import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.databinding.DialogQuickAddActivityBinding
 import kotlinx.coroutines.launch
 import java.util.*
@@ -31,6 +32,7 @@ class QuickAddActivityDialogFragment : DialogFragment() {
     private var pieceId: Long = -1
     private var pieceName: String = ""
     private var source: String = "dashboard_quick"
+    private var isRoutine = false
 
     companion object {
         private const val ARG_PIECE_ID = "piece_id"
@@ -78,6 +80,15 @@ class QuickAddActivityDialogFragment : DialogFragment() {
         binding.pieceNameText.text = pieceName
 
         viewModel.getTask(pieceId).observe(this) { task ->
+            isRoutine = task?.taskKind == TaskKind.ROUTINE
+            if (isRoutine) {
+                binding.levelLabel.visibility = android.view.View.GONE
+                binding.levelSpinner.visibility = android.view.View.GONE
+                return@observe
+            }
+
+            binding.levelLabel.visibility = android.view.View.VISIBLE
+            binding.levelSpinner.visibility = android.view.View.VISIBLE
             val levels = if (task != null) {
                 listOf(
                     "Minimum - ${task.minimumSuccess}",
@@ -113,7 +124,7 @@ class QuickAddActivityDialogFragment : DialogFragment() {
     }
 
     private fun addActivity() {
-        val level = binding.levelSpinner.selectedItemPosition + 1
+        val level = if (isRoutine) 3 else binding.levelSpinner.selectedItemPosition + 1
 
         val activity = Activity(
             id = 0, // Will be auto-generated
@@ -123,7 +134,7 @@ class QuickAddActivityDialogFragment : DialogFragment() {
             level = level,
             minutes = -1,
             notes = "",
-            performanceType = "activity"
+            performanceType = if (isRoutine) "routine" else "activity"
         )
 
         viewModel.addActivity(activity, source)

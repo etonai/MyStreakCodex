@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import com.pseddev.mystreak.analytics.AnalyticsManager
 import com.pseddev.mystreak.data.entities.ItemType
 import com.pseddev.mystreak.data.entities.PieceOrTechnique
+import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.data.entities.TaskPriority
 import com.pseddev.mystreak.data.repository.PianoRepository
 import com.pseddev.mystreak.utils.ProUserManager
@@ -64,6 +65,7 @@ class AddPieceViewModel(
             name = name,
             color = "#66B2FF",
             priority = if (isFavorite) TaskPriority.HIGH else TaskPriority.LOW,
+            taskKind = TaskKind.STANDARD,
             minimumSuccess = "Minimum",
             mediumSuccess = "Medium",
             highSuccess = "High",
@@ -75,6 +77,7 @@ class AddPieceViewModel(
         name: String,
         color: String,
         priority: TaskPriority,
+        taskKind: TaskKind = TaskKind.STANDARD,
         minimumSuccess: String,
         mediumSuccess: String,
         highSuccess: String,
@@ -110,6 +113,7 @@ class AddPieceViewModel(
                     name = normalizedName,
                     color = color,
                     priority = priority,
+                    taskKind = taskKind,
                     minimumSuccess = minimumSuccess,
                     mediumSuccess = mediumSuccess,
                     highSuccess = highSuccess,

@@ -3,8 +3,13 @@ package com.pseddev.mystreak.ui.progress
 import com.pseddev.mystreak.data.entities.Activity
 import com.pseddev.mystreak.data.entities.PieceOrTechnique
 import com.pseddev.mystreak.data.entities.SuccessLevel
+import com.pseddev.mystreak.data.entities.TaskKind
 
 fun successLevelDescription(successLevel: SuccessLevel, task: PieceOrTechnique): String {
+    if (task.taskKind == TaskKind.ROUTINE) {
+        return "Done"
+    }
+
     val label = successLevel.label
     val description = when (successLevel) {
         SuccessLevel.MINIMUM -> task.minimumSuccess

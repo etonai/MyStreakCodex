@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.data.entities.TaskPriority
 import com.pseddev.mystreak.databinding.ItemPieceStatsBinding
 import com.pseddev.mystreak.utils.ProUserManager
@@ -50,7 +51,13 @@ class PiecesAdapter(
             binding.root.alpha = if (item.piece.isActive) 1.0f else 0.55f
             binding.activityCountText.text = "${item.activityCount} total activit${if (item.activityCount == 1) "y" else "ies"}"
             binding.todayCountText.text = "${item.todayActivityCount} today"
-            binding.priorityText.text = if (item.piece.priority == TaskPriority.HIGH) "High priority" else "Low priority"
+            binding.priorityText.text = if (item.piece.taskKind == TaskKind.ROUTINE) {
+                "Routine"
+            } else if (item.piece.priority == TaskPriority.HIGH) {
+                "High priority"
+            } else {
+                "Low priority"
+            }
             binding.statusText.text = if (item.piece.isActive) "Active" else "Inactive"
 
             val swatch = binding.taskColorSwatch.background.mutate() as? GradientDrawable

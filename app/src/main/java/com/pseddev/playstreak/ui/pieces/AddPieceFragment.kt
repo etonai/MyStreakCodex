@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.pseddev.mystreak.MyStreakApplication
+import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.data.entities.TaskPriority
 import com.pseddev.mystreak.databinding.FragmentAddPieceBinding
 
@@ -24,6 +25,8 @@ class AddPieceFragment : Fragment() {
             requireContext()
         )
     }
+    private val taskKind: TaskKind
+        get() = TaskKind.valueOf(arguments?.getString("taskKind", TaskKind.STANDARD.name) ?: TaskKind.STANDARD.name)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,6 +40,7 @@ class AddPieceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupModeUi()
         setupClickListeners()
         observeViewModel()
     }
@@ -56,6 +60,7 @@ class AddPieceFragment : Fragment() {
                 name = name,
                 color = selectedTaskColor(),
                 priority = if (binding.radioHighPriority.isChecked) TaskPriority.HIGH else TaskPriority.LOW,
+                taskKind = taskKind,
                 minimumSuccess = thresholdText(binding.minimumSuccessEditText.text?.toString(), "Minimum"),
                 mediumSuccess = thresholdText(binding.mediumSuccessEditText.text?.toString(), "Medium"),
                 highSuccess = thresholdText(binding.highSuccessEditText.text?.toString(), "High"),
@@ -72,7 +77,8 @@ class AddPieceFragment : Fragment() {
         viewModel.saveResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is AddPieceResult.Success -> {
-                    Toast.makeText(requireContext(), "Task added successfully", Toast.LENGTH_SHORT).show()
+                    val label = if (taskKind == TaskKind.ROUTINE) "Routine" else "Task"
+                    Toast.makeText(requireContext(), "$label added successfully", Toast.LENGTH_SHORT).show()
                     findNavController().navigateUp()
                 }
                 is AddPieceResult.Error -> {
@@ -116,6 +122,19 @@ class AddPieceFragment : Fragment() {
                 dialog.dismiss()
             }
             .show()
+    }
+
+    private fun setupModeUi() {
+        if (taskKind == TaskKind.ROUTINE) {
+            binding.titleTextView.text = "Add New Routine"
+            binding.pieceNameInputLayout.hint = "Routine Name"
+            binding.priorityLabel.visibility = View.GONE
+            binding.priorityRadioGroup.visibility = View.GONE
+            binding.minimumSuccessInputLayout.visibility = View.GONE
+            binding.mediumSuccessInputLayout.visibility = View.GONE
+            binding.highSuccessInputLayout.visibility = View.GONE
+            binding.saveButton.text = "Save Routine"
+        }
     }
 
     override fun onDestroyView() {

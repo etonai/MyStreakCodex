@@ -8,6 +8,7 @@ import com.pseddev.mystreak.data.entities.CalendarColorLevel
 import com.pseddev.mystreak.data.entities.DailyCalendarState
 import com.pseddev.mystreak.data.entities.PieceOrTechnique
 import com.pseddev.mystreak.data.entities.SuccessLevel
+import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.data.entities.TaskPriority
 import com.pseddev.mystreak.data.models.JsonImportResult
 import com.pseddev.mystreak.data.models.JsonValidationResult
@@ -15,7 +16,7 @@ import com.pseddev.mystreak.data.models.MyStreakExportData
 import java.io.Reader
 
 object JsonImporter {
-    private val SUPPORTED_SCHEMA_VERSIONS = setOf(1, JsonExporter.SCHEMA_VERSION)
+    private val SUPPORTED_SCHEMA_VERSIONS = setOf(1, 2, JsonExporter.SCHEMA_VERSION)
     private val gson = Gson()
 
     data class ParsedImport(
@@ -122,6 +123,9 @@ object JsonImporter {
             } else if (!seenNames.add(task.name.trim().lowercase())) {
                 errors.add("Duplicate Task name '${task.name}'.")
             }
+            if (exportData.schema.version >= 3 && task.taskKind == null) {
+                errors.add("Task '${task.name}' has an invalid or missing task kind.")
+            }
             if (!task.color.matches(Regex("^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$"))) {
                 errors.add("Task '${task.name}' has invalid color '${task.color}'.")
             }
@@ -181,6 +185,7 @@ object JsonImporter {
             name = task.name.trim(),
             color = task.color,
             priority = task.priority,
+            taskKind = task.taskKind ?: TaskKind.STANDARD,
             minimumSuccess = task.minimumSuccess,
             mediumSuccess = task.mediumSuccess,
             highSuccess = task.highSuccess,

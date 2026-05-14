@@ -10,10 +10,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.appcompat.app.AlertDialog
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import com.pseddev.mystreak.MyStreakApplication
 import com.pseddev.mystreak.R
+import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.databinding.FragmentPiecesBinding
-import com.pseddev.mystreak.ui.progress.QuickAddActivityDialogFragment
 import com.pseddev.mystreak.utils.ProUserManager
 import com.pseddev.mystreak.utils.DateFormatter
 
@@ -31,6 +32,8 @@ class PiecesFragment : Fragment() {
 
     private lateinit var adapter: PiecesAdapter
     private var shouldScrollToTop = false
+    private val taskKind: TaskKind
+        get() = TaskKind.valueOf(requireArguments().getString(ARG_TASK_KIND, TaskKind.STANDARD.name))
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,8 +47,10 @@ class PiecesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.setTaskKindFilter(taskKind)
         setupClickListeners()
         setupSortingControls()
+        setupModeText()
 
         val proUserManager = ProUserManager.getInstance(requireContext())
 
@@ -78,7 +83,8 @@ class PiecesFragment : Fragment() {
                     pieceWithStats.piece.minimumSuccess,
                     pieceWithStats.piece.mediumSuccess,
                     pieceWithStats.piece.highSuccess,
-                    pieceWithStats.piece.isActive
+                    pieceWithStats.piece.isActive,
+                    pieceWithStats.piece.taskKind
                 )
                 dialog.show(parentFragmentManager, "EditPieceDialog")
             },
@@ -130,9 +136,16 @@ class PiecesFragment : Fragment() {
 
         binding.practiceCountText.text = "Total Activities: ${details.activities.size}"
         binding.lastPracticeText.text = "Last Activity: ${DateFormatter.formatDate(details.lastActivity?.timestamp)}"
-        binding.secondLastPracticeText.text = "Minimum Success: ${piece.minimumSuccess}"
-        binding.thirdLastPracticeText.text = "Medium Success: ${piece.mediumSuccess}"
-        binding.lastSatisfactoryPracticeText.text = "High Success: ${piece.highSuccess}"
+        if (piece.taskKind == TaskKind.ROUTINE) {
+            binding.isFavoriteText.text = "Type: Routine"
+            binding.secondLastPracticeText.text = "Routine task"
+            binding.thirdLastPracticeText.text = ""
+            binding.lastSatisfactoryPracticeText.text = ""
+        } else {
+            binding.secondLastPracticeText.text = "Minimum Success: ${piece.minimumSuccess}"
+            binding.thirdLastPracticeText.text = "Medium Success: ${piece.mediumSuccess}"
+            binding.lastSatisfactoryPracticeText.text = "High Success: ${piece.highSuccess}"
+        }
 
         binding.performanceCountText.text = "Task Color: ${piece.color}"
         binding.lastPerformanceText.text = ""
@@ -171,7 +184,20 @@ class PiecesFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.buttonAddPiece.setOnClickListener {
-            findNavController().navigate(R.id.action_viewProgressFragment_to_addPieceFragment)
+            findNavController().navigate(
+                R.id.action_viewProgressFragment_to_addPieceFragment,
+                bundleOf("taskKind" to taskKind.name)
+            )
+        }
+    }
+
+    private fun setupModeText() {
+        if (taskKind == TaskKind.ROUTINE) {
+            binding.buttonAddPiece.text = "Add Routine"
+            binding.emptyView.text = "No routines added yet"
+        } else {
+            binding.buttonAddPiece.text = "Add Task"
+            binding.emptyView.text = "No tasks added yet"
         }
     }
 
@@ -242,5 +268,15 @@ class PiecesFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val ARG_TASK_KIND = "task_kind"
+
+        fun newInstance(taskKind: TaskKind): PiecesFragment {
+            return PiecesFragment().apply {
+                arguments = bundleOf(ARG_TASK_KIND to taskKind.name)
+            }
+        }
     }
 }

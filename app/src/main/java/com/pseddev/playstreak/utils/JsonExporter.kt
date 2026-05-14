@@ -15,7 +15,7 @@ import java.io.Writer
 
 object JsonExporter {
     const val SCHEMA_NAME = "MyStreak"
-    const val SCHEMA_VERSION = 2
+    const val SCHEMA_VERSION = 3
 
     private val gson: Gson = GsonBuilder()
         .setPrettyPrinting()
@@ -42,6 +42,7 @@ object JsonExporter {
                         name = task.name,
                         color = task.color,
                         priority = task.priority,
+                        taskKind = task.taskKind,
                         minimumSuccess = task.minimumSuccess,
                         mediumSuccess = task.mediumSuccess,
                         highSuccess = task.highSuccess,

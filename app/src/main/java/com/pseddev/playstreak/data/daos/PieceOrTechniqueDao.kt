@@ -14,20 +14,29 @@ interface PieceOrTechniqueDao {
     @Query("SELECT * FROM tasks ORDER BY name COLLATE NOCASE ASC")
     fun getAllPiecesAndTechniques(): Flow<List<PieceOrTechnique>>
 
-    @Query("SELECT * FROM tasks WHERE priority = 'HIGH' ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT * FROM tasks WHERE taskKind = 'STANDARD' AND priority = 'HIGH' ORDER BY name COLLATE NOCASE ASC")
     fun getFavorites(): Flow<List<PieceOrTechnique>>
 
-    @Query("SELECT * FROM tasks WHERE :type IN ('PIECE', 'TECHNIQUE') ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT * FROM tasks WHERE taskKind = 'STANDARD' AND :type IN ('PIECE', 'TECHNIQUE') ORDER BY name COLLATE NOCASE ASC")
     fun getByType(type: ItemType): Flow<List<PieceOrTechnique>>
 
-    @Query("SELECT * FROM tasks WHERE isActive = 1 ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT * FROM tasks WHERE isActive = 1 AND taskKind = 'STANDARD' ORDER BY name COLLATE NOCASE ASC")
     fun getActiveTasks(): Flow<List<PieceOrTechnique>>
 
-    @Query("SELECT * FROM tasks WHERE isActive = 0 ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT * FROM tasks WHERE isActive = 0 AND taskKind = 'STANDARD' ORDER BY name COLLATE NOCASE ASC")
     fun getInactiveTasks(): Flow<List<PieceOrTechnique>>
 
-    @Query("SELECT * FROM tasks WHERE isActive = 1 AND priority = 'HIGH' ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT * FROM tasks WHERE isActive = 1 AND taskKind = 'STANDARD' AND priority = 'HIGH' ORDER BY name COLLATE NOCASE ASC")
     fun getActiveHighPriorityTasks(): Flow<List<PieceOrTechnique>>
+
+    @Query("SELECT * FROM tasks WHERE taskKind = 'STANDARD' ORDER BY name COLLATE NOCASE ASC")
+    fun getStandardTasks(): Flow<List<PieceOrTechnique>>
+
+    @Query("SELECT * FROM tasks WHERE taskKind = 'ROUTINE' ORDER BY name COLLATE NOCASE ASC")
+    fun getRoutineTasks(): Flow<List<PieceOrTechnique>>
+
+    @Query("SELECT * FROM tasks WHERE isActive = 1 AND taskKind = 'ROUTINE' ORDER BY name COLLATE NOCASE ASC")
+    fun getActiveRoutineTasks(): Flow<List<PieceOrTechnique>>
 
     @Insert
     suspend fun insert(piece: PieceOrTechnique): Long

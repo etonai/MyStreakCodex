@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.pseddev.mystreak.data.entities.Activity
 import com.pseddev.mystreak.data.entities.ItemType
 import com.pseddev.mystreak.data.entities.TaskPriority
+import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.data.entities.PieceOrTechnique
 import com.pseddev.mystreak.data.repository.PianoRepository
 import com.pseddev.mystreak.utils.ProUserManager
@@ -49,6 +50,7 @@ class PiecesViewModel(
     private val proUserManager = ProUserManager.getInstance(context)
 
     private val selectedPieceId = MutableStateFlow<Long?>(null)
+    private val taskKindFilter = MutableStateFlow(TaskKind.STANDARD)
     private val sortType = MutableStateFlow(SortType.PRIORITY)
     private val sortDirection = MutableStateFlow(SortDirection.ASCENDING)
     private val todayStart: Long = Calendar.getInstance().apply {
@@ -63,10 +65,12 @@ class PiecesViewModel(
         combine(
             repository.getAllPiecesAndTechniques(),
             repository.getAllActivities(),
+            taskKindFilter,
             sortType,
             sortDirection
-        ) { pieces, activities, currentSortType, currentSortDirection ->
+        ) { pieces, activities, currentTaskKind, currentSortType, currentSortDirection ->
             val items = pieces
+                .filter { it.taskKind == currentTaskKind }
                 .map { piece ->
                     val pieceActivities = activities.filter { it.pieceOrTechniqueId == piece.id }
                     val todayCount = pieceActivities.count {
@@ -134,6 +138,10 @@ class PiecesViewModel(
         selectedPieceId.value = null
     }
 
+    fun setTaskKindFilter(taskKind: TaskKind) {
+        taskKindFilter.value = taskKind
+    }
+
     fun setSortType(type: SortType) {
         if (sortType.value == type) {
             return
@@ -193,6 +201,7 @@ class PiecesViewModel(
         newName: String,
         color: String,
         priority: TaskPriority,
+        taskKind: TaskKind,
         minimumSuccess: String,
         mediumSuccess: String,
         highSuccess: String,
@@ -206,6 +215,7 @@ class PiecesViewModel(
                         name = newName,
                         color = color,
                         priority = priority,
+                        taskKind = taskKind,
                         minimumSuccess = minimumSuccess,
                         mediumSuccess = mediumSuccess,
                         highSuccess = highSuccess,

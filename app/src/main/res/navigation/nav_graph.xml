@@ -101,6 +101,10 @@
         <action
             android:id="@+id/action_selectPieceFragment_to_selectLevelFragment"
             app:destination="@id/selectLevelFragment" />
+
+        <action
+            android:id="@+id/action_selectPieceFragment_to_notesInputFragment"
+            app:destination="@id/notesInputFragment" />
     </fragment>
 
     <fragment
@@ -239,7 +243,13 @@
         android:id="@+id/addPieceFragment"
         android:name="com.pseddev.mystreak.ui.pieces.AddPieceFragment"
         android:label="Add Task"
-        tools:layout="@layout/fragment_add_piece" />
+        tools:layout="@layout/fragment_add_piece">
+
+        <argument
+            android:name="taskKind"
+            android:defaultValue="STANDARD"
+            app:argType="string" />
+    </fragment>
 
     <fragment
         android:id="@+id/favoritesFragment"

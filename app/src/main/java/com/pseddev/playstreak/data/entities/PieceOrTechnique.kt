@@ -13,6 +13,7 @@ data class PieceOrTechnique(
     val name: String,
     val color: String = "#66B2FF",
     val priority: TaskPriority = TaskPriority.LOW,
+    val taskKind: TaskKind = TaskKind.STANDARD,
     val minimumSuccess: String = "Minimum",
     val mediumSuccess: String = "Medium",
     val highSuccess: String = "High",
@@ -88,6 +89,11 @@ typealias Task = PieceOrTechnique
 enum class TaskPriority {
     HIGH,
     LOW
+}
+
+enum class TaskKind {
+    STANDARD,
+    ROUTINE
 }
 
 enum class ItemType {

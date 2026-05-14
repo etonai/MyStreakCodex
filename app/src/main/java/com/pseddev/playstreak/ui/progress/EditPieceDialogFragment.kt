@@ -9,6 +9,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.pseddev.mystreak.MyStreakApplication
 import com.pseddev.mystreak.data.entities.ItemType
+import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.data.entities.TaskPriority
 import com.pseddev.mystreak.databinding.DialogEditPieceBinding
 
@@ -28,6 +29,7 @@ class EditPieceDialogFragment : DialogFragment() {
     private var currentName: String = ""
     private var currentColor: String = "#66B2FF"
     private var currentPriority: TaskPriority = TaskPriority.LOW
+    private var currentTaskKind: TaskKind = TaskKind.STANDARD
     private var currentMinimumSuccess: String = "Minimum"
     private var currentMediumSuccess: String = "Medium"
     private var currentHighSuccess: String = "High"
@@ -42,6 +44,7 @@ class EditPieceDialogFragment : DialogFragment() {
             currentName = it.getString(ARG_PIECE_NAME, "")
             currentColor = it.getString(ARG_PIECE_COLOR, "#66B2FF")
             currentPriority = TaskPriority.valueOf(it.getString(ARG_PIECE_PRIORITY, TaskPriority.LOW.name))
+            currentTaskKind = TaskKind.valueOf(it.getString(ARG_TASK_KIND, TaskKind.STANDARD.name))
             currentMinimumSuccess = it.getString(ARG_MINIMUM_SUCCESS, "Minimum")
             currentMediumSuccess = it.getString(ARG_MEDIUM_SUCCESS, "Medium")
             currentHighSuccess = it.getString(ARG_HIGH_SUCCESS, "High")
@@ -57,6 +60,15 @@ class EditPieceDialogFragment : DialogFragment() {
         binding.mediumSuccessEditText.setText(currentMediumSuccess)
         binding.highSuccessEditText.setText(currentHighSuccess)
         binding.activeSwitch.isChecked = currentIsActive
+        if (currentTaskKind == TaskKind.ROUTINE) {
+            binding.titleTextView.text = "Edit Routine"
+            binding.pieceNameInputLayout.hint = "Routine Name"
+            binding.priorityLabel.visibility = android.view.View.GONE
+            binding.priorityRadioGroup.visibility = android.view.View.GONE
+            binding.minimumSuccessInputLayout.visibility = android.view.View.GONE
+            binding.mediumSuccessInputLayout.visibility = android.view.View.GONE
+            binding.highSuccessInputLayout.visibility = android.view.View.GONE
+        }
 
         // Set up button listeners
         binding.saveButton.setOnClickListener {
@@ -89,7 +101,8 @@ class EditPieceDialogFragment : DialogFragment() {
             pieceId = pieceId,
             newName = newName,
             color = selectedTaskColor(),
-            priority = if (binding.radioHighPriority.isChecked) TaskPriority.HIGH else TaskPriority.LOW,
+            priority = if (currentTaskKind == TaskKind.ROUTINE) TaskPriority.LOW else if (binding.radioHighPriority.isChecked) TaskPriority.HIGH else TaskPriority.LOW,
+            taskKind = currentTaskKind,
             minimumSuccess = thresholdText(binding.minimumSuccessEditText.text?.toString(), "Minimum"),
             mediumSuccess = thresholdText(binding.mediumSuccessEditText.text?.toString(), "Medium"),
             highSuccess = thresholdText(binding.highSuccessEditText.text?.toString(), "High"),
@@ -150,6 +163,7 @@ class EditPieceDialogFragment : DialogFragment() {
         private const val ARG_PIECE_TYPE = "piece_type"
         private const val ARG_PIECE_COLOR = "piece_color"
         private const val ARG_PIECE_PRIORITY = "piece_priority"
+        private const val ARG_TASK_KIND = "task_kind"
         private const val ARG_MINIMUM_SUCCESS = "minimum_success"
         private const val ARG_MEDIUM_SUCCESS = "medium_success"
         private const val ARG_HIGH_SUCCESS = "high_success"
@@ -164,7 +178,8 @@ class EditPieceDialogFragment : DialogFragment() {
             minimumSuccess: String,
             mediumSuccess: String,
             highSuccess: String,
-            isActive: Boolean
+            isActive: Boolean,
+            taskKind: TaskKind = TaskKind.STANDARD
         ): EditPieceDialogFragment {
             return EditPieceDialogFragment().apply {
                 arguments = Bundle().apply {
@@ -173,6 +188,7 @@ class EditPieceDialogFragment : DialogFragment() {
                     putString(ARG_PIECE_TYPE, pieceType.name)
                     putString(ARG_PIECE_COLOR, color)
                     putString(ARG_PIECE_PRIORITY, priority.name)
+                    putString(ARG_TASK_KIND, taskKind.name)
                     putString(ARG_MINIMUM_SUCCESS, minimumSuccess)
                     putString(ARG_MEDIUM_SUCCESS, mediumSuccess)
                     putString(ARG_HIGH_SUCCESS, highSuccess)

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.databinding.FragmentViewProgressBinding
 
 class ViewProgressFragment : Fragment() {
@@ -39,6 +40,7 @@ class ViewProgressFragment : Fragment() {
                 0 -> "Dashboard"
                 1 -> "Calendar"
                 2 -> "Tasks"
+                3 -> "Routine"
                 else -> ""
             }
         }.attach()
@@ -50,13 +52,14 @@ class ViewProgressFragment : Fragment() {
     }
 
     private inner class ViewProgressPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
-        override fun getItemCount(): Int = 3
+        override fun getItemCount(): Int = 4
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> DashboardFragment()
                 1 -> CalendarFragment()
-                2 -> PiecesFragment()
+                2 -> PiecesFragment.newInstance(TaskKind.STANDARD)
+                3 -> PiecesFragment.newInstance(TaskKind.ROUTINE)
                 else -> throw IllegalArgumentException("Invalid position: $position")
             }
         }

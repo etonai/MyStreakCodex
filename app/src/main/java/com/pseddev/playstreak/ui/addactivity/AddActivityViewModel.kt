@@ -59,6 +59,10 @@ class AddActivityViewModel(
         return repository.getActiveHighPriorityTasks().asLiveData()
     }
 
+    fun getRoutineTasks(): LiveData<List<PieceOrTechnique>> {
+        return repository.getActiveRoutineTasks().asLiveData()
+    }
+
     fun getTask(taskId: Long): LiveData<PieceOrTechnique?> {
         return repository.getAllPiecesAndTechniques()
             .map { tasks -> tasks.find { it.id == taskId } }

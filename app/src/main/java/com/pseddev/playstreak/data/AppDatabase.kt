@@ -21,11 +21,12 @@ import com.pseddev.mystreak.data.entities.DailyCalendarState
 import com.pseddev.mystreak.data.entities.ItemType
 import com.pseddev.mystreak.data.entities.PieceOrTechnique
 import com.pseddev.mystreak.data.entities.SuccessLevel
+import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.data.entities.TaskPriority
 
 @Database(
     entities = [PieceOrTechnique::class, Activity::class, DailyCalendarState::class, Achievement::class],
-    version = 8,
+    version = 9,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -46,7 +47,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "mystreak_database"
                 )
-                    .addMigrations(MIGRATION_7_8)
+                    .addMigrations(MIGRATION_7_8, MIGRATION_8_9)
                     .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
@@ -57,6 +58,12 @@ abstract class AppDatabase : RoomDatabase() {
         private val MIGRATION_7_8 = object : Migration(7, 8) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE activities ADD COLUMN notes TEXT NOT NULL DEFAULT ''")
+            }
+        }
+
+        private val MIGRATION_8_9 = object : Migration(8, 9) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE tasks ADD COLUMN taskKind TEXT NOT NULL DEFAULT 'STANDARD'")
             }
         }
     }
@@ -80,6 +87,12 @@ class Converters {
 
     @TypeConverter
     fun toTaskPriority(priority: String): TaskPriority = TaskPriority.valueOf(priority)
+
+    @TypeConverter
+    fun fromTaskKind(kind: TaskKind): String = kind.name
+
+    @TypeConverter
+    fun toTaskKind(kind: String): TaskKind = TaskKind.valueOf(kind)
 
     @TypeConverter
     fun fromSuccessLevel(successLevel: SuccessLevel): String = successLevel.name

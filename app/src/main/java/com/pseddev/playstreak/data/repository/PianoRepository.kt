@@ -12,6 +12,7 @@ import com.pseddev.mystreak.data.entities.CalendarColorLevel
 import com.pseddev.mystreak.data.entities.DailyCalendarState
 import com.pseddev.mystreak.data.entities.ItemType
 import com.pseddev.mystreak.data.entities.PieceOrTechnique
+import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.data.entities.TaskPriority
 import com.pseddev.mystreak.ui.progress.ActivityWithPiece
 import com.pseddev.mystreak.utils.CsvHandler
@@ -54,6 +55,15 @@ class PianoRepository(
 
     fun getActiveHighPriorityTasks(): Flow<List<PieceOrTechnique>> =
         pieceOrTechniqueDao.getActiveHighPriorityTasks()
+
+    fun getStandardTasks(): Flow<List<PieceOrTechnique>> =
+        pieceOrTechniqueDao.getStandardTasks()
+
+    fun getRoutineTasks(): Flow<List<PieceOrTechnique>> =
+        pieceOrTechniqueDao.getRoutineTasks()
+
+    fun getActiveRoutineTasks(): Flow<List<PieceOrTechnique>> =
+        pieceOrTechniqueDao.getActiveRoutineTasks()
 
     fun getPieces(): Flow<List<PieceOrTechnique>> =
         pieceOrTechniqueDao.getByType(ItemType.PIECE)
@@ -199,7 +209,7 @@ class PianoRepository(
         ) { activities, tasks ->
             val activeTaskIds = tasks.filter { it.isActive }.map { it.id }.toSet()
             val highPriorityTaskIds = tasks
-                .filter { it.isActive && it.priority == TaskPriority.HIGH }
+                .filter { it.isActive && it.taskKind == TaskKind.STANDARD && it.priority == TaskPriority.HIGH }
                 .map { it.id }
                 .toSet()
             val activeActivities = activities.filter { it.taskId in activeTaskIds }
@@ -284,7 +294,7 @@ class PianoRepository(
         if (activities.isEmpty()) return CalendarColorLevel.NONE
 
         val highPriorityTaskIds = activeTasks
-            .filter { it.priority == TaskPriority.HIGH }
+            .filter { it.taskKind == TaskKind.STANDARD && it.priority == TaskPriority.HIGH }
             .map { it.id }
             .toSet()
         val performedHighPriorityTaskIds = activities

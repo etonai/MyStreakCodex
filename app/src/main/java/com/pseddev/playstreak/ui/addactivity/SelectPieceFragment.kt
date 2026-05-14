@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.pseddev.mystreak.MyStreakApplication
 import com.pseddev.mystreak.data.entities.ItemType
 import com.pseddev.mystreak.data.entities.PieceOrTechnique
+import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.databinding.FragmentSelectPieceBinding
 
 class SelectPieceFragment : Fragment() {
@@ -63,9 +64,25 @@ class SelectPieceFragment : Fragment() {
         findNavController().navigate(action)
     }
 
+    private fun navigateToRoutineNotes(pieceId: Long, pieceName: String) {
+        val action = SelectPieceFragmentDirections
+            .actionSelectPieceFragmentToNotesInputFragment(
+                activityType = args.activityType,
+                pieceId = pieceId,
+                pieceName = pieceName,
+                level = 3,
+                performanceType = "routine"
+            )
+        findNavController().navigate(action)
+    }
+
     private fun setupRecyclerView() {
         adapter = PieceAdapter { piece ->
-            navigateToSelectLevel(piece.id, piece.name, piece.type)
+            if (piece.taskKind == TaskKind.ROUTINE) {
+                navigateToRoutineNotes(piece.id, piece.name)
+            } else {
+                navigateToSelectLevel(piece.id, piece.name, piece.type)
+            }
         }
 
         binding.recyclerViewPieces.apply {
@@ -77,21 +94,28 @@ class SelectPieceFragment : Fragment() {
     private fun setupObservers() {
         viewModel.getFavorites().observe(viewLifecycleOwner) { favorites ->
             viewModel.getPiecesAndTechniques(args.activityType).observe(viewLifecycleOwner) { all ->
-                val groupedItems = mutableListOf<PieceAdapterItem>()
-                val highPriorityIds = favorites.map { it.id }.toSet()
-                val remainingTasks = all.filter { it.id !in highPriorityIds }
+                viewModel.getRoutineTasks().observe(viewLifecycleOwner) { routines ->
+                    val groupedItems = mutableListOf<PieceAdapterItem>()
+                    val highPriorityIds = favorites.map { it.id }.toSet()
+                    val remainingTasks = all.filter { it.id !in highPriorityIds }
 
-                if (favorites.isNotEmpty()) {
-                    groupedItems.add(PieceAdapterItem.Header("High Priority:"))
-                    groupedItems.addAll(favorites.map { PieceAdapterItem.Item(it) })
+                    if (favorites.isNotEmpty()) {
+                        groupedItems.add(PieceAdapterItem.Header("High Priority:"))
+                        groupedItems.addAll(favorites.map { PieceAdapterItem.Item(it) })
+                    }
+
+                    if (remainingTasks.isNotEmpty()) {
+                        groupedItems.add(PieceAdapterItem.Header("Low Priority:"))
+                        groupedItems.addAll(remainingTasks.map { PieceAdapterItem.Item(it) })
+                    }
+
+                    if (routines.isNotEmpty()) {
+                        groupedItems.add(PieceAdapterItem.Header("Routine:"))
+                        groupedItems.addAll(routines.map { PieceAdapterItem.Item(it) })
+                    }
+
+                    adapter.submitList(groupedItems)
                 }
-
-                if (remainingTasks.isNotEmpty()) {
-                    groupedItems.add(PieceAdapterItem.Header("All Tasks:"))
-                    groupedItems.addAll(remainingTasks.map { PieceAdapterItem.Item(it) })
-                }
-
-                adapter.submitList(groupedItems)
             }
         }
     }

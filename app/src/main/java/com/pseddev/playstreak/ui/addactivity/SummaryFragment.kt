@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.pseddev.mystreak.MyStreakApplication
 import com.pseddev.mystreak.R
+import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.databinding.FragmentSummaryBinding
 import com.pseddev.mystreak.ui.progress.successLevelDescription
 import com.pseddev.mystreak.ui.progress.successLevelFromActivityLevel
@@ -158,7 +159,9 @@ class SummaryFragment : Fragment() {
         binding.textLevel.text = "Success: Level ${args.level}"
         viewModel.getTask(args.pieceId).observe(viewLifecycleOwner) { task ->
             val successLevel = successLevelFromActivityLevel(args.level)
-            binding.textLevel.text = if (task != null && successLevel != null) {
+            binding.textLevel.text = if (task?.taskKind == TaskKind.ROUTINE) {
+                "Activity: Done"
+            } else if (task != null && successLevel != null) {
                 "Success: ${successLevelDescription(successLevel, task)}"
             } else {
                 "Success: Level ${args.level}"
