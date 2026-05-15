@@ -198,8 +198,14 @@ class PianoRepository(
 
     suspend fun calculateCurrentStreak(): Int {
         val activities = getAllActivities().first()
-        return StreakCalculator().calculateCurrentStreak(activities)
+        val tasks = getAllPiecesAndTechniques().first()
+        return calculateCurrentStreak(activities, tasks)
     }
+
+    fun calculateCurrentStreak(
+        activities: List<Activity>,
+        tasks: List<PieceOrTechnique>
+    ): Int = StreakCalculator().calculateCurrentStreak(activities, tasks)
 
     fun getRollingWeekSummaryText(): Flow<String> {
         val (startTime, endTime) = getRollingSevenDayRange()

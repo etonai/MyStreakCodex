@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.pseddev.mystreak.data.entities.Activity
+import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.data.entities.TaskPriority
 import com.pseddev.mystreak.data.repository.PianoRepository
 import com.pseddev.mystreak.utils.ProUserManager
-import com.pseddev.mystreak.utils.StreakCalculator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -26,7 +26,6 @@ class DashboardViewModel(
 
     private val proUserManager = ProUserManager.getInstance(context)
     private val suggestionsService = SuggestionsService(proUserManager)
-    private val streakCalculator = StreakCalculator()
 
     private val todayStartMillis = MutableStateFlow(startOfDay(System.currentTimeMillis()))
 
@@ -65,7 +64,7 @@ class DashboardViewModel(
             ) { activities, tasks ->
                 val activeTaskIds = tasks.filter { it.isActive }.map { it.id }.toSet()
                 val highPriorityTaskIds = tasks
-                    .filter { it.isActive && it.priority == TaskPriority.HIGH }
+                    .filter { it.isActive && it.taskKind == TaskKind.STANDARD && it.priority == TaskPriority.HIGH }
                     .map { it.id }
                     .toSet()
                 val activeActivities = activities.filter { it.taskId in activeTaskIds }
@@ -116,9 +115,10 @@ class DashboardViewModel(
 
     val currentStreak: LiveData<Int> = combine(
         repository.getAllActivities(),
+        repository.getAllPiecesAndTechniques(),
         todayStartMillis
-    ) { activities, _ ->
-            streakCalculator.calculateCurrentStreak(activities)
+    ) { activities, tasks, _ ->
+        repository.calculateCurrentStreak(activities, tasks)
     }.asLiveData()
 
     init {

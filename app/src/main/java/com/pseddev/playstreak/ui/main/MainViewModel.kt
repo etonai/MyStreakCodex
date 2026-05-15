@@ -4,19 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import com.pseddev.mystreak.data.repository.PianoRepository
-import com.pseddev.mystreak.data.entities.ItemType
-import com.pseddev.mystreak.utils.StreakCalculator
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
 class MainViewModel(private val repository: PianoRepository) : ViewModel() {
 
-    private val streakCalculator = StreakCalculator()
-
-    val currentStreak: LiveData<Int> = repository.getAllActivities()
-        .map { activities ->
-            streakCalculator.calculateCurrentStreak(activities)
+    val currentStreak: LiveData<Int> =
+        combine(
+            repository.getAllActivities(),
+            repository.getAllPiecesAndTechniques()
+        ) { activities, tasks ->
+            repository.calculateCurrentStreak(activities, tasks)
         }
         .asLiveData()
 

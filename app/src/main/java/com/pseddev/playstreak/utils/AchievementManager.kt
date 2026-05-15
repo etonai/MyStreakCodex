@@ -118,7 +118,7 @@ class AchievementManager(
             }
 
             // Check for streak achievements
-            detectRetroactiveStreakAchievements(activities)
+            detectRetroactiveStreakAchievements(activities, pieces)
 
             Log.d("AchievementManager", "Retroactive achievement detection completed")
         } catch (e: Exception) {
@@ -129,12 +129,15 @@ class AchievementManager(
     /**
      * Detect retroactive streak achievements based on existing activity data
      */
-    private suspend fun detectRetroactiveStreakAchievements(activities: List<com.pseddev.mystreak.data.entities.Activity>) {
+    private suspend fun detectRetroactiveStreakAchievements(
+        activities: List<com.pseddev.mystreak.data.entities.Activity>,
+        tasks: List<com.pseddev.mystreak.data.entities.PieceOrTechnique>
+    ) {
         try {
             if (activities.isEmpty()) return
 
             val streakCalculator = StreakCalculator()
-            val currentStreak = streakCalculator.calculateCurrentStreak(activities)
+            val currentStreak = streakCalculator.calculateCurrentStreak(activities, tasks)
 
             // For retroactive detection, use current streak as the highest achieved
             // Note: This assumes current streak represents the user's best achievement
@@ -156,7 +159,7 @@ class AchievementManager(
                 val milestone = streakMilestones[i]
                 if (useStreak >= milestone) {
                     // Find approximate date when this milestone was first achieved
-                    val milestoneDate = findStreakMilestoneDate(activities, milestone)
+                    val milestoneDate = findStreakMilestoneDate(activities, tasks, milestone)
                     if (milestoneDate != null) {
                         unlockAchievement(achievementTypes[i], milestoneDate)
                     }
@@ -170,11 +173,15 @@ class AchievementManager(
     /**
      * Find the actual date when a streak milestone was first reached
      */
-    private fun findStreakMilestoneDate(activities: List<com.pseddev.mystreak.data.entities.Activity>, milestone: Int): Long? {
+    private fun findStreakMilestoneDate(
+        activities: List<com.pseddev.mystreak.data.entities.Activity>,
+        tasks: List<com.pseddev.mystreak.data.entities.PieceOrTechnique>,
+        milestone: Int
+    ): Long? {
         if (activities.isEmpty()) return null
 
         val streakCalculator = StreakCalculator()
-        return streakCalculator.findStreakMilestoneDate(activities, milestone)
+        return streakCalculator.findStreakMilestoneDate(activities, tasks, milestone)
     }
 
     /**
