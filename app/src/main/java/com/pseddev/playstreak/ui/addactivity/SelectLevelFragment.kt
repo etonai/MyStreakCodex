@@ -48,6 +48,14 @@ class SelectLevelFragment : Fragment() {
         if (editActivity != null) {
             // Set edit mode in ViewModel
             viewModel.setEditMode(editActivity)
+
+            val callback = object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    viewModel.abandonEditMode()
+                    findNavController().popBackStack(com.pseddev.mystreak.R.id.progressFragment, false)
+                }
+            }
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
         }
 
         // Pre-populate fields in edit mode

@@ -39,6 +39,12 @@ object EditActivityStorage {
         prePopulatedDate = null
     }
 
+    fun clearEditState() {
+        editActivity = null
+        pieceName = null
+        itemType = null
+    }
+
     fun isEditMode(): Boolean {
         return editActivity != null
     }

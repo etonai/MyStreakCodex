@@ -14,6 +14,7 @@ import com.pseddev.mystreak.data.entities.ItemType
 import com.pseddev.mystreak.data.entities.PieceOrTechnique
 import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.databinding.FragmentSelectPieceBinding
+import com.pseddev.mystreak.ui.progress.EditActivityStorage
 
 class SelectPieceFragment : Fragment() {
 
@@ -43,6 +44,8 @@ class SelectPieceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.clearEditMode()
+        EditActivityStorage.clearEditState()
         setupRecyclerView()
         setupObservers()
 

@@ -351,6 +351,7 @@ class CalendarFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.buttonAddActivity.setOnClickListener {
+            EditActivityStorage.clearEditState()
             // Pre-populate with selected calendar date
             selectedDate?.let { date ->
                 val timestamp = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
@@ -407,23 +408,7 @@ class CalendarFragment : Fragment() {
     }
 
     private fun editActivity(activityWithPiece: ActivityWithPiece) {
-        // Store the activity data for edit mode
-        EditActivityStorage.setEditActivity(
-            activityWithPiece.activity,
-            activityWithPiece.pieceOrTechnique.name,
-            activityWithPiece.pieceOrTechnique.type
-        )
-
-        // Navigate directly to select level fragment for editing
-        findNavController().navigate(
-            R.id.action_viewProgressFragment_to_selectLevelFragment,
-            bundleOf(
-                "activityType" to activityWithPiece.activity.activityType,
-                "pieceId" to activityWithPiece.activity.pieceOrTechniqueId,
-                "pieceName" to activityWithPiece.pieceOrTechnique.name,
-                "itemType" to activityWithPiece.pieceOrTechnique.type
-            )
-        )
+        navigateToEditActivity(activityWithPiece)
     }
 
     private fun showNoteDetailDialog(item: ActivityWithPiece) {

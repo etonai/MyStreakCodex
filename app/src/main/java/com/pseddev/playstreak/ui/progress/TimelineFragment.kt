@@ -140,23 +140,7 @@ class TimelineFragment : Fragment() {
     }
 
     private fun editActivity(activityWithPiece: ActivityWithPiece) {
-        // Store the activity data for edit mode
-        EditActivityStorage.setEditActivity(
-            activityWithPiece.activity,
-            activityWithPiece.pieceOrTechnique.name,
-            activityWithPiece.pieceOrTechnique.type
-        )
-
-        // Navigate directly to select level fragment for editing
-        findNavController().navigate(
-            R.id.action_viewProgressFragment_to_selectLevelFragment,
-            bundleOf(
-                "activityType" to activityWithPiece.activity.activityType,
-                "pieceId" to activityWithPiece.activity.pieceOrTechniqueId,
-                "pieceName" to activityWithPiece.pieceOrTechnique.name,
-                "itemType" to activityWithPiece.pieceOrTechnique.type
-            )
-        )
+        navigateToEditActivity(activityWithPiece)
     }
 
     private fun showDeleteConfirmationDialog(activityWithPiece: ActivityWithPiece) {

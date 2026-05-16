@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.pseddev.mystreak.MyStreakApplication
 import com.pseddev.mystreak.databinding.FragmentNotesInputBinding
+import com.pseddev.mystreak.ui.progress.EditActivityStorage
 
 class NotesInputFragment : Fragment() {
 
@@ -38,11 +39,16 @@ class NotesInputFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        EditActivityStorage.getEditActivity()?.let { editActivity ->
+            viewModel.setEditMode(editActivity)
+        }
+
         // Handle back navigation in edit mode
         val editActivity = viewModel.editActivity.value
         if (editActivity != null) {
             val callback = object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
+                    viewModel.abandonEditMode()
                     findNavController().popBackStack(com.pseddev.mystreak.R.id.addActivityFragment, true)
                 }
             }

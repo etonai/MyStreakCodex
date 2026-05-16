@@ -246,6 +246,11 @@ class AddActivityViewModel(
         _editActivity.value = null
     }
 
+    fun abandonEditMode() {
+        clearEditMode()
+        EditActivityStorage.clearEditActivity()
+    }
+
     /**
      * Check for first activity achievements
      */

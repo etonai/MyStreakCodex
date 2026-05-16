@@ -88,6 +88,7 @@ class DashboardFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.buttonAddActivity.setOnClickListener {
+            EditActivityStorage.clearEditState()
             findNavController().navigate(
                 R.id.selectPieceFragment,
                 bundleOf("activityType" to ActivityType.PRACTICE)
@@ -156,21 +157,7 @@ class DashboardFragment : Fragment() {
     }
 
     private fun editActivity(activityWithPiece: ActivityWithPiece) {
-        EditActivityStorage.setEditActivity(
-            activityWithPiece.activity,
-            activityWithPiece.pieceOrTechnique.name,
-            activityWithPiece.pieceOrTechnique.type
-        )
-
-        findNavController().navigate(
-            R.id.action_viewProgressFragment_to_selectLevelFragment,
-            bundleOf(
-                "activityType" to activityWithPiece.activity.activityType,
-                "pieceId" to activityWithPiece.activity.pieceOrTechniqueId,
-                "pieceName" to activityWithPiece.pieceOrTechnique.name,
-                "itemType" to activityWithPiece.pieceOrTechnique.type
-            )
-        )
+        navigateToEditActivity(activityWithPiece)
     }
 
     private fun showNoteDetailDialog(item: ActivityWithPiece) {

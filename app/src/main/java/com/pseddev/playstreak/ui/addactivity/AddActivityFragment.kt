@@ -38,8 +38,7 @@ class AddActivityFragment : Fragment() {
 
         // Setup button click listeners
         binding.buttonPractice.setOnClickListener {
-            viewModel.clearEditMode()
-            EditActivityStorage.clearEditActivity()
+            viewModel.abandonEditMode()
             val action = AddActivityFragmentDirections
                 .actionAddActivityFragmentToSelectPieceFragment(ActivityType.PRACTICE)
             findNavController().navigate(action)

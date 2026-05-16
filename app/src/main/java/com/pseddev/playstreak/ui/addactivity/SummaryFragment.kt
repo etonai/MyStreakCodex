@@ -54,9 +54,8 @@ class SummaryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Initialize timestamp - use edit activity timestamp if in edit mode, otherwise current time
-        val editActivity = viewModel.editActivity.value
-        val isEditMode = com.pseddev.mystreak.ui.progress.EditActivityStorage.isEditMode()
-        currentTimestamp = if (editActivity != null && isEditMode) {
+        val editActivity = currentEditActivity()
+        currentTimestamp = if (editActivity != null) {
             editActivity.timestamp
         } else {
             System.currentTimeMillis()
@@ -67,6 +66,7 @@ class SummaryFragment : Fragment() {
             val callback = object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     // In edit mode, go back to Timeline (progressFragment)
+                    viewModel.abandonEditMode()
                     finishActivityFlow()
                 }
             }
@@ -89,7 +89,7 @@ class SummaryFragment : Fragment() {
             binding.buttonSave.isEnabled = false
             binding.buttonCancel.isEnabled = false
 
-            val editActivity = viewModel.editActivity.value
+            val editActivity = currentEditActivity()
             if (editActivity != null) {
                 // Edit mode - update existing activity
                 viewModel.updateActivity(
@@ -119,6 +119,7 @@ class SummaryFragment : Fragment() {
         binding.buttonCancel.setOnClickListener {
             binding.buttonSave.isEnabled = false
             binding.buttonCancel.isEnabled = false
+            viewModel.abandonEditMode()
             finishActivityFlow()
         }
 
@@ -171,7 +172,7 @@ class SummaryFragment : Fragment() {
         binding.textTime.visibility = View.GONE
 
         val dateFormat = SimpleDateFormat("MMM dd, yyyy h:mm a", Locale.US)
-        val editActivity = viewModel.editActivity.value
+        val editActivity = currentEditActivity()
         if (editActivity != null) {
             binding.textTitle.text = "Edit Activity"
             // Edit mode - show edit buttons and current timestamp
@@ -274,6 +275,16 @@ class SummaryFragment : Fragment() {
             .setPopUpTo(R.id.nav_graph, true)
             .build()
         navController.navigate(R.id.progressFragment, null, navOptions)
+    }
+
+    private fun currentEditActivity(): com.pseddev.mystreak.data.entities.Activity? {
+        val storedEditActivity = com.pseddev.mystreak.ui.progress.EditActivityStorage.getEditActivity()
+        val viewModelEditActivity = viewModel.editActivity.value
+        return if (storedEditActivity != null && viewModelEditActivity?.id == storedEditActivity.id) {
+            viewModelEditActivity
+        } else {
+            null
+        }
     }
 
     override fun onDestroyView() {
