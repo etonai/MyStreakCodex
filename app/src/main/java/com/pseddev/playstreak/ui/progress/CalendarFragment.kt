@@ -155,7 +155,7 @@ class CalendarFragment : Fragment() {
                 textView.visibility = View.VISIBLE
 
                 val colorLevel = monthlyColorLevels[day.date] ?: CalendarColorLevel.NONE
-                val color = getCalendarColorForLevel(colorLevel)
+                val color = getCalendarColorForDate(day.date)
 
                 // Set background color
                 val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.calendar_day_background)?.mutate() as? GradientDrawable
@@ -238,6 +238,7 @@ class CalendarFragment : Fragment() {
         itemBinding.root.setOnClickListener {
             highlightedTaskId = if (highlightedTaskId == task.id) null else task.id
             populateActivityList(viewModel.selectedDateActivities.value.orEmpty())
+            binding.calendarView.notifyCalendarChanged()
         }
 
         itemBinding.deleteButton.setOnClickListener {
@@ -267,7 +268,7 @@ class CalendarFragment : Fragment() {
     private fun updateSelectedDateView(activities: List<ActivityWithPiece>) {
         // Update color indicator with larger, more prominent display
         val colorLevel = selectedDate?.let { monthlyColorLevels[it] } ?: CalendarColorLevel.NONE
-        val color = getCalendarColorForLevel(colorLevel)
+        val color = selectedDate?.let { getCalendarColorForDate(it) } ?: getCalendarColorForLevel(colorLevel)
         val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.circle_indicator)?.mutate()
         drawable?.setTint(color)
         binding.activityColorIndicator.background = drawable
@@ -362,6 +363,23 @@ class CalendarFragment : Fragment() {
             CalendarColorLevel.ALL_HIGH_PRIORITY -> R.color.calendar_all_high_priority
         }
         return ContextCompat.getColor(requireContext(), colorRes)
+    }
+
+    private fun getCalendarColorForDate(date: LocalDate): Int {
+        val highlightedId = highlightedTaskId
+        if (highlightedId != null) {
+            val hasHighlightedTask = monthlyActivities[date]
+                .orEmpty()
+                .any { it.pieceOrTechnique.id == highlightedId }
+
+            return if (hasHighlightedTask) {
+                ContextCompat.getColor(requireContext(), R.color.calendar_activity_highlight)
+            } else {
+                getCalendarColorForLevel(CalendarColorLevel.NONE)
+            }
+        }
+
+        return getCalendarColorForLevel(monthlyColorLevels[date] ?: CalendarColorLevel.NONE)
     }
 
     private fun updateColorGuideVisibility() {

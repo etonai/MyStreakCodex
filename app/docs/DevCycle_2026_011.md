@@ -60,7 +60,7 @@ The Calendar page should let the user select one activity visually. Selecting an
 - [x] `gradlew.bat assembleDebug` succeeds.
 
 ### Phase 2: Highlighted Activity Calendar Overlay
-**Status:** Open
+**Status:** Complete
 **Date Added:** 2026-05-17
 **Priority:** High
 **Description:** When a Calendar activity is highlighted, change the calendar day coloring to show where that same activity was performed.
@@ -81,15 +81,15 @@ The Calendar page should let the user select one activity visually. Selecting an
 - Highlighted-activity mode should clear when the Calendar tab view is destroyed or the user unhighlights the selected activity.
 
 **Acceptance Criteria:**
-- [ ] Highlighting an activity switches the calendar into highlighted-activity mode.
-- [ ] Days where the highlighted activity's task ID was performed are light purple.
-- [ ] Days where that task ID was not performed use the neutral no-activity appearance.
-- [ ] Normal priority/activity color coding is hidden while highlighted-activity mode is active.
-- [ ] Unhighlighting the activity returns the Calendar to default mode.
-- [ ] Default mode restores the normal activity/priority calendar color coding.
-- [ ] Highlighted-activity mode persists correctly when the selected date changes.
-- [ ] Dashboard behavior is unchanged.
-- [ ] `gradlew.bat assembleDebug` succeeds.
+- [x] Highlighting an activity switches the calendar into highlighted-activity mode.
+- [x] Days where the highlighted activity's task ID was performed are light purple.
+- [x] Days where that task ID was not performed use the neutral no-activity appearance.
+- [x] Normal priority/activity color coding is hidden while highlighted-activity mode is active.
+- [x] Unhighlighting the activity returns the Calendar to default mode.
+- [x] Default mode restores the normal activity/priority calendar color coding.
+- [x] Highlighted-activity mode persists correctly when the selected date changes.
+- [x] Dashboard behavior is unchanged.
+- [x] `gradlew.bat assembleDebug` succeeds.
 
 ## Proposed Implementation Sequence
 
@@ -110,6 +110,7 @@ The Calendar page should let the user select one activity visually. Selecting an
 - Calendar activity rows have edit/delete controls; row selection must not interfere with those button listeners.
 - The highlighted activity should be represented internally by task ID so renamed tasks still behave correctly.
 - Phase 1 implemented Calendar-only row highlight toggling with transient task ID state. Dashboard row detail behavior remains unchanged.
+- Phase 2 implemented highlighted-task day coloring. While a task is highlighted, matching days use `calendar_activity_highlight` and non-matching days use the neutral no-activity color. Unhighlighting restores default calendar color coding.
 
 ## Risks and Mitigations
 
