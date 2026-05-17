@@ -29,7 +29,7 @@ The Calendar page should let the user select one activity visually. Selecting an
 ## Current Work Items
 
 ### Phase 1: Calendar Activity Highlight Toggle
-**Status:** Open
+**Status:** Complete
 **Date Added:** 2026-05-17
 **Priority:** High
 **Description:** Replace Calendar activity detail-on-press with activity row highlight toggling.
@@ -49,15 +49,15 @@ The Calendar page should let the user select one activity visually. Selecting an
 - When the selected date changes, recalculate row highlighting based on the highlighted task ID.
 
 **Acceptance Criteria:**
-- [ ] Pressing an activity on the Calendar tab no longer opens the activity detail dialog.
-- [ ] Pressing an unhighlighted Calendar activity highlights it.
-- [ ] Pressing the highlighted Calendar activity unhighlights it.
-- [ ] Pressing a different Calendar activity moves the highlight to that activity.
-- [ ] Only one Calendar activity/task is highlighted at a time.
-- [ ] Calendar row highlighting is recalculated correctly when the selected date changes.
-- [ ] Dashboard activity detail dialog still opens when pressing a Dashboard activity.
-- [ ] Calendar edit/delete buttons still work.
-- [ ] `gradlew.bat assembleDebug` succeeds.
+- [x] Pressing an activity on the Calendar tab no longer opens the activity detail dialog.
+- [x] Pressing an unhighlighted Calendar activity highlights it.
+- [x] Pressing the highlighted Calendar activity unhighlights it.
+- [x] Pressing a different Calendar activity moves the highlight to that activity.
+- [x] Only one Calendar activity/task is highlighted at a time.
+- [x] Calendar row highlighting is recalculated correctly when the selected date changes.
+- [x] Dashboard activity detail dialog still opens when pressing a Dashboard activity.
+- [x] Calendar edit/delete buttons still work.
+- [x] `gradlew.bat assembleDebug` succeeds.
 
 ### Phase 2: Highlighted Activity Calendar Overlay
 **Status:** Open
@@ -109,6 +109,7 @@ The Calendar page should let the user select one activity visually. Selecting an
 - Light purple should be visually distinct from the existing Calendar color scale.
 - Calendar activity rows have edit/delete controls; row selection must not interfere with those button listeners.
 - The highlighted activity should be represented internally by task ID so renamed tasks still behave correctly.
+- Phase 1 implemented Calendar-only row highlight toggling with transient task ID state. Dashboard row detail behavior remains unchanged.
 
 ## Risks and Mitigations
 

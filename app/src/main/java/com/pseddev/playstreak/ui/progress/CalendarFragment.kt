@@ -48,6 +48,7 @@ class CalendarFragment : Fragment() {
     private var monthlyActivities: Map<LocalDate, List<ActivityWithPiece>> = emptyMap()
     private var monthlyColorLevels: Map<LocalDate, CalendarColorLevel> = emptyMap()
     private var currentDisplayMonth: YearMonth = YearMonth.now()
+    private var highlightedTaskId: Long? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -232,8 +233,11 @@ class CalendarFragment : Fragment() {
         indicator?.setColor(parseTaskColor(task.color))
         itemBinding.taskColorIndicator.background = indicator
 
+        applyActivityRowHighlight(itemBinding, item)
+
         itemBinding.root.setOnClickListener {
-            showNoteDetailDialog(item)
+            highlightedTaskId = if (highlightedTaskId == task.id) null else task.id
+            populateActivityList(viewModel.selectedDateActivities.value.orEmpty())
         }
 
         itemBinding.deleteButton.setOnClickListener {
@@ -242,6 +246,22 @@ class CalendarFragment : Fragment() {
 
         itemBinding.editButton.setOnClickListener {
             editActivity(item)
+        }
+    }
+
+    private fun applyActivityRowHighlight(
+        itemBinding: ItemDashboardActivityBinding,
+        item: ActivityWithPiece
+    ) {
+        if (highlightedTaskId == item.pieceOrTechnique.id) {
+            val drawable = GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = resources.displayMetrics.density * 6
+                setColor(ContextCompat.getColor(requireContext(), R.color.calendar_activity_highlight))
+            }
+            itemBinding.root.background = drawable
+        } else {
+            itemBinding.root.background = null
         }
     }
     private fun updateSelectedDateView(activities: List<ActivityWithPiece>) {

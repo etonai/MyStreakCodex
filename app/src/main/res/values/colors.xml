@@ -25,6 +25,7 @@
     
     <!-- Calendar Selection Ring -->
     <color name="calendar_selection_ring">#FFCC99FF</color>
+    <color name="calendar_activity_highlight">#D8B4FE</color>
     
     <!-- Calendar Dark Mode Selection -->
     <color name="calendar_dark_mode_selection">#FF666666</color>
