@@ -24,6 +24,7 @@ import com.pseddev.mystreak.data.entities.ActivityType
 import com.pseddev.mystreak.data.entities.CalendarColorLevel
 import com.pseddev.mystreak.databinding.FragmentCalendarBinding
 import com.pseddev.mystreak.databinding.ItemDashboardActivityBinding
+import com.pseddev.mystreak.utils.TaskColors
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import java.text.SimpleDateFormat
@@ -230,7 +231,7 @@ class CalendarFragment : Fragment() {
         itemBinding.activitySecondaryText.text = activityDescription(activity, task)
 
         val indicator = itemBinding.taskColorIndicator.background.mutate() as? GradientDrawable
-        indicator?.setColor(parseTaskColor(task.color))
+        indicator?.setColor(parseTaskColor(TaskColors.displayColorFor(task)))
         itemBinding.taskColorIndicator.background = indicator
 
         applyActivityRowHighlight(itemBinding, item)

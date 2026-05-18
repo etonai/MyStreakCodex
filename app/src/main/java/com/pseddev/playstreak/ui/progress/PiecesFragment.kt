@@ -17,6 +17,7 @@ import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.databinding.FragmentPiecesBinding
 import com.pseddev.mystreak.utils.ProUserManager
 import com.pseddev.mystreak.utils.DateFormatter
+import com.pseddev.mystreak.utils.TaskColors
 
 class PiecesFragment : Fragment() {
 
@@ -147,7 +148,7 @@ class PiecesFragment : Fragment() {
             binding.lastSatisfactoryPracticeText.text = "High Success: ${piece.highSuccess}"
         }
 
-        binding.performanceCountText.text = "Task Color: ${piece.color}"
+        binding.performanceCountText.text = "Task Color: ${TaskColors.displayColorFor(piece)}"
         binding.lastPerformanceText.text = ""
         binding.secondLastPerformanceText.text = ""
         binding.thirdLastPerformanceText.text = ""

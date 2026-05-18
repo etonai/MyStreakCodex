@@ -12,6 +12,7 @@ import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.data.entities.TaskPriority
 import com.pseddev.mystreak.databinding.ItemPieceStatsBinding
 import com.pseddev.mystreak.utils.ProUserManager
+import com.pseddev.mystreak.utils.TaskColors
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -61,7 +62,7 @@ class PiecesAdapter(
             binding.statusText.text = if (item.piece.isActive) "Active" else "Inactive"
 
             val swatch = binding.taskColorSwatch.background.mutate() as? GradientDrawable
-            swatch?.setColor(parseColor(item.piece.color))
+            swatch?.setColor(parseColor(TaskColors.displayColorFor(item.piece)))
             binding.taskColorSwatch.background = swatch
 
             if (item.lastActivityDate != null) {

@@ -17,6 +17,7 @@ import com.pseddev.mystreak.R
 import com.pseddev.mystreak.data.entities.ActivityType
 import com.pseddev.mystreak.databinding.FragmentDashboardBinding
 import com.pseddev.mystreak.databinding.ItemDashboardActivityBinding
+import com.pseddev.mystreak.utils.TaskColors
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -128,7 +129,7 @@ class DashboardFragment : Fragment() {
         itemBinding.activitySecondaryText.text = activityDescription(activity, task)
 
         val indicator = itemBinding.taskColorIndicator.background.mutate() as? GradientDrawable
-        indicator?.setColor(parseTaskColor(task.color))
+        indicator?.setColor(parseTaskColor(TaskColors.displayColorFor(task)))
         itemBinding.taskColorIndicator.background = indicator
 
         itemBinding.root.setOnClickListener {

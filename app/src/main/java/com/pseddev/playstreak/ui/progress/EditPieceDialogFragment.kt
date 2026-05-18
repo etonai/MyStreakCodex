@@ -12,6 +12,7 @@ import com.pseddev.mystreak.data.entities.ItemType
 import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.data.entities.TaskPriority
 import com.pseddev.mystreak.databinding.DialogEditPieceBinding
+import com.pseddev.mystreak.utils.TaskColors
 
 class EditPieceDialogFragment : DialogFragment() {
 
@@ -65,6 +66,8 @@ class EditPieceDialogFragment : DialogFragment() {
             binding.pieceNameInputLayout.hint = "Routine Name"
             binding.priorityLabel.visibility = android.view.View.GONE
             binding.priorityRadioGroup.visibility = android.view.View.GONE
+            binding.colorLabel.visibility = android.view.View.GONE
+            binding.colorRadioGroup.visibility = android.view.View.GONE
             binding.minimumSuccessInputLayout.visibility = android.view.View.GONE
             binding.mediumSuccessInputLayout.visibility = android.view.View.GONE
             binding.highSuccessInputLayout.visibility = android.view.View.GONE
@@ -100,7 +103,7 @@ class EditPieceDialogFragment : DialogFragment() {
         viewModel.updateTask(
             pieceId = pieceId,
             newName = newName,
-            color = selectedTaskColor(),
+            color = TaskColors.storedColorFor(currentTaskKind, selectedTaskColor()),
             priority = if (currentTaskKind == TaskKind.ROUTINE) TaskPriority.LOW else if (binding.radioHighPriority.isChecked) TaskPriority.HIGH else TaskPriority.LOW,
             taskKind = currentTaskKind,
             minimumSuccess = thresholdText(binding.minimumSuccessEditText.text?.toString(), "Minimum"),

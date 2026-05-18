@@ -13,6 +13,7 @@ import com.pseddev.mystreak.MyStreakApplication
 import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.data.entities.TaskPriority
 import com.pseddev.mystreak.databinding.FragmentAddPieceBinding
+import com.pseddev.mystreak.utils.TaskColors
 
 class AddPieceFragment : Fragment() {
 
@@ -58,7 +59,7 @@ class AddPieceFragment : Fragment() {
 
             viewModel.saveTask(
                 name = name,
-                color = selectedTaskColor(),
+                color = TaskColors.storedColorFor(taskKind, selectedTaskColor()),
                 priority = if (binding.radioHighPriority.isChecked) TaskPriority.HIGH else TaskPriority.LOW,
                 taskKind = taskKind,
                 minimumSuccess = thresholdText(binding.minimumSuccessEditText.text?.toString(), "Minimum"),
@@ -130,6 +131,8 @@ class AddPieceFragment : Fragment() {
             binding.pieceNameInputLayout.hint = "Routine Name"
             binding.priorityLabel.visibility = View.GONE
             binding.priorityRadioGroup.visibility = View.GONE
+            binding.colorLabel.visibility = View.GONE
+            binding.colorRadioGroup.visibility = View.GONE
             binding.minimumSuccessInputLayout.visibility = View.GONE
             binding.mediumSuccessInputLayout.visibility = View.GONE
             binding.highSuccessInputLayout.visibility = View.GONE

@@ -14,6 +14,7 @@ import com.pseddev.mystreak.utils.AchievementManager
 import com.pseddev.mystreak.utils.AchievementCelebrationManager
 import com.pseddev.mystreak.data.entities.AchievementType
 import com.pseddev.mystreak.utils.AchievementDefinitions
+import com.pseddev.mystreak.utils.TaskColors
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.first
 
@@ -111,7 +112,7 @@ class AddPieceViewModel(
 
                 val piece = PieceOrTechnique(
                     name = normalizedName,
-                    color = color,
+                    color = TaskColors.storedColorFor(taskKind, color),
                     priority = priority,
                     taskKind = taskKind,
                     minimumSuccess = minimumSuccess,

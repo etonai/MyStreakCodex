@@ -8,6 +8,7 @@ import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.data.entities.PieceOrTechnique
 import com.pseddev.mystreak.data.repository.PianoRepository
 import com.pseddev.mystreak.utils.ProUserManager
+import com.pseddev.mystreak.utils.TaskColors
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -213,7 +214,7 @@ class PiecesViewModel(
                 currentPiece?.let { piece ->
                     val updatedPiece = piece.copy(
                         name = newName,
-                        color = color,
+                        color = TaskColors.storedColorFor(taskKind, color),
                         priority = priority,
                         taskKind = taskKind,
                         minimumSuccess = minimumSuccess,

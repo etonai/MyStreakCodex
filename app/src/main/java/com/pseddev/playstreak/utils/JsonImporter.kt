@@ -183,7 +183,7 @@ object JsonImporter {
     fun toTask(task: com.pseddev.mystreak.data.models.MyStreakExportTask): PieceOrTechnique {
         return PieceOrTechnique(
             name = task.name.trim(),
-            color = task.color,
+            color = TaskColors.storedColorFor(task.taskKind ?: TaskKind.STANDARD, task.color),
             priority = task.priority,
             taskKind = task.taskKind ?: TaskKind.STANDARD,
             minimumSuccess = task.minimumSuccess,

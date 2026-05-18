@@ -40,7 +40,7 @@ object JsonExporter {
                     MyStreakExportTask(
                         id = task.id,
                         name = task.name,
-                        color = task.color,
+                        color = TaskColors.displayColorFor(task),
                         priority = task.priority,
                         taskKind = task.taskKind,
                         minimumSuccess = task.minimumSuccess,
