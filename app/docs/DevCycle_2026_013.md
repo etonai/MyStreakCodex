@@ -1,8 +1,8 @@
 # Development Cycle 2026-013
 
-**Status:** Open
+**Status:** Complete
 **Start Date:** 2026-05-18
-**Target Completion:** TBD
+**Target Completion:** 2026-05-19
 **Focus:** Minor UI wording cleanup
 
 ## Overview
@@ -24,17 +24,17 @@ This development cycle handles a small set of wording and detail-display tweaks 
 ## Current Work Items
 
 ### Phase 1: Rename Routine Tab
-**Status:** Open
+**Status:** Complete
 **Date Added:** 2026-05-18
 **Priority:** Low
 **Description:** Change the main tab label from "Routine" to "Routines".
 
 **Acceptance Criteria:**
-- [ ] The tab label reads "Routines".
-- [ ] Navigation behavior is unchanged.
+- [x] The tab label reads "Routines".
+- [x] Navigation behavior is unchanged.
 
 ### Phase 2: Replace Today Count on Task and Routine Rows
-**Status:** Open
+**Status:** Complete
 **Date Added:** 2026-05-18
 **Priority:** Low
 **Description:** Replace the per-row "# today" text with total activity count text.
@@ -46,12 +46,12 @@ This development cycle handles a small set of wording and detail-display tweaks 
 - Remove or stop using the "# today" row text.
 
 **Acceptance Criteria:**
-- [ ] Task rows show `Total Activities: #`.
-- [ ] Routine rows show `Total Activities: #`.
-- [ ] Rows no longer show "# today".
+- [x] Task rows show `Total Activities: #`.
+- [x] Routine rows show `Total Activities: #`.
+- [x] Rows no longer show "# today".
 
 ### Phase 3: Remove Routine "Done" Detail Text
-**Status:** Open
+**Status:** Complete
 **Date Added:** 2026-05-18
 **Priority:** Low
 **Description:** Routine activity rows should not show the redundant detail text "Done".
@@ -63,20 +63,20 @@ This development cycle handles a small set of wording and detail-display tweaks 
 - Standard task activity detail text should remain unchanged.
 
 **Acceptance Criteria:**
-- [ ] Routine activity rows on Dashboard do not show "Done".
-- [ ] Routine activity rows on Calendar do not show "Done".
-- [ ] Routine activity rows do not show replacement detail text.
-- [ ] Standard task activity rows still show their success detail text.
+- [x] Routine activity rows on Dashboard do not show "Done".
+- [x] Routine activity rows on Calendar do not show "Done".
+- [x] Routine activity rows do not show replacement detail text.
+- [x] Standard task activity rows still show their success detail text.
 
 ### Phase 4: Verification
-**Status:** Open
+**Status:** Complete
 **Date Added:** 2026-05-18
 **Priority:** Low
 **Description:** Build and verify the small UI changes.
 
 **Acceptance Criteria:**
-- [ ] `gradlew.bat assembleDebug` succeeds.
-- [ ] No unrelated behavior changes are introduced.
+- [x] `gradlew.bat assembleDebug` succeeds.
+- [x] No unrelated behavior changes are introduced.
 
 ## Proposed Implementation Sequence
 
@@ -90,6 +90,10 @@ This development cycle handles a small set of wording and detail-display tweaks 
 - This cycle should not alter task counts, routine completion behavior, or calendar day color calculations.
 - The Dashboard activity detail dialog can keep showing routine notes/date information; this cycle only targets the visible row detail text.
 - If the activity row layout leaves vertical space when the routine detail is hidden, set the detail view visibility appropriately rather than replacing the text with an empty-looking placeholder.
+- The main tab label now reads "Routines".
+- Task and routine rows now use `Total Activities: #` and hide the previous today-count field.
+- Routine activity rows hide their secondary detail text on Dashboard and Calendar.
+- Routine Dashboard/Calendar detail dialogs also omit the routine success line so "Done" is not shown there.
 
 ## Risks and Mitigations
 
@@ -101,5 +105,5 @@ This development cycle handles a small set of wording and detail-display tweaks 
 
 ## Handoff Checklist
 
-- [ ] Confirm exact total activity wording: `Total Activities: #`.
-- [ ] Confirm routine row secondary detail should be hidden, not blank text.
+- [x] Confirm exact total activity wording: `Total Activities: #`.
+- [x] Confirm routine row secondary detail should be hidden, not blank text.

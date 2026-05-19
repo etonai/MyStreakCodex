@@ -40,7 +40,7 @@ class ViewProgressFragment : Fragment() {
                 0 -> "Dashboard"
                 1 -> "Calendar"
                 2 -> "Tasks"
-                3 -> "Routine"
+                3 -> "Routines"
                 else -> ""
             }
         }.attach()

@@ -133,7 +133,7 @@ On macOS/Linux:
 
 ## License
 
-Copyright (c) 2025.
+Copyright (c) 2026.
 
 This software is proprietary and confidential. See the [COPYRIGHT](COPYRIGHT) file for full licensing terms.
 

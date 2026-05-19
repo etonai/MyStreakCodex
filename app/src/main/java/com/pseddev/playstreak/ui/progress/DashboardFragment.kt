@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.pseddev.mystreak.MyStreakApplication
 import com.pseddev.mystreak.R
 import com.pseddev.mystreak.data.entities.ActivityType
+import com.pseddev.mystreak.data.entities.TaskKind
 import com.pseddev.mystreak.databinding.FragmentDashboardBinding
 import com.pseddev.mystreak.databinding.ItemDashboardActivityBinding
 import com.pseddev.mystreak.utils.TaskColors
@@ -126,7 +127,13 @@ class DashboardFragment : Fragment() {
         val time = SimpleDateFormat("h:mm a", Locale.US).format(Date(activity.timestamp))
 
         itemBinding.activityPrimaryText.text = "$time - ${task.name}"
-        itemBinding.activitySecondaryText.text = activityDescription(activity, task)
+        if (task.taskKind == TaskKind.ROUTINE) {
+            itemBinding.activitySecondaryText.text = ""
+            itemBinding.activitySecondaryText.visibility = View.GONE
+        } else {
+            itemBinding.activitySecondaryText.text = activityDescription(activity, task)
+            itemBinding.activitySecondaryText.visibility = View.VISIBLE
+        }
 
         val indicator = itemBinding.taskColorIndicator.background.mutate() as? GradientDrawable
         indicator?.setColor(parseTaskColor(TaskColors.displayColorFor(task)))
@@ -167,13 +174,15 @@ class DashboardFragment : Fragment() {
         val task = item.pieceOrTechnique
         val dateFormat = SimpleDateFormat("MMM d, yyyy h:mm a", Locale.US)
         val dateString = dateFormat.format(Date(activity.timestamp))
-        val successText = successLevelDescription(activity.successLevel, task)
+        val successText = successLevelDescription(activity.successLevel, task).takeIf { task.taskKind != TaskKind.ROUTINE }
         val notes = activity.notes.trim()
         val notesSection = if (notes.isEmpty()) "No notes" else notes
+        val message = listOfNotNull(dateString, successText)
+            .joinToString("\n") + "\n\n" + notesSection
 
         AlertDialog.Builder(requireContext())
             .setTitle(task.name)
-            .setMessage("$dateString\n$successText\n\n$notesSection")
+            .setMessage(message)
             .setPositiveButton("Close", null)
             .show()
     }

@@ -50,8 +50,8 @@ class PiecesAdapter(
         fun bind(item: PieceWithStats) {
             binding.pieceNameText.text = item.piece.name
             binding.root.alpha = if (item.piece.isActive) 1.0f else 0.55f
-            binding.activityCountText.text = "${item.activityCount} total activit${if (item.activityCount == 1) "y" else "ies"}"
-            binding.todayCountText.text = "${item.todayActivityCount} today"
+            binding.activityCountText.text = "Total Activities: ${item.activityCount}"
+            binding.todayCountText.visibility = View.GONE
             binding.priorityText.text = if (item.piece.taskKind == TaskKind.ROUTINE) {
                 "Routine"
             } else if (item.piece.priority == TaskPriority.HIGH) {
