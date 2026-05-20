@@ -219,6 +219,14 @@ class PiecesFragment : Fragment() {
             }
         }
 
+        if (taskKind == TaskKind.ROUTINE) {
+            binding.chipPriority.visibility = View.GONE
+            binding.sortChipGroup.check(R.id.chipAlphabetical)
+        } else {
+            binding.chipPriority.visibility = View.VISIBLE
+            binding.sortChipGroup.check(R.id.chipPriority)
+        }
+
         // Set up sort direction button
         binding.buttonSortDirection.setOnClickListener {
             viewModel.toggleSortDirection()

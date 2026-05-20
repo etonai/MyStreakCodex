@@ -141,6 +141,10 @@ class PiecesViewModel(
 
     fun setTaskKindFilter(taskKind: TaskKind) {
         taskKindFilter.value = taskKind
+        if (taskKind == TaskKind.ROUTINE && sortType.value == SortType.PRIORITY) {
+            sortType.value = SortType.ALPHABETICAL
+            sortDirection.value = SortDirection.ASCENDING
+        }
     }
 
     fun setSortType(type: SortType) {
