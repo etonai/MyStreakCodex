@@ -53,13 +53,16 @@ class SummaryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize timestamp - use edit activity timestamp if in edit mode, otherwise current time
+        // Initialize timestamp - use edit activity timestamp if in edit mode,
+        // pre-populated Calendar date if available, otherwise current time
         val editActivity = currentEditActivity()
         currentTimestamp = if (editActivity != null) {
             editActivity.timestamp
         } else {
-            System.currentTimeMillis()
+            com.pseddev.mystreak.ui.progress.EditActivityStorage.getPrePopulatedDate()
+                ?: System.currentTimeMillis()
         }
+        com.pseddev.mystreak.ui.progress.EditActivityStorage.clearPrePopulatedDate()
 
         // Handle back navigation in edit mode
         if (editActivity != null) {
@@ -182,11 +185,10 @@ class SummaryFragment : Fragment() {
             binding.buttonEditTime.visibility = View.VISIBLE
         } else {
             binding.textTitle.text = "Add Activity"
-            // Add mode - show current date, no edit buttons
             binding.textDate.text = "Date: ${dateFormat.format(Date(currentTimestamp))}"
             binding.buttonSave.text = "Save"
-            binding.buttonEditDate.visibility = View.GONE
-            binding.buttonEditTime.visibility = View.GONE
+            binding.buttonEditDate.visibility = View.VISIBLE
+            binding.buttonEditTime.visibility = View.VISIBLE
         }
 
         val notes = args.notes.trim()

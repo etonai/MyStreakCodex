@@ -1,6 +1,6 @@
 # Development Cycle 2026-016
 
-**Status:** In Progress
+**Status:** COMPLETE
 **Start Date:** 2026-06-13
 **Target Completion:** TBD
 **Focus:** Allow date and time editing when adding a new activity
@@ -27,7 +27,7 @@ DC 015 confirmed that Edit Date and Edit Time buttons work correctly in edit mod
 ## Current Work Items
 
 ### Phase 1: Show Edit Date and Edit Time Buttons in Add Mode
-**Status:** 🎫 Open
+**Status:** 🔍 IN VERIFICATION
 **Date Added:** 2026-06-13
 **Priority:** High
 **Description:** In `SummaryFragment.setupSummary()`, the `else` branch (add mode) currently hides `buttonEditDate` and `buttonEditTime`. Change both to `View.VISIBLE` so they appear in add mode.
@@ -52,7 +52,7 @@ DC 015 confirmed that Edit Date and Edit Time buttons work correctly in edit mod
 - [ ] Tapping Edit Time in add mode opens the time picker.
 
 ### Phase 2: Seed currentTimestamp from Pre-Populated Calendar Date
-**Status:** 🎫 Open
+**Status:** 🔍 IN VERIFICATION
 **Date Added:** 2026-06-13
 **Priority:** Medium
 **Description:** In `SummaryFragment.onViewCreated()`, the `else` branch that initialises `currentTimestamp` in add mode uses `System.currentTimeMillis()` unconditionally. Change it to read `EditActivityStorage.getPrePopulatedDate()` first, falling back to `System.currentTimeMillis()`. Clear the pre-populated date after reading it so it is not accidentally reused.
@@ -76,7 +76,7 @@ After reading, add: `EditActivityStorage.clearPrePopulatedDate()`
 - [ ] `EditActivityStorage.clearPrePopulatedDate()` is called after reading so the value is not reused on a subsequent add.
 
 ### Phase 3: Verify Timestamp Is Saved Correctly in Add Mode
-**Status:** 🎫 Open
+**Status:** 🔍 IN VERIFICATION
 **Date Added:** 2026-06-13
 **Priority:** High
 **Description:** Confirm the existing save path in `SummaryFragment` already passes `currentTimestamp` to `viewModel.saveActivity(..., timestamp = currentTimestamp)`. No code change is expected here — this phase is a code-review confirmation.
@@ -86,13 +86,13 @@ After reading, add: `EditActivityStorage.clearPrePopulatedDate()`
 - [ ] No additional changes are needed to `AddActivityViewModel.saveActivity()`.
 
 ### Phase 4: Build and Verification
-**Status:** 🎫 Open
+**Status:** 🔍 IN VERIFICATION
 **Date Added:** 2026-06-13
 **Priority:** Medium
 **Description:** Build the app and perform end-to-end manual verification of the feature for both the normal add flow and the Calendar-initiated add flow.
 
 **Acceptance Criteria:**
-- [ ] `gradlew.bat assembleDebug` succeeds with no new errors or warnings.
+- [x] `gradlew.bat assembleDebug` succeeds with no new errors or warnings.
 - [ ] Adding a new activity from the main flow: Edit Date and Edit Time buttons are visible; changing the date saves correctly.
 - [ ] Adding a new activity from the Calendar tab: the date picker pre-selects the tapped calendar date; saving records the activity on that date.
 - [ ] Editing an existing activity: no regression — Edit Date and Edit Time buttons still appear and function correctly.
