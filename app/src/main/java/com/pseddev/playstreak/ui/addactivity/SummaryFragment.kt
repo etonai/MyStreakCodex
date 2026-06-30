@@ -59,8 +59,20 @@ class SummaryFragment : Fragment() {
         currentTimestamp = if (editActivity != null) {
             editActivity.timestamp
         } else {
-            com.pseddev.mystreak.ui.progress.EditActivityStorage.getPrePopulatedDate()
-                ?: System.currentTimeMillis()
+            val prePopulated = com.pseddev.mystreak.ui.progress.EditActivityStorage.getPrePopulatedDate()
+            if (prePopulated != null) {
+                // Use the calendar-selected date but the current wall-clock time so the
+                // time field shows "now" rather than midnight (the stored value has no time).
+                val dateCal = Calendar.getInstance().apply { timeInMillis = prePopulated }
+                val nowCal = Calendar.getInstance()
+                dateCal.set(Calendar.HOUR_OF_DAY, nowCal.get(Calendar.HOUR_OF_DAY))
+                dateCal.set(Calendar.MINUTE,      nowCal.get(Calendar.MINUTE))
+                dateCal.set(Calendar.SECOND,      nowCal.get(Calendar.SECOND))
+                dateCal.set(Calendar.MILLISECOND, nowCal.get(Calendar.MILLISECOND))
+                dateCal.timeInMillis
+            } else {
+                System.currentTimeMillis()
+            }
         }
         com.pseddev.mystreak.ui.progress.EditActivityStorage.clearPrePopulatedDate()
 
